@@ -1,0 +1,30 @@
+$baseColor:#FFFFFF #000000 #eb7d46 RGBA(245,48,108,1) #8f8f94;
+$px: 1, 5, 10, 15,20,30,35;
+html{
+  font-size:62.5%;
+}
+$fontSize:1rem;
+$headings: (red:red,darkred: darkred,green:green,darkgreen:darkgreen, pink: pink,blue:blue,darkblue:darkblue);
+
+.hide{
+  display:none;
+}
+.show{
+  display:block;
+}
+
+@each $x in $px{
+  .margin-top#{$x}{
+    margin-top:#{$x}px;
+  }
+  .margin-bottom#{$x}{
+    margin-bottom:#{$x}px;
+  }
+  .margin-left#{$x}{
+    margin-left:#{$x}px;
+  }
+  .margin-right#{$x}{
+    margin-right:#{$x}px;
+  }
+}
+

@@ -1,0 +1,177 @@
+<template>
+    <div class="register">
+        <img src="/static/images/logo.png" alt="">
+        <form class="mui-input-group" autocomplete="off">
+            <div class="mui-input-row">
+                <label>手机号</label>
+                <input type="text" v-model="phone" placeholder="请输入手机">
+            </div>
+            <div class="mui-input-row verify">
+                <label>验证码</label>
+                <input type="text" v-model="verify" placeholder="请输入验证码">
+                <button class="mui-btn mui-btn-danger" :class="{'mui-disabled':isDisabled}" 
+                    type="button" @click="send_code">{{showText}}</button>
+            </div>
+            <div class="mui-input-row">
+                <label>密码</label>
+                <input type="password" class="mui-input-password " v-model="password" placeholder="请输入密码">
+            </div>
+
+            <div class="mui-button-row">
+                <button type="button" class="mui-btn mui-btn-block mui-btn-primary" @click="login()" >注册新账号</button>
+            </div>
+            <div class="mui-input-row del-line">
+                <router-link to="login">登陆</router-link>
+            </div>
+            <div class="mui-input-row del-line">
+                <span class="line line-left"></span>
+                <span class="title">其他账号登陆</span>
+                <span class="line line-right"></span>
+            </div>
+            <div class="third">
+                <img src="/static/images/wechat.png" alt="">
+            </div>
+        </form>
+    </div>
+</template>
+<script>
+    export default {
+        data(){
+            return{
+                isDisabled:true,
+                showText:'获取验证码',
+                phone:'',
+                verify:'',
+                password:''
+            }
+        },
+        methods:{
+            change_phone(value){
+                console.log(value)
+            },
+            login(){
+                if(!this.phone){
+                    mui.toast('请输入手机号');
+                    return;
+                }
+                if(!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)){
+                    mui.toast('请输入正确的手机号');
+                    return;
+                }
+                if(!this.password){
+                    mui.toast('请输入密码');
+                    return;
+                }
+                this.$axios.post('/user/get').then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            send_code(){
+                if(this.isDisabled){
+                    return;
+                }
+                if(!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)){
+                    mui.toast('请输入正确的手机号');
+                    return;
+                }
+                mui.alert('send_code');
+                this.showText = '60秒后重新发送';
+            }
+        },
+        watch: {
+            phone(newValue, oldValue) {
+                if(newValue.length>0){
+                    this.isDisabled=false;
+                }else{
+                    this.isDisabled=true;
+                }
+            }
+        },
+    }
+</script>
+
+<style lang="scss" scoped>
+    @import "../assets/style/base";
+    form:after{
+        background-color: #fff;
+    }
+    .register{
+        padding-top:5rem;
+        text-align:center;
+        img{
+            width:4rem;
+            padding-bottom:2rem;
+        }
+        .mui-input-group{
+            width:90%;
+            margin:0 auto;
+            height:auto;
+            overflow:hidden;
+            padding-bottom:2rem;
+            &:before{
+                background-color: #fff;
+            }
+            .mui-input-row{
+                margin-top:.8rem;
+                position:relative;
+                .line{
+                    position:absolute;
+                    border-bottom: 0.1rem solid #e4e4e8;
+                    display:inline-block;
+                    width:34%;
+                    top:.6rem;
+                }
+                .line.line-left{
+                    left:0;
+                }
+                .line.line-right{
+                    right:0;
+                }
+                .title{
+                    vertical-align: middle;
+                    font-size:1rem;
+                    color: #b3b3b3;
+                }
+            }
+            .mui-button-row{
+                margin-bottom:2.1rem;
+                margin-top:2rem;
+                .mui-btn-primary{
+                    background-color:nth($baseColor,3);
+                    border-color: nth($baseColor,3);
+                }
+            }
+            .mui-input-row.del-line{
+                a{
+                    color:nth($baseColor,5);
+                }
+                &:after{
+                    background-color: #fff;
+                }
+            }
+            .mui-input-row.del-line.right{
+                text-align:right;
+            }
+            .mui-input-row.verify{
+                position:relative;
+                button{
+                    position:absolute;
+                    width:120px;
+                    top:0;
+                    right:0;
+                    background-color:nth($baseColor,3);
+                    border-color: nth($baseColor,3);
+                    font-size:.8rem;
+                }
+            }
+            .third{
+                img{
+                    height:6rem;
+                }
+            }
+        }
+    }
+</style>
