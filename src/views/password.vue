@@ -10,39 +10,6 @@
         </div>
     </div>
 </template>
-<style lang="scss">
-    @import "../assets/style/base";
-    .passwords-content{
-        width:95vw;
-        margin:0 auto;
-        position: relative;
-        input{
-            height:45px;
-            font-size:1.5rem;
-            &::placeholder{
-                font-size:1.5rem;
-            }
-        }
-        button{
-            height:50px;
-            line-height:20px;
-            color:nth($baseColor,1);
-            background-color:nth($baseColor,3);
-            border-color:nth($baseColor,3);
-            // &.disabled{
-            //     color:nth($baseColor,1);
-            //     background-color:lighten(nth($baseColor,2),25%);
-            // }
-            &.send-code{
-                position:absolute;
-                top:0;
-                right:0;
-                height:45px;
-                width:120px;
-            }
-        }
-    }
-</style>
 <script>
     import vHead from '@/components/header.vue'
 
@@ -112,12 +79,36 @@
           }
         },
         mounted(){
-            const gallery = document.querySelector('.passwords'),
-                header = document.querySelector('header');
-            if(header && gallery){
-                gallery.style.marginTop=header.clientHeight + 10 + "px";
-            }
             document.querySelector('.send-code').click();
         }
     }
 </script>
+<style lang="scss">
+    @import "../assets/style/base";
+    .passwords-content{
+        width:95vw;
+        margin:10px auto;
+        position: relative;
+        input{
+            height:45px;
+            font-size:1.2rem;
+            &::placeholder{
+                font-size:1.2rem;
+            }
+        }
+        button{
+            height:50px;
+            line-height:20px;
+            color:nth($baseColor,1);
+            background-color:nth($baseColor,3);
+            border-color:nth($baseColor,3);
+            &.send-code{
+                position:absolute;
+                top:0;
+                right:0;
+                height:45px;
+                width:120px;
+            }
+        }
+    }
+</style>

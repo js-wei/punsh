@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-03 7:23:25
+ * Modified By: 2018-03-05 3:17:34
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -18,7 +18,6 @@
         <v-slider :slider="slider"></v-slider>
     </div>
 </template>
-
 <script>
     import vHead from '@/components/header.vue'
     import vSlider from '@/components/slider.vue'
@@ -63,7 +62,3 @@
         }
     }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

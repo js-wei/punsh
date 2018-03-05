@@ -62,11 +62,6 @@
             }
         },
         mounted() {
-            const gallery = document.querySelector('.register'),
-                header = document.querySelector('header');
-            if(header && gallery){
-                gallery.style.marginTop=header.clientHeight + "px";
-            }
         }
     }
 </script>
@@ -83,7 +78,7 @@
             padding-bottom:2rem;
         }
         .mui-input-group{
-            width:80%;
+            width:90%;
             margin:0 auto;
             height:auto;
             overflow:hidden;

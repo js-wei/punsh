@@ -118,7 +118,6 @@
 <style lang="scss" scoped>
     @import '../assets/style/base';
     .message{
-        margin-top:55px;
         .message-list{
             .message-list-view{
                li{
@@ -130,21 +129,6 @@
                                 width:100px;
                                 height:auto;
                                 padding-bottom:2px;
-                                &.mui-media-title{
-                                    font-size:2rem;
-                                    color:nth($baseColor,2);
-                                }
-                                &.mui-ellipsis{
-                                    font-size:1.5rem;
-                                    width:260px;
-                                }
-                                &.message-title{
-                                    font-size:1.8rem;
-                                    overflow: hidden;
-                                    white-space: nowrap;
-                                    //text-overflow: ellipsis;
-                                    width:150px;
-                                }
                             }
                        }
                    }

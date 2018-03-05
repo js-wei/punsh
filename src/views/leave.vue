@@ -1,4 +1,18 @@
 /**
+ * File: d:\works\punsh\src\views\leave.vue
+ * Created Date: 2018-03-05 4:55:49
+ * Author: 魏巍
+ * -----
+ * Last Modified: 魏巍
+ * Modified By: 2018-03-05 5:32:06
+ * -----
+ * Copyright (c) 2018 魏巍
+ * ------
+ * All shall be well and all shall be well and all manner of things shall be well.
+ * We're doomed!
+ */
+
+/**
  * File: g:\vue\office\src\views\push.vue
  * Created Date: 2018-03-04 4:49:25
  * Author: 魏巍
@@ -14,7 +28,14 @@
 
 <template>
     <div class="push">
-        <v-head :title="title"></v-head>
+        <v-head :title="title" :isSlotRight="isSlotRight">
+            <div slot="header-right">
+                <!-- <button type="button" class="mui-icon mui-icon-plusempty upload">申请</button> -->
+                <router-link to="/get_leave" class="mui-icon mui-icon-plusempty upload">
+                  申请
+                </router-link>
+            </div>
+        </v-head>
         <div>
             <ul class="mui-navbar">
                 <li :class="{'active':v.id==current}" v-for="(v,i) in pushType" :key="i" @click="changeType(v.id)">
@@ -28,15 +49,13 @@
                             :key="index">
                             <a>    <!-- class='mui-navigate-right' -->
                               <p>
-                                  日期:{{item.date}} 签到:{{item.punsh}}
+                                  日期:{{item.date}} 假期:{{item.form}} - {{item.to}}
                                   <span class="mui-pull-right">
-                                      <span v-if="item.type==2" class="mui-btn-success">正点</span>
-                                      <span v-if="item.type==3" class="mui-btn-primary">迟到</span>
-                                      <span v-if="item.type==4" class="mui-btn-warning">早退</span>
-                                      <span v-if="item.type==5" class="mui-btn-btn-danger">旷工</span>
+                                      <span v-if="item.status==1" class="mui-btn-success">通过</span>
+                                      <span v-if="item.status==0" class="mui-btn-danger">驳回</span>
                                   </span>
                               </p>
-                              <p>{{item.content}}</p>  
+                              <p>{{item.content}},{{item.dur}}假期</p>  
                             </a>
                         </li>
                     </ul>
@@ -51,57 +70,51 @@ import vHead from "@/components/header";
 export default {
   data() {
     return {
-      title: "签到记录",
+      title: "请假记录",
+      isSlotRight:true,
       current: 1,
       pushType: [
         {
           id: 1,
-          text: "全部"
+          text: "事假"
         },
         {
           id: 2,
-          text: "正点"
+          text: "病假"
         },
         {
           id: 3,
-          text: "迟到"
+          text: "婚假"
         },
         {
           id: 4,
-          text: "早退"
+          text: "产假"
         },
         {
           id: 5,
-          text: "旷工"
+          text: "其他"
         }
       ],
       messages: [
         {
           id: 1,
           date: "2018-01-04",
-          title: "正点签到",
-          content: "正点签到",
-          type: 2,
-          later: 0,
-          punsh: "07:58:54"
+          title: "事假",
+          content: "事假申请",
+          status:0,
+          form: "06/03/2018",
+          to:"08/03/2018",
+          dur:'2天'
         },
         {
-          id: 2,
-          date: "2018-03-05",
-          title: "正点签到",
-          content: "正点签到",
-          type: 2,
-          later: 0,
-          punsh: "07:58:54"
-        },
-        {
-          id: 3,
-          date: "2018-03-05",
-          title: "迟到签到",
-          content: "您迟到了10分钟",
-          type: 3,
-          later: 10,
-          punsh: "08:25:54"
+          id: 1,
+          date: "2018-03-04",
+          title: "事假",
+          content: "事假申请",
+          status:1,
+          form: "06/03/2018",
+          to:"07/03/2018",
+          dur:'1天'
         }
       ]
     };
@@ -200,6 +213,8 @@ export default {
       list-style-type: none;
       width: 90%;
       margin: 10px auto;
+      height:auto;
+      overflow: hidden;
       li {
         width: 20%;
         float: left;
@@ -217,6 +232,11 @@ export default {
     .mui-scroll-wrapper {
       top: 80px;
     }
+  }
+  .upload{
+    font-size:1.5rem;
+    color:white;
+    padding-top:15px;
   }
 }
 </style>

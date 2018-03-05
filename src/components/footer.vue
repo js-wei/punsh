@@ -42,15 +42,6 @@
             }
         },
         mounted(){
-            // let w = document.body.clientWidth,
-            //     nav = document.querySelector('nav');
-            // nav.style.width=w + "px";
-            // let a = document.querySelectorAll('nav>a'),
-            //     l = a.length,
-            //     width = 100/l+'%';
-            // for (let i=0;i<l;i++){
-            //     a[i].style.width = width;
-            // }
             mui.plusReady(function() {
                document.querySelector('.report').addEventListener('tap',(e)=>{
                 plus.nativeUI.actionSheet({cancel:"取消",buttons:[
@@ -76,7 +67,6 @@
                 }else{
                      this.currentPage = '';
                 }
-                //this.transitionName = toDepth < fromDepth ? 'bounceRight' : 'bounceLeft'
             }
         },
     }
@@ -92,7 +82,6 @@
         z-index:100;
         nav{
             width:100%;
-            //border-top:1px solid lighten(nth($baseColor,2),90%);
             height:50px;
             padding-top:5px;
             position: relative;
@@ -103,25 +92,28 @@
                 text-align:center;
                 width:20vw;
                 color:nth($baseColor,1);
+               
                 span{
                     display:block;
                     height:100%;
                     padding-bottom:2px;
+                    &.mui-icon{
+                        font-size:2.2rem;
+                    }
                     &.fa-qiandao-kaoqindaqia{
-                        font-size:25px;
-                        padding-bottom:2px;
+                        font-size:2.3rem;
                     }
                     &.mui-icon-plus{
                         position: relative;
-                        top:-20px;
+                        top:-25px;
                         padding:5px;
-                        font-size:40px;
+                        font-size:5rem;
                         background-color:nth($baseColor,3);
                         border-radius:50%;
                     }
-                }
-                &.active{
-                    //color:nth($baseColor,3);
+                    &.mui-tab-label{
+                        font-size:1.8rem;
+                    }
                 }
             }
         }

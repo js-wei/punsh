@@ -11,9 +11,6 @@
   </div>
 </div>
 </template>
-<style lang="scss" scoped>
-
-</style>
 <script>
 import vHead from '@/components/header.vue'
 import Vue from 'vue'
@@ -55,11 +52,6 @@ export default {
     }
   },
   mounted() {
-    const gallery = document.querySelector('.information'),
-      header = document.querySelector('header');
-    if (header && gallery) {
-      gallery.style.marginTop = header.clientHeight + "px";
-    }
     document.querySelector('.upload').addEventListener('tap', (e) => {
 
     });
@@ -77,3 +69,6 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+
+</style>

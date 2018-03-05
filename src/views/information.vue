@@ -18,41 +18,8 @@
         </div>
     </div>
 </template>
-<style lang="scss" scoped>
-   @import "../assets/style/base";
-    .information{
-        .information-content{
-            width:90vw;
-            margin:4.5rem auto;
-            .title{
-                color:lighten(nth($baseColor,2),50%);
-            }
-            .content{
-                height:150px;
-                border:1px solid lighten(nth($baseColor,2),80%);
-                margin-top:.5rem;
-                padding-left:.3rem;
-                padding-top:.3rem;
-                color:lighten(nth($baseColor,2),50%);
-                &.input{
-                    margin-top:.5rem;
-                    height:3.2rem;
-                    padding-top:.5rem;
-                    font-size:1.5rem;
-                    padding-bottom:.5rem;
-                }
-            }
-            .tips{
-                color:lighten(nth($baseColor,2),50%);
-                font-size:.8rem;
-                text-align: right;
-            }
-        }
-    }
-</style>
 <script>
     import vHead from '@/components/header.vue'
-
     export default {
         data(){
             return{
@@ -70,11 +37,6 @@
             vHead
         },
         mounted(){
-            const gallery = document.querySelector('.information'),
-                header = document.querySelector('header');
-            if(header && gallery){
-                gallery.style.marginTop=header.clientHeight + "px";
-            }
             document.querySelector('.change').addEventListener('tap',(e)=>{
                 e.preventDefault();
                 console.log(this.content);
@@ -107,3 +69,36 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+   @import "../assets/style/base";
+    .information{
+        .information-content{
+            width:90vw;
+            margin:4.5rem auto;
+            .title{
+                color:lighten(nth($baseColor,2),50%);
+            }
+            .content{
+                height:150px;
+                border:1px solid lighten(nth($baseColor,2),80%);
+                margin-top:.5rem;
+                padding-left:.3rem;
+                padding-top:.3rem;
+                color:lighten(nth($baseColor,2),50%);
+                &.input{
+                    margin-top:.5rem;
+                    height:3.2rem;
+                    padding-top:.5rem;
+                    font-size:1.2rem;
+                    padding-bottom:.5rem;
+                }
+            }
+            .tips{
+                color:lighten(nth($baseColor,2),50%);
+                font-size:.8rem;
+                text-align: right;
+            }
+        }
+    }
+</style>

@@ -70,6 +70,70 @@
         </div>
     </div>
 </template>
+<script>
+    import vHead from '../common/header.vue'
+    import '../../../static/javascript/mui.picker.min.js';
+    import '../../../static/javascript/mui.poppicker.js';
+    import cityData from '../../../static/javascript/city.data.js';
+
+    export default {
+        data(){
+            return{
+                title:'编辑资料',
+                isLogin:true
+            }
+        },
+        components:{
+            vHead,
+        },
+        mounted(){
+           
+            let btn = document.querySelector('.dtpicker');
+            btn.addEventListener('tap',(e)=>{
+                let optionsJson = btn.getAttribute('data-options') || '{}',
+                    options = JSON.parse(optionsJson);
+                let picker = new mui.DtPicker(options);
+                picker.show(function(rs) {
+                    let date = rs.value;
+                    mui.toast('生日修改成功');
+                    document.querySelector('#date').innerText=date;
+                    picker.dispose();
+                });
+            },false);
+
+             let sex = new mui.PopPicker();
+                sex.setData([
+                {
+                    value: '1',
+                    text: '男'
+                }, {
+                    value: '2',
+                    text: '女'
+                }
+                ]);
+            document.querySelector('.chocie-sex').addEventListener('tap',(e)=>{
+                sex.show(function(items) {
+                  let sex = items[0].text;
+                  document.querySelector('#sex').innerText=sex;
+                  mui.toast('性别修改成功');
+    						});
+            });
+
+            let cityPicker = new mui.PopPicker({
+                    layer: 2
+                });
+            cityPicker.setData(cityData);
+            let showCityPickerButton = document.getElementById('showCityPicker');
+            showCityPickerButton.addEventListener('tap', function(event) {
+                cityPicker.show(function(items) {
+            let area = items[0].text+','+items[1].text;
+            document.querySelector('#area').innerText=area;
+            mui.toast('地区修改成功');
+                    });
+                }, false);
+        }
+    }
+</script>
 <style lang="scss" scoped>
     @import "../assets/style/base";
     .edit{
@@ -118,71 +182,3 @@
         }
     }
 </style>
-<script>
-    import vHead from '../common/header.vue'
-    import '../../../static/javascript/mui.picker.min.js';
-    import '../../../static/javascript/mui.poppicker.js';
-    import cityData from '../../../static/javascript/city.data.js';
-
-    export default {
-        data(){
-            return{
-                title:'编辑资料',
-                isLogin:true
-            }
-        },
-        components:{
-            vHead,
-        },
-        mounted(){
-            const gallery = document.querySelector('.edit'),
-                header = document.querySelector('header');
-            if(header && gallery){
-                gallery.style.marginTop=header.clientHeight + 10 + "px";
-            }
-            let btn = document.querySelector('.dtpicker');
-            btn.addEventListener('tap',(e)=>{
-                let optionsJson = btn.getAttribute('data-options') || '{}',
-                    options = JSON.parse(optionsJson);
-                let picker = new mui.DtPicker(options);
-                picker.show(function(rs) {
-                    let date = rs.value;
-                    mui.toast('生日修改成功');
-                    document.querySelector('#date').innerText=date;
-                    picker.dispose();
-                });
-            },false);
-
-             let sex = new mui.PopPicker();
-             sex.setData([
-              {
-    						value: '1',
-    						text: '男'
-    					}, {
-    						value: '2',
-    						text: '女'
-    					}
-					  ]);
-            document.querySelector('.chocie-sex').addEventListener('tap',(e)=>{
-                sex.show(function(items) {
-                  let sex = items[0].text;
-                  document.querySelector('#sex').innerText=sex;
-                  mui.toast('性别修改成功');
-    						});
-            });
-
-            let cityPicker = new mui.PopPicker({
-  						layer: 2
-  					});
-  					cityPicker.setData(cityData);
-  					let showCityPickerButton = document.getElementById('showCityPicker');
-  					showCityPickerButton.addEventListener('tap', function(event) {
-  						cityPicker.show(function(items) {
-                let area = items[0].text+','+items[1].text;
-                document.querySelector('#area').innerText=area;
-                mui.toast('地区修改成功');
-  						});
-  					}, false);
-        }
-    }
-</script>

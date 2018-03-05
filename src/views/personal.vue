@@ -9,51 +9,15 @@
                     <div>ID:1325565</div>
                     <div>今天之繁忙,之于明天之享福</div>
                 </div>
-                <div class="information" v-if="!isLogin">
+                <!-- <div class="information" v-if="!isLogin">
                     <div>
                         <router-link to="/login">现在登陆</router-link>
                     </div>
                     <div>
                         <router-link to="/register">没有账号,现在注册</router-link>
                     </div>
-                </div>
-                <!-- <div class="function" v-if="isLogin">
-                    <div class="item">
-                        <div>100</div>
-                        <div>圈子</div>
-                    </div>
-                    <div class="item">
-                        <div>10</div>
-                        <div>关注</div>
-                    </div>
-                    <div class="item">
-                        <div>2</div>
-                        <div>粉丝</div>
-                    </div>
                 </div> -->
             </div>
-            <!-- <div class="collection">
-                <div class="function" v-if="isLogin">
-                    <div class="item">
-                        <router-link to="/index">
-                            <span class="mui-icon mui-icon-paperclip yellow"></span>
-                            <span>预定</span>
-                        </router-link>
-                    </div>
-                    <div class="item">
-                        <router-link to="/index">
-                            <span class="mui-icon mui-icon-plus pink"></span>
-                            <span>发布</span>
-                        </router-link>
-                    </div>
-                    <div class="item">
-                       <router-link to="/index">
-                           <span class="mui-icon mui-icon-personadd red"></span>
-                           <span>参与</span>
-                       </router-link>
-                    </div>
-                </div>
-            </div> -->
             <div class="mui-content">
                 <ul class="mui-table-view">
                     <li class="mui-table-view-cell" v-for="(item,index) in menu" 
@@ -71,12 +35,13 @@
 <script>
     import vHead from '@/components/header.vue'
     import vFooter from '@/components/footer.vue'
+    import {mapState} from 'vuex'
+
     export default {
         name: 'app',
         data(){
             return{
                 title:'我的',
-                isLogin:true,
                 isBack:false,
                 current:'personal',
                 menu: [
@@ -86,7 +51,7 @@
                         icon: 'fa-xiaoxi'
                     },
                     {
-                        title: '打卡记录',
+                        title: '签到记录',
                         href: 'push',
                         icon: 'fa-qiandao-kaoqindaqia'
                     },
@@ -113,16 +78,14 @@
                 ]
             }
         },
+        computed:{
+            ...mapState({
+                isLogin:state=>state.logined || true
+            })
+        },
         components:{
             vHead,
             vFooter
-        },
-        mounted(){
-            const gallery = document.querySelector('.personal'),
-                header = document.querySelector('header');
-            if(header && gallery){
-                gallery.style.marginTop=header.clientHeight - 2 + "px";
-            }
         }
     }
 </script>
@@ -144,77 +107,25 @@
             }
             .information{
                 color:nth($baseColor,1);
-                font-size:1.5rem;
+                font-size:1.3rem;
                 a{
                     color:nth($baseColor,1);
                 }
             }
-            .function{
-                width:100vw;
-                div.item{
-                    width:33%;
-                    float: left;
-                    margin-top:.8rem;
-                    color:nth($baseColor,1);
-                    border-right:1px solid nth($baseColor,1);
-                    font-size:1.5rem;
-                }
-                div.item:nth-of-type(3){
-                    border:none;
-                }
-            }
         }
         .mui-content{
-            .mui-table-view{
-                &::before{
-                    background-color: nth($baseColor,1);
-                }
-                .mui-table-view-cell{
-                    height:60px;
-                    line-height:50px;
-                    a{
-                        font-size:2.2rem;
-                        span{
-                            font-size:2.5rem;
-                        }
-                    }
-                }
-            }
-        }
-        .collection{
-            width:100vw;
-            height:auto;
-            margin-top:.8rem;
-            text-align:center;
-            background-color:nth($baseColor,1);
-            .function{
-                .item{
-                    margin-top:1.2rem;
-                    width:33%;
-                    height:100%;
-                    float: left;
-                    a{
-                        color:lighten( nth($baseColor,2),50%);
-                        span{
-                            display:block;
-                            width:100%;
-                            font-size:1.5rem;
-                            &.mui-icon{
-                                font-size:3.5rem;
-                            }
-                            &.yellow{
-                                color:greenyellow;
-                            }
-                            &.pink{
-                                color:deeppink;
-                            }
-                            &.red{
-                                color:darkred;
-                            }
-                        }
-                    }
-                }
-            }
+           .mui-table-view{
+               .mui-table-view-cell{
+                   a{
+                       font-size:1.8rem;
+                       span{
+                           &.fa{
+                               font-size:1.8rem;
+                           }
+                       }
+                   }
+               }
+           } 
         }
     }
 </style>

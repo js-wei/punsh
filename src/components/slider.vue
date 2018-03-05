@@ -33,14 +33,9 @@
           slider:Object
         },
         mounted() {
-            const gallery = document.querySelector('#mySlider'),
-                header = document.querySelector('header');
-            if(header && gallery){
-                gallery.style.marginTop = header.clientHeight + "px";
-                mui('#mySlider').slider({
-                    interval:this.slider.timer || 5e3
-                });
-            }
+            mui('#mySlider').slider({
+                interval:this.slider.timer || 5e3
+            });
         }
     }
 </script>

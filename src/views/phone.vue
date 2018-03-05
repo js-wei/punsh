@@ -124,7 +124,7 @@
    @import "../assets/style/base";
     .phone-content{
         width:95vw;
-        margin:60px auto;
+        margin:10px auto;
         text-align:center;
         position:relative;
         .steps{

@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <transition name='transitionName' keep-alive>
-      <router-view/>
+    <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive>
+        <router-view class="router"/>
     </transition>
-    
-    <v-footer :menu="menu" v-if="isFootershow"></v-footer>
+    <v-footer :menu="menu" v-if="isFootershow" v-cloak></v-footer>
   </div>
 </template>
 
@@ -12,7 +11,7 @@
 import vHead from '@/components/header.vue'
 import vSlider from '@/components/slider.vue'
 import vFooter from '@/components/footer.vue'
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'App',
@@ -50,17 +49,22 @@ export default {
     }
   },
   computed:{
-    ...mapGetters(['getFooterState'])
+    // ...mapGetters(['getFooterState']),
+    ...mapState({
+      direction: state => state.mutations.navigater.direction
+    })
   },
   components: {
     vFooter
   },
+  mounted(){
+    mui.plusReady(function(){
+       plus.navigator.setStatusBarBackground("#eb7d46");
+    });
+  },
   watch: {
     '$route'(newValue, oldValue) {
       this.isFootershow = newValue.name!='punch' || false;
-      const toDepth = newValue.path.split('/').length
-      const fromDepth = oldValue.path.split('/').length
-      this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
     }
   },
 }
@@ -69,20 +73,43 @@ export default {
   html{
     font-size:66.5%;
   }
-  .slide-left-enter, .slide-right-leave-active {
-    opacity: 0;
-    -webkit-transform: translate(50px, 0);
-    transform: translate(50px, 0);
+</style>
+<style scoped>
+  .router{
+    padding-top:42px;
   }
-  .slide-left-leave-active, .slide-right-enter {
+ .vux-pop-out-enter-active,
+ .vux-pop-out-leave-active,
+ .vux-pop-in-enter-active,
+ .vux-pop-in-leave-active {
+    will-change: transform;
+    transition: all 150ms;
+    height: 100%;
+    top: 0;
+    position: absolute;
+    backface-visibility: hidden;
+    perspective: 1000;
+ }
+ .vux-pop-out-enter {
     opacity: 0;
-    -webkit-transform: translate(-50px, 0);
-    transform: translate(-50px, 0);
-  }
+    transform: translate3d(-100%, 0, 0);
+ }
+ .vux-pop-out-leave-active {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+ }
+ .vux-pop-in-enter {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+ }
+ .vux-pop-in-leave-active {
+  opacity: 0;
+  transform: translate3d(-100%, 0, 0);
+ }
 </style>
 
 <style lang="scss">
-body{
+  body{
     margin:0;
     padding:0;
     background-color:#fff;

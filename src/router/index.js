@@ -15,6 +15,9 @@ import Punch from '@/views/punch'
 import Message from '@/views/message'
 import MessageDetails from '@/views/message_details'
 import Push from '@/views/push'
+import Leave from '@/views/leave'
+import GetLeave from '@/views/get_leave'
+
 
 Vue.use(Router)
 
@@ -105,6 +108,18 @@ export default new Router({
       path:'/push',
       name:'push',
       component:Push,
+      meta:{requiresAuth: true}
+    },
+    {
+      path:'/leave',
+      name:'leave',
+      component:Leave,
+      meta:{requiresAuth: true}
+    },
+    {
+      path:'/get_leave',
+      name:'get_leave',
+      component:GetLeave,
       meta:{requiresAuth: true}
     },
     {

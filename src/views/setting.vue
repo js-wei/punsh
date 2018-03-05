@@ -122,6 +122,7 @@
 <style lang="scss" scoped>
     @import "../assets/style/base";
     .setting{
+        padding-top:10px;
         .mui-content{
             background-color: nth($baseColor,1);
             .mui-table-view{

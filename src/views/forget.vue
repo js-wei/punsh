@@ -107,7 +107,7 @@
 <style lang="scss" scoped>
    @import "../assets/style/base";
     .forget{
-        margin-top:80px;
+        padding-top:150px;
         text-align:center;
         img{
             width:4rem;

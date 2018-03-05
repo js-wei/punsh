@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-03 7:04:53
+ * Modified By: 2018-03-05 2:47:12
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -60,15 +60,8 @@
                         geocoder.getLocation(self.company_address, function(status, result) {
                             if (status === 'complete' && result.info === 'OK') {
                                 self.geocoderCallBack(result,map,self);
-                                let postion={
-                                    lng:self.position[0],
-                                    lat:self.position[1]
-                                };
-                                let text = {
-                                    title:'我',
-                                    sub:'我'
-                                };
-                                self.addSimpleMarker(postion,text,map);
+                                self.geoLocation(map,self);
+                               
                             }
                         });
                     }
@@ -83,7 +76,6 @@
         },
         methods: {
             punch(result) {
-                console.log(result);
                 if(!result.flag){
                     mui.toast('你是在火星打卡的吧');
                     return;
@@ -187,6 +179,48 @@
                         cb(result);
                     }
                 });   
+            },
+            geoLocation(map,self,gps=[]){       //定位
+                if(!gps){
+                    AMap.convertFrom(gps,'gps',data=>{
+                        let postion={
+                            lng:data.locations.lng,
+                            lat:data.locations.lat
+                        };
+                        let text = {
+                            title:'我',
+                            sub:'我'
+                        };
+                        self.addSimpleMarker(postion,text,map);
+                    });
+                }else{
+                    map.plugin('AMap.Geolocation', function() {
+                    let geolocation = new AMap.Geolocation({
+                        enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                        timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+                        buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                        zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                        buttonPosition:'RB'
+                    });
+                    map.addControl(geolocation);
+                    geolocation.getCurrentPosition();
+                    AMap.event.addListener(geolocation, 'complete', onComplete=>{
+                            let postion={
+                                lng:onComplete.position.lng,
+                                lat:onComplete.position.lat
+                            };
+                            let text = {
+                                title:'我',
+                                sub:'我'
+                            };
+                            self.addSimpleMarker(postion,text,map);
+                        });//返回定位信息
+                        AMap.event.addListener(geolocation, 'error', onError=>{
+
+                        });//返回定位出错信息
+                    });
+                }
+                
             }
         }
     }
@@ -197,22 +231,26 @@
     .punch{
         height:auto;
         overflow:hidden;
-        .amap-demo{
-            height:75vh;
-        }
-        .toolbar{
-            .toolbar-address{
-                list-style-type:none;
-                margin:10px 0 0 0;
-                padding:0px 4px;
-                height:50px;
-                li{
-                    margin-left:10px;
-                    line-height:1.5rem;
-                    font-size:1.2rem;
-                    i{
-                        font-size:.8rem;
-                        color:nth($baseColor,3)
+        .amap{
+           height:95vh;
+            .amap-demo{
+               height:70%;
+            }
+            .toolbar{
+                height:30%;
+                .toolbar-address{
+                    list-style-type:none;
+                    margin:10px 0 0 0;
+                    padding:0px 4px;
+                    height:50px;
+                    li{
+                        margin-left:10px;
+                        line-height:1.5rem;
+                        font-size:1.2rem;
+                        i{
+                            font-size:.8rem;
+                            color:nth($baseColor,3)
+                        }
                     }
                 }
             }

@@ -18,39 +18,6 @@
         </div>
     </div>
 </template>
-<style lang="scss" scoped>
-   @import "../assets/style/base";
-    .feedback-content{
-        text-align:center;
-        textarea,input{
-            width:95vw;
-            font-size:1.5rem;
-            color:lighten(nth($baseColor,2),60%);
-            &::placeholder{
-                font-size:1.2rem;
-            }
-        }
-        textarea{
-            margin-top:1.2rem;
-            height:120px;
-        }
-        .feedback-photo{
-            width:25vw;
-            height:auto;
-            background-color:lighten(nth($baseColor,2),60%);
-            padding:6px 0;
-            margin-left:12px;
-            color:nth($baseColor,1);
-            text-align:center;
-            i{
-                display:block;
-            }
-            img{
-                width:25vw;
-            }
-        }
-    }
-</style>
 <script>
     import vHead from '@/components/header.vue'
 
@@ -179,13 +146,39 @@
                     filter: "image"
                 });
             },
-        },
-        mounted(){
-            const gallery = document.querySelector('.feedback'),
-                header = document.querySelector('header');
-            if (header && gallery) {
-                gallery.style.marginTop = header.clientHeight + "px";
-            }
         }
     }
 </script>
+<style lang="scss" scoped>
+   @import "../assets/style/base";
+    .feedback-content{
+        text-align:center;
+        textarea,input{
+            width:95vw;
+            font-size:1.2rem;
+            color:lighten(nth($baseColor,2),60%);
+            &::placeholder{
+                font-size:1.2rem;
+            }
+        }
+        textarea{
+            margin-top:1.2rem;
+            height:120px;
+        }
+        .feedback-photo{
+            width:25vw;
+            height:auto;
+            background-color:lighten(nth($baseColor,2),60%);
+            padding:6px 0;
+            margin-left:12px;
+            color:nth($baseColor,1);
+            text-align:center;
+            i{
+                display:block;
+            }
+            img{
+                width:25vw;
+            }
+        }
+    }
+</style>

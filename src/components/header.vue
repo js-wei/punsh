@@ -31,15 +31,15 @@
         color:nth($baseColor,1);
         .mui-title{
             color:nth($baseColor,1);
-            font-size:2.2rem;
+            font-size:2rem;
         }
         .mui-icon{
-            font-size:4rem;
+            font-size:3rem;
             position:relative;
-            top: -8px;
+            top: -4px;
         }
         .mui-icon.mui-icon-extra{
-            font-size:1.8rem;
+            font-size:1.5rem;
             margin-top:.3rem;
         }
         button{
@@ -47,12 +47,12 @@
             background-color:nth($baseColor,3);
             border-color: nth($baseColor,3);
             color:nth($baseColor,1);
-            font-size:1.8rem;
+            font-size:1.5rem;
         }
     }
     .mui-bar{
-         -webkit-box-shadow:none;
-         box-shadow:none;
+        -webkit-box-shadow:none;
+        box-shadow:none;
     }
 </style>
 <script>

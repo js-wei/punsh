@@ -1,7 +1,7 @@
 <template>
 	<div class="safe">
 		<v-head :title="title"></v-head>
-		<div class="mui-content">
+		<div class="mui-content1">
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
 					<router-link to="phone" class="mui-navigate-right">
@@ -63,8 +63,7 @@
 <style lang="scss">
 	@import "../assets/style/base";
 	.safe{
-		.mui-content{
-			margin-top:10px;
+		.mui-content1{
 			background-color: nth($baseColor,1);
 			.mui-table-view{
 				.mui-table-view-cell{
@@ -79,6 +78,7 @@
 				}
 			}
 		}
+		
 		/*
 		.toolbar{
 			width:100vw;

@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:24:18
  * Author: 魏巍
  * -----
- * Last Modified: '2018-03-02 7:22:34
+ * Last Modified: '2018-03-05 5:19:42
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -18,14 +18,16 @@ import {
 	SHOW_HEADER,
 	SHOW_FOOTER,
 	HIDE_HEADER,
-	HIDE_FOOTER
+	HIDE_FOOTER,
+	UPDATE_DIRECTION
 } from './mutation-type'
 
 const state={
 	loading:false,
 	logined:null,
 	header:true,
-	footer:true
+	footer:true,
+	navigater:null,
 };
 
 const mutations={
@@ -50,6 +52,9 @@ const mutations={
 	},
 	[HIDE_FOOTER](state){
 		state.footer = false
+	},
+	[UPDATE_DIRECTION](state,direction){
+		state.navigater = direction;
 	}
 };
 
