@@ -99,7 +99,8 @@
                             auto:false,
                             callback: self.pulldownRefresh
                         },
-                        up: {
+                        up: { 
+                            auto:false,
                             contentrefresh: '正在加载...',
                             callback: self.pullupRefresh
                         }

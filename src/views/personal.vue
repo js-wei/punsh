@@ -47,32 +47,37 @@
                 menu: [
                     {
                         title: '消息中心',
-                        href: 'message',
+                        href: '/message',
                         icon: 'fa-xiaoxi'
                     },
                     {
                         title: '签到记录',
-                        href: 'push',
+                        href: '/push',
                         icon: 'fa-qiandao-kaoqindaqia'
                     },
                     {
                         title: '请假记录',
-                        href: 'leave',
+                        href: '/leave',
                         icon: 'fa-qingjia'
                     },
                     {
                         title: '安全设置',
-                        href: 'safe',
+                        href: '/safe',
                         icon: 'fa-anquanbaozhang'
                     },
                     {
                         title: '意见反馈',
-                        href: 'feedback',
+                        href: '/feedback',
                         icon: 'fa-yijianfankui'
                     },
                     {
                         title: '系统设置',
-                        href: 'setting',
+                        href: '/setting',
+                        icon: 'fa-xitongshezhi'
+                    },
+                    {
+                        title: '下拉刷新',
+                        href: '/pullrefresh1',
                         icon: 'fa-xitongshezhi'
                     }
                 ]

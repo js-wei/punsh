@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-05 4:54:46
+ * Modified By: 2018-03-06 2:38:24
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -21,12 +21,12 @@
                     <a>{{v.text}}</a>
                 </li>
             </ul>
-            <div class="mui-content mui-scroll-wrapper" id="pullrefresh">
+            <!-- <div class="mui-content mui-scroll-wrapper" id="pullrefresh">
                 <div class="mui-scroll">
-                    <ul class="mui-table-view">
+                    <ul class="mui-table-view mui-table-view-chevron">
                         <li class="mui-table-view-cell mui-media" v-for="(item,index) in messages" 
                             :key="index">
-                            <a>    <!-- class='mui-navigate-right' -->
+                            <a> 
                               <p>
                                   日期:{{item.date}} 签到:{{item.punsh}}
                                   <span class="mui-pull-right">
@@ -41,6 +41,37 @@
                         </li>
                     </ul>
                 </div>
+            </div> -->
+
+            <div class="wrapper mui-scroll-wrapper" ref="wrapper" 
+              style="height:165px;background:yellow;"
+              @touchstart="touchStart($event)"
+              @touchMove="touchMove($event)">
+              <ul class="content mui-table-view mui-table-view-chevron">
+                  <li class="mui-table-view-cell mui-media" v-for="(item,index) in messages" 
+                      :key="index">
+                      <a> 
+                        <p>
+                            日期:{{item.date}} 签到:{{item.punsh}}
+                            <span class="mui-pull-right">
+                                <span v-if="item.type==2" class="mui-btn-success">正点</span>
+                                <span v-if="item.type==3" class="mui-btn-primary">迟到</span>
+                                <span v-if="item.type==4" class="mui-btn-warning">早退</span>
+                                <span v-if="item.type==5" class="mui-btn-btn-danger">旷工</span>
+                            </span>
+                        </p>
+                        <p>{{item.content}}</p>  
+                      </a>
+                  </li>
+              </ul>
+              <!-- 这里可以放一些其它的 DOM，但不会影响滚动 -->
+              <div class="wrapper-loader" v-if="isPullRefresh">
+                <header class="pull-refresh">
+                  <div class="down-tip" v-if="isPullStart">下拉更新</div>
+                  <div class="up-tip" v-if="isLoadData">松开刷新数据</div>
+                  <div class="refresh-tip" v-if="isLoading">加载中……</div>
+                </header>
+              </div>
             </div>
         </div>
     </div>
@@ -48,11 +79,18 @@
 
 <script>
 import vHead from "@/components/header";
+import BScroll from "better-scroll";
 export default {
   data() {
     return {
       title: "签到记录",
       current: 1,
+      isPullRefresh: false,
+      isPullStart: false,
+      isLoadData: false,
+      isLoading: false,
+      startX: 0,
+      startY: 0,
       pushType: [
         {
           id: 1,
@@ -111,81 +149,55 @@ export default {
   },
   methods: {
     changeType(id) {
-      console.log(id);
       this.current = id;
     },
-    getDataList() {
-      let self = this;
-      mui.ajax({
-        type: "get",
-        url: `http://api.jswei.cn/api/punsh&p=${self.page}&type=${
-          self.current
-        }`,
-        success(data) {
-          let json = JSON.parse(data).result.data;
-          self.messages = self.messages.concat(json); // 合并并且返回一个新数组
-          self.page += 1;
-          self.count += 5;
-          mui("#pullrefresh")
-            .pullRefresh()
-            .endPullupToRefresh(self.count >= 1000);
-        }
-      });
-    },
-    getLastData() {
-      let self = this;
-      mui.ajax({
-        type: "get",
-        url: `http://api.jswei.cn/api/punsh&p=1`,
-        success(data) {
-          let json = JSON.parse(data).result.data;
-          self.messages = self.messages.concat(json); // 合并并且返回一个新数组
-          self.page = 1;
-          self.count = 5;
-          mui("#pullrefresh")
-            .pullRefresh()
-            .endPullupToRefresh(self.count >= 1000);
-        }
-      });
-    },
-    pulldownRefresh() {
-      this.getLastData();
-      setTimeout(() => {
-        mui("#pullrefresh")
-          .pullRefresh()
-          .endPulldownToRefresh();
-      }, 1500);
-    },
-    pullupRefresh() {
-      this.getDataList();
-      setTimeout(() => {
-        mui("#pullrefresh")
-          .pullRefresh()
-          .endPullupToRefresh();
-      }, 1500);
+    touchStart(e) {
+      // this.startY = e.targetTouches[0].pageY;
+      // this.startX = e.targetTouches[0].pageX;
+      // this.startScroll = this.$refs.wrapper.scrollTop || 0;
+      // this.isPullRefresh = true;
+      // if (this.startY > 100) {
+      //   this.isPullStart = true;
+      //   this.isLoadData = true;
+      // }
+      // if (this.startY > 120) {
+      //   this.isLoadData = true;
+      //   this.isPullStart = false;
+      // }
     }
   },
-  created() {
+  mounted() {
     let self = this;
-    mui.ready(function() {
-      mui.init({
-        pullRefresh: {
-          container: "#pullrefresh",
-          down: {
-            auto: false,
-            callback: self.pulldownRefresh
-          },
-          up: {
-            contentrefresh: "正在加载...",
-            callback: self.pullupRefresh
-          }
-        }
+    self.$nextTick(() => {
+      self.scroll = new BScroll(".wrapper", {
+        click: true,
+        scrollY: true,
+        pullUpLoad: {
+          threshold: -50 // 负值是当上拉到超过低部 70px；正值是距离底部距离 时，
+        },
       });
-      //self.getDataList();
-    });
-    mui(".mui-scroll-wrapper").scroll({
-      deceleration: 0.1, //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值 0.0006
-      indicators: false //隐藏一条滚动条 增大减速系数。。。
+      self.scroll.on("pullingDown", pos => {
+        self.isPullRefresh=true;
+        self.isPullRefresh=true;
+        setTimeout(function () {  
+          
+        }, 1000);  
+        this.$nextTick(function() {
+          this.scroll.finishPullUp();
+          this.scroll.refresh();
+        });
+      });
+      self.scroll.on("pullingUp", pos => {
+        self.isPullRefresh=true;
+        self.isPullRefresh=true;
+        setTimeout(function () {  
+          
+        }, 1000);  
+        this.$nextTick(function() {
+          this.scroll.finishPullUp();
+          this.scroll.refresh();
+        });
+      });
     });
   }
 };
@@ -216,6 +228,30 @@ export default {
     }
     .mui-scroll-wrapper {
       top: 80px;
+      position: absolute;
+      .mui-table-view-chevron {
+        .mui-table-view-cell {
+          padding-right: 40px;
+        }
+      }
+      .wrapper-loader {
+        position: absolute;
+        top: -0.5rem;
+        width: 100%;
+        height: auto;
+        transition-duration: 300ms;
+        .pull-refresh {
+          position: relative;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 5rem;
+          display: flex;
+          display: -webkit-flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
     }
   }
 }

@@ -1,8 +1,7 @@
 <template>
   <div id="app">
-    <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive>
-        <router-view class="router"/>
-    </transition>
+    <!-- <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive></transition> -->
+     <router-view class="router"/>
     <v-footer :menu="menu" v-if="isFootershow" v-cloak></v-footer>
   </div>
 </template>
@@ -65,6 +64,7 @@ export default {
   watch: {
     '$route'(newValue, oldValue) {
       this.isFootershow = newValue.name!='punch' || false;
+      mui('.mui-scroll-wrapper').scroll();
     }
   },
 }
