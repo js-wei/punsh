@@ -6,6 +6,9 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+import VueScroller from 'vue-scroller'
+Vue.use(VueScroller)
+
 //font-icon
 import 'vue-awesome-for-toolbar/icons'
 import Icon from 'vue-awesome-for-toolbar/components/Icon.vue'

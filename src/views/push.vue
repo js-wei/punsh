@@ -21,35 +21,13 @@
                     <a>{{v.text}}</a>
                 </li>
             </ul>
-            <!-- <div class="mui-content mui-scroll-wrapper" id="pullrefresh">
-                <div class="mui-scroll">
-                    <ul class="mui-table-view mui-table-view-chevron">
-                        <li class="mui-table-view-cell mui-media" v-for="(item,index) in messages" 
-                            :key="index">
-                            <a> 
-                              <p>
-                                  日期:{{item.date}} 签到:{{item.punsh}}
-                                  <span class="mui-pull-right">
-                                      <span v-if="item.type==2" class="mui-btn-success">正点</span>
-                                      <span v-if="item.type==3" class="mui-btn-primary">迟到</span>
-                                      <span v-if="item.type==4" class="mui-btn-warning">早退</span>
-                                      <span v-if="item.type==5" class="mui-btn-btn-danger">旷工</span>
-                                  </span>
-                              </p>
-                              <p>{{item.content}}</p>  
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div> -->
-
-            <div class="wrapper mui-scroll-wrapper" ref="wrapper" 
-              style="height:165px;background:yellow;"
-              @touchstart="touchStart($event)"
-              @touchMove="touchMove($event)">
-              <ul class="content mui-table-view mui-table-view-chevron">
-                  <li class="mui-table-view-cell mui-media" v-for="(item,index) in messages" 
-                      :key="index">
+            <scroller :on-refresh="refresh" :on-infinite="infinite" 
+              height="90%" ref="my_scroller" style="padding-top:80px;" >
+               <!-- custom refresh spinner, use default `spinner` & viewBox 0,0,64,64 class -->
+                <svg class="spinner" style="stroke: #4b8bf4;" slot="refresh-spinner" viewBox="0 0 64 64">
+                  <g stroke-width="7" stroke-linecap="round"><line x1="10" x2="10" y1="27.3836" y2="36.4931"><animate attributeName="y1" dur="750ms" values="16;18;28;18;16;16" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="48;46;36;44;48;48" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values="1;.4;.5;.8;1;1" repeatCount="indefinite"></animate></line><line x1="24" x2="24" y1="18.6164" y2="45.3836"><animate attributeName="y1" dur="750ms" values="16;16;18;28;18;16" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="48;48;46;36;44;48" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values="1;1;.4;.5;.8;1" repeatCount="indefinite"></animate></line><line x1="38" x2="38" y1="16.1233" y2="47.8767"><animate attributeName="y1" dur="750ms" values="18;16;16;18;28;18" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="44;48;48;46;36;44" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values=".8;1;1;.4;.5;.8" repeatCount="indefinite"></animate></line><line x1="52" x2="52" y1="16" y2="48"><animate attributeName="y1" dur="750ms" values="28;18;16;16;18;28" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="36;44;48;48;46;36" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values=".5;.8;1;1;.4;.5" repeatCount="indefinite"></animate></line></g></svg>
+                <ul class="content mui-table-view mui-table-view-chevron">
+                  <li class="mui-table-view-cell mui-media" v-for="(item,index) in messages" :key="index">
                       <a> 
                         <p>
                             日期:{{item.date}} 签到:{{item.punsh}}
@@ -64,15 +42,10 @@
                       </a>
                   </li>
               </ul>
-              <!-- 这里可以放一些其它的 DOM，但不会影响滚动 -->
-              <div class="wrapper-loader" v-if="isPullRefresh">
-                <header class="pull-refresh">
-                  <div class="down-tip" v-if="isPullStart">下拉更新</div>
-                  <div class="up-tip" v-if="isLoadData">松开刷新数据</div>
-                  <div class="refresh-tip" v-if="isLoading">加载中……</div>
-                </header>
-              </div>
-            </div>
+              <!-- custom infinite spinner -->
+              <svg class="spinner" style="fill: #ec4949;" slot="infinite-spinner" viewBox="0 0 64 64">
+                <g><circle cx="16" cy="32" stroke-width="0" r="3"><animate attributeName="fill-opacity" dur="750ms" values=".5;.6;.8;1;.8;.6;.5;.5" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="3;3;4;5;6;5;4;3" repeatCount="indefinite"></animate></circle><circle cx="32" cy="32" stroke-width="0" r="3.09351"><animate attributeName="fill-opacity" dur="750ms" values=".5;.5;.6;.8;1;.8;.6;.5" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="4;3;3;4;5;6;5;4" repeatCount="indefinite"></animate></circle><circle cx="48" cy="32" stroke-width="0" r="4.09351"><animate attributeName="fill-opacity" dur="750ms" values=".6;.5;.5;.6;.8;1;.8;.6" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="5;4;3;3;4;5;6;5" repeatCount="indefinite"></animate></circle></g></svg>
+            </scroller>
         </div>
     </div>
 </template>
@@ -85,12 +58,6 @@ export default {
     return {
       title: "签到记录",
       current: 1,
-      isPullRefresh: false,
-      isPullStart: false,
-      isLoadData: false,
-      isLoading: false,
-      startX: 0,
-      startY: 0,
       pushType: [
         {
           id: 1,
@@ -140,6 +107,78 @@ export default {
           type: 3,
           later: 10,
           punsh: "08:25:54"
+        },
+        {
+          id: 3,
+          date: "2018-03-05",
+          title: "迟到签到",
+          content: "您迟到了10分钟",
+          type: 3,
+          later: 10,
+          punsh: "08:25:54"
+        },
+        {
+          id: 3,
+          date: "2018-03-05",
+          title: "迟到签到",
+          content: "您迟到了10分钟",
+          type: 3,
+          later: 10,
+          punsh: "08:25:54"
+        },
+        {
+          id: 3,
+          date: "2018-03-05",
+          title: "迟到签到",
+          content: "您迟到了10分钟",
+          type: 3,
+          later: 10,
+          punsh: "08:25:54"
+        },
+        {
+          id: 3,
+          date: "2018-03-05",
+          title: "迟到签到",
+          content: "您迟到了10分钟",
+          type: 3,
+          later: 10,
+          punsh: "08:25:54"
+        },
+        {
+          id: 3,
+          date: "2018-03-05",
+          title: "迟到签到",
+          content: "您迟到了10分钟",
+          type: 3,
+          later: 10,
+          punsh: "08:25:54"
+        },
+        {
+          id: 3,
+          date: "2018-03-05",
+          title: "迟到签到",
+          content: "您迟到了10分钟",
+          type: 3,
+          later: 10,
+          punsh: "08:25:54"
+        },
+        {
+          id: 3,
+          date: "2018-03-05",
+          title: "迟到签到",
+          content: "您迟到了10分钟",
+          type: 3,
+          later: 10,
+          punsh: "08:25:54"
+        },
+        {
+          id: 3,
+          date: "2018-03-05",
+          title: "迟到签到",
+          content: "您迟到了10分钟",
+          type: 3,
+          later: 10,
+          punsh: "08:25:54"
         }
       ]
     };
@@ -151,54 +190,22 @@ export default {
     changeType(id) {
       this.current = id;
     },
-    touchStart(e) {
-      // this.startY = e.targetTouches[0].pageY;
-      // this.startX = e.targetTouches[0].pageX;
-      // this.startScroll = this.$refs.wrapper.scrollTop || 0;
-      // this.isPullRefresh = true;
-      // if (this.startY > 100) {
-      //   this.isPullStart = true;
-      //   this.isLoadData = true;
-      // }
-      // if (this.startY > 120) {
-      //   this.isLoadData = true;
-      //   this.isPullStart = false;
-      // }
+    refresh(done) {
+      setTimeout(() => {
+        done();
+      }, 1500);
+    },
+    infinite(done) {
+      setTimeout(() => {
+        done(true);
+      }, 1500);
+    },
+    onItemClick(index, item) {
+      console.log(index);
     }
   },
   mounted() {
-    let self = this;
-    self.$nextTick(() => {
-      self.scroll = new BScroll(".wrapper", {
-        click: true,
-        scrollY: true,
-        pullUpLoad: {
-          threshold: -50 // 负值是当上拉到超过低部 70px；正值是距离底部距离 时，
-        },
-      });
-      self.scroll.on("pullingDown", pos => {
-        self.isPullRefresh=true;
-        self.isPullRefresh=true;
-        setTimeout(function () {  
-          
-        }, 1000);  
-        this.$nextTick(function() {
-          this.scroll.finishPullUp();
-          this.scroll.refresh();
-        });
-      });
-      self.scroll.on("pullingUp", pos => {
-        self.isPullRefresh=true;
-        self.isPullRefresh=true;
-        setTimeout(function () {  
-          
-        }, 1000);  
-        this.$nextTick(function() {
-          this.scroll.finishPullUp();
-          this.scroll.refresh();
-        });
-      });
-    });
+    //console.log(this.messages.length);
   }
 };
 </script>
@@ -211,11 +218,19 @@ export default {
       padding: 0;
       list-style-type: none;
       width: 90%;
-      margin: 10px auto;
+      margin: 0px auto;
+      position: fixed;
+      height: 36px;
+      width: 100%;
+      box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      z-index: 1000;
+      color: #666;
       li {
         width: 20%;
         float: left;
         text-align: center;
+        line-height: 44px;
         a {
           color: lighten(nth($baseColor, 2), 40%);
         }
@@ -226,32 +241,10 @@ export default {
         }
       }
     }
-    .mui-scroll-wrapper {
-      top: 80px;
-      position: absolute;
-      .mui-table-view-chevron {
-        .mui-table-view-cell {
-          padding-right: 40px;
-        }
-      }
-      .wrapper-loader {
-        position: absolute;
-        top: -0.5rem;
-        width: 100%;
-        height: auto;
-        transition-duration: 300ms;
-        .pull-refresh {
-          position: relative;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 5rem;
-          display: flex;
-          display: -webkit-flex;
-          align-items: center;
-          justify-content: center;
-        }
-      }
+  }
+  .mui-table-view-chevron {
+    .mui-table-view-cell {
+      padding-right: 38px;
     }
   }
 }

@@ -8,12 +8,13 @@
  */
 
 
-import {is_formart_date,sub_string,is_default,is_mobile_safe,formart_date} from './format';
+import {is_formart_date,sub_string,is_default,is_mobile_safe,formart_date,time_ago} from './format';
 
 export default {
 	is_formart_date,
 	sub_string,
 	is_default,
 	is_mobile_safe,
-	formart_date
+	formart_date,
+	time_ago
 };

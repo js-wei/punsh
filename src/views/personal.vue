@@ -74,11 +74,6 @@
                         title: '系统设置',
                         href: '/setting',
                         icon: 'fa-xitongshezhi'
-                    },
-                    {
-                        title: '下拉刷新',
-                        href: '/pullrefresh1',
-                        icon: 'fa-xitongshezhi'
                     }
                 ]
             }

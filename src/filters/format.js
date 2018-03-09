@@ -103,3 +103,51 @@ export const is_mobile_safe=(tel)=>{
 	}
 	return '';
 }
+
+/**
+ * 获取服务器地址
+ * @param {string} url 地址
+ */
+export function host (url) {
+	const host = url.replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+	const parts = host.split('.').slice(-3)
+	if (parts[0] === 'www') parts.shift()
+	return parts.join('.')
+}
+/**
+ * 获取距离发布时间
+ * @param {int} time 时间戳
+ */
+export function time_ago (time,t='zh') {
+	const between = Date.now() / 1000 - Number(time)
+	let lang = {
+		zh:[
+			'分钟',
+			'小时',
+			'天'
+		],
+		en:[
+			'minute',
+			'hour',
+			'day'
+		]
+	};
+	
+	if (between < 3600) {
+		return pluralize(~~(between / 60),lang[t][0],t)
+	} else if (between < 86400) {
+		return pluralize(~~(between / 3600),lang[t][1],t)
+	} else {
+		return pluralize(~~(between / 86400),lang[t][2],t)
+	}
+}
+
+function pluralize (time, label,t) {
+	if(t=='zh'){
+		return time + label
+	}
+	if (time === 1) {
+		return time + label
+	}
+	return time + label + 's'
+}

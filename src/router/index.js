@@ -17,8 +17,10 @@ import MessageDetails from '@/views/message_details'
 import Push from '@/views/push'
 import Leave from '@/views/leave'
 import GetLeave from '@/views/get_leave'
-import PullRefresh from '@/views/pullrefresh'
-import PullRefresh1 from '@/views/pullrefresh1'
+import ApplyFor from '@/views/applyfor'
+
+
+
 Vue.use(Router)
 
 export default new Router({
@@ -117,18 +119,16 @@ export default new Router({
       meta:{requiresAuth: true}
     },
     {
-      path:'/get_leave',
-      name:'get_leave',
-      component:GetLeave,
+      path:'/applyfor',
+      name:'applyfor',
+      component:ApplyFor,
       meta:{requiresAuth: true}
     },
     {
-      path:'/pullrefresh',
-      component:PullRefresh
-    },
-    {
-      path:'/pullrefresh1',
-      component:PullRefresh1
+      path:'/leave_detail/:id',
+      name:'leave_detail',
+      component:GetLeave,
+      meta:{requiresAuth: true}
     },
     {
       path: '/',

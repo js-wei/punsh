@@ -1,10 +1,10 @@
 /**
- * File: g:\vue\office\src\views\message_details.vue
- * Created Date: 2018-03-04 4:14:32
+ * File: d:\works\punsh\src\views\get_leave.vue
+ * Created Date: 2018-03-05 5:33:53
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-04 4:28:55
+ * Modified By: 2018-03-05 5:40:50
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -13,29 +13,74 @@
  */
 
 <template>
-    <div class="message_details">
-        <v-head :title="title"></v-head>
+    <div>
+        <v-head :title="title">
+            <!-- <div slot="header-right">
+                <button type="button" class="upload">提交</button>
+            </div> -->
+        </v-head>
+        <div class="mui-content">
+            <div class="mui-card">
+                <!--页眉，放置标题-->
+                <div class="mui-card-header mui-card-media">
+                    <img src="../assets/logo.png" />
+                    <div class="mui-media-body">
+                        {{article.title}}
+                        <p>发布人 {{article.author}}</p>
+                        <p>发布日期 {{article.date}}</p>
+                    </div>
+                </div>
+                <!--内容区-->
+                <div class="mui-card-content">
+                    <span v-html="article.content"></span>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-    import vHead from '@/components/header'
+    import vHead from "@/components/header";
     export default {
         data() {
             return {
+                title: '查看消息',
                 id:this.$route.params.id,
-                title:'查看消息'
+                article:{
+                    title:'关于清明节3天假期的放假通知',
+                    date:'2018-03-14 08:30',
+                    author:'人事部',
+                    content:`<p>根据国家规定公司决定在3月8,9,10三天进行放假,请给我同事互相转告</p>`
+                }
             }
         },
-        components:{
-            vHead
+        components: {
+            vHead,
         },
         created(){
-           console.log(this.id);
+            console.log(this.id);
         }
     }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+    @import '../assets/style/base';
+    .mui-content{
+        background-color: nth($baseColor,1);
+        .mui-card{
+            margin-top:20px;
+            .mui-card-header{
+                img{
+                    border:1px solid lighten(nth($baseColor,2),70%);
+                    padding:5px 2px;
+                    border-radius:50%;
+                }
+            }
+            .mui-card-content{
+                padding:5px 10px;
+                text-indent:2em;
+                min-height:120px;
+            }
+        }
+    }
 </style>
