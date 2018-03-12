@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive></transition> -->
-     <router-view class="router"/>
+     <router-view class="router" ref="router"/>
     <v-footer :menu="menu" v-if="isFootershow" v-cloak></v-footer>
   </div>
 </template>
@@ -56,6 +56,24 @@ export default {
   components: {
     vFooter
   },
+  methods: {
+    _addTouchEvents() {
+      document
+        .querySelector("._v-content")
+        .addEventListener("touchstart", e => {
+          document.querySelector(
+            ".pull-to-refresh-layer"
+          ).style.backgroundImage =
+            "url('http://7xvgyf.com1.z0.glb.clouddn.com/2018031214175824091meeting.png?imageMogr2/quality/90/thumbnail/127x45!')";
+          document.querySelector(".spinner-holder").style.display = "none";
+        });
+      document.querySelector("._v-content").addEventListener("touchend", e => {
+        document.querySelector(".pull-to-refresh-layer").style.backgroundImage =
+          "none";
+        document.querySelector(".spinner-holder").style.display = "block";
+      });
+    }
+  },
   mounted() {
     mui.plusReady(function() {
       plus.navigator.setStatusBarBackground("#eb7d46");
@@ -64,6 +82,7 @@ export default {
   watch: {
     $route(newValue, oldValue) {
       this.isFootershow = newValue.name != "punch" || false;
+      
     }
   }
 };
@@ -81,13 +100,14 @@ html {
   .mui-scroll-wrapper {
   overflow: auto;
 }
-.mui-bar-nav~.mui-content{
-  padding-top:0;
+.mui-bar-nav ~ .mui-content {
+  padding-top: 0;
 }
 </style>
 <style scoped>
 .router {
   padding-top: 42px;
+  height: 90%;
 }
 .vux-pop-out-enter-active,
 .vux-pop-out-leave-active,
@@ -120,7 +140,7 @@ html {
 </style>
 
 <style lang="scss">
-body{
+body {
   margin: 0;
   padding: 0;
   background-color: #fff;
@@ -178,6 +198,28 @@ span.mint-cell-text {
   background: none;
   border-bottom: 1px solid #f2f2f2;
 }
+// .my-scroller {
+//   .pull-to-refresh-layer {
+//     margin-top: -20px !important;
+//     //background-image: url('../assets/meeting.png');
+//     background-repeat: no-repeat;
+//     background-position: center;
+//     background-size: 140px 40px;
+//     opacity: 0;
+//     -webkit-transform: scale(1);
+//     transform: scale(1);
+//     transition: all 0.15s linear;
+//     -webkit-transition: all 0.15s linear;
+//     .spinner-holder {
+//       display: none;
+//     }
+//     &.active {
+//       -webkit-transform: scale(1.35);
+//       transform: scale(1.35);
+//       opacity: 1;
+//     }
+//   }
+// }
 @media screen and (min-width: 768px) and (max-width: 1024px) {
   html {
     font-size: 120%;

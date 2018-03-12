@@ -93,7 +93,7 @@
     @import "../assets/style/base";
     .personal{
         width:100vw;
-        height:100vh;
+        height:auto;
         .personal-title{
             height:auto;
             padding-bottom:10px;

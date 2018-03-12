@@ -28,38 +28,38 @@
     </div>
 </template>
 <script>
-    export default {
-        props:{
-          slider:Object
-        },
-        mounted() {
-            mui('#mySlider').slider({
-                interval:this.slider.timer || 5e3
-            });
-        }
-    }
+export default {
+  props: {
+    slider: Object
+  },
+  mounted() {
+    mui("#mySlider").slider({
+      interval: this.slider.timer || 4e3
+    });
+  }
+};
 </script>
 <style lang="scss" scoped>
-    @import "../assets/style/base";
-    .mui-slider{
-        .mui-slider-group{
-            .mui-slider-item{
-                a{
-                    img{
-                        height:230px;
-                        width:100%;
-                    }
-                    p.mui-slider-title{
-                        color:nth($baseColor,1);
-                        font-size:1.5rem;
-                    }
-                }
-            }
+@import "../assets/style/base";
+.mui-slider {
+  .mui-slider-group {
+    .mui-slider-item {
+      a {
+        img {
+          height: 230px;
+          width: 100%;
         }
-        .mui-slider-indicator{
-            width:auto;
-            right:10px;
-            bottom:.3rem;
+        p.mui-slider-title {
+          color: nth($baseColor, 1);
+          font-size: 1.5rem;
         }
+      }
     }
+  }
+  .mui-slider-indicator {
+    width: auto;
+    right: 10px;
+    bottom: 0.3rem;
+  }
+}
 </style>

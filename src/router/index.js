@@ -18,8 +18,7 @@ import Push from '@/views/push'
 import Leave from '@/views/leave'
 import GetLeave from '@/views/get_leave'
 import ApplyFor from '@/views/applyfor'
-
-
+import PushDetails from '@/views/push_details'
 
 Vue.use(Router)
 
@@ -128,6 +127,12 @@ export default new Router({
       path:'/leave_detail/:id',
       name:'leave_detail',
       component:GetLeave,
+      meta:{requiresAuth: true}
+    },
+    {
+      path:'/push_details/:id',
+      name:'push_details',
+      component:PushDetails,
       meta:{requiresAuth: true}
     },
     {
