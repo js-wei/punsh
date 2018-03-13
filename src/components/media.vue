@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-12 11:00:09
+ * Modified By: 2018-03-13 9:33:05
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -36,20 +36,39 @@
 <script>
 export default {
   props: {
-      mediaList: {
-          type: Array,
-          default: []
-      },
+    mediaList: {
+      type: Array,
+      default: []
+    }
   },
-  methods: {
-   
-  }
+  methods: {}
 };
 </script>
 
 <style lang="scss" scoped>
-    @import '../assets/style/base';
-    .media{
-        padding-top:5px;
+@import "../assets/style/base";
+.media {
+  padding-top: 0px;
+  .mui-table-view {
+    .mui-table-view-cell {
+      a {
+        .mui-media-object {
+            max-width: 80px;
+            width: 80px;
+            height:80px;
+        }
+        .mui-media-body {
+          padding:0 4px;
+          font-weight: normal;
+          white-space: normal;
+          font-size:1.5rem;
+          p{
+              padding:1px 0;
+              font-size:1.2rem;
+          }
+        }
+      }
     }
+  }
+}
 </style>

@@ -10,6 +10,13 @@
                     </div>
                 </li> -->
                 <li class="mui-table-view-cell1">
+                    提醒打卡
+                    <span class="text-tips">在打卡正点前15分钟提示</span>
+                    <div class="mui-switch mui-switch-mini mui-active" id="tellSwitch">
+                        <div class="mui-switch-handle"></div>
+                    </div>
+                </li>
+                <li class="mui-table-view-cell1">
                     迟到通知
                     <div class="mui-switch mui-switch-mini mui-active" id="laterSwitch">
                         <div class="mui-switch-handle"></div>
@@ -55,7 +62,8 @@ export default {
         wifi: false,
         news: false,
         later: false,
-        punch: false
+        punch: false,
+        tell_punsh: false
       },
       modal: {
         show: false,
@@ -74,9 +82,10 @@ export default {
   },
   methods: {
     yes(e) {
-      //   mui.plusReady(() => {
-      //     plus.runtime.quit();
-      //   });
+      mui.plusReady(() => {
+        localStorage.removeItem('logined');
+        plus.runtime.quit();
+      });
     },
     no(e) {},
     logout() {
@@ -87,13 +96,21 @@ export default {
   mounted() {
     mui(".mui-switch")["switch"]();
     /*
-            //WIFI提醒
-            document.getElementById("wifiSwitch").addEventListener('toggle',(e)=>{
-                e.preventDefault();
-                let isActive = e.detail.isActive;
-                this.notify.wifi=isActive;
-                console.log('WIFI提醒',isActive);
-            });*/
+    //WIFI提醒
+    document.getElementById("wifiSwitch").addEventListener('toggle',(e)=>{
+        e.preventDefault();
+        let isActive = e.detail.isActive;
+        this.notify.wifi=isActive;
+        console.log('WIFI提醒',isActive);
+    });*/
+
+    //提醒打卡
+    document.getElementById("tellSwitch").addEventListener("toggle", e => {
+      e.preventDefault();
+      let isActive = e.detail.isActive;
+      this.notify.tell_punsh = isActive;
+      console.log("打卡提醒", isActive);
+    });
     //迟到通知
     document.getElementById("laterSwitch").addEventListener("toggle", e => {
       e.preventDefault();
@@ -135,12 +152,12 @@ export default {
           font-size: 0.9rem;
           position: absolute;
           left: 0;
-          bottom: -18px;
-          color: wheat;
+          bottom: -20px;
+          color: nth($baseColor, 3);
         }
         .mui-switch {
           float: right;
-          margin-top: 10px;
+          margin-top: 15px;
         }
       }
     }

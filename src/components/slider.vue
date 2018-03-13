@@ -46,12 +46,14 @@ export default {
     .mui-slider-item {
       a {
         img {
-          height: 230px;
+          height: 220px;
           width: 100%;
         }
         p.mui-slider-title {
           color: nth($baseColor, 1);
           font-size: 1.5rem;
+          position: absolute;
+          left:0;
         }
       }
     }
@@ -60,6 +62,10 @@ export default {
     width: auto;
     right: 10px;
     bottom: 0.3rem;
+    .mui-indicator{
+      width:20px;
+      border-radius:25%;
+    }
   }
 }
 </style>

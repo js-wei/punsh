@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:28:03
  * Author: 魏巍
  * -----
- * Last Modified: '2018-03-05 1:36:14
+ * Last Modified: '2018-03-13 11:59:08
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -19,3 +19,4 @@ export const SHOW_FOOTER='SHOW_FOOTER';
 export const HIDE_HEADER='HIDE_HEADER';
 export const HIDE_FOOTER='HIDE_FOOTER';
 export const UPDATE_DIRECTION='UPDATE_DIRECTION';
+export const UPDATE_SITE_CONFIG = 'UPDATE_SITE_CONFIG';

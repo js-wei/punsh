@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "better-scroll": "^1.8.4",
+    "crypto": "^1.0.1",
     "qrcanvas-vue": "^1.1.0",
     "vue": "^2.5.2",
     "vue-amap": "^0.5.1",

@@ -20,7 +20,7 @@
                     </div>
                 </form>
                 <div class="mui-content-padded">
-                    <button id='sendVerify' class="mui-btn mui-btn-block mui-btn-primary" @click="get_code">获取验证码</button>
+                    <button id='sendVerify' class="mui-btn mui-btn-block mui-btn-primary" @click="get_code">{{showText}}</button>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                     <span class="mui-icon mui-icon-left-nav"></span>
                 </button>
                 <h1 class="mui-title">找回密码</h1>
-                <a class="mui-btn zak-header-item mui-btn-blue mui-btn-link mui-pull-right save" @click="save">保存</a>
+                <a class="mui-btn zak-header-item mui-btn-blue mui-btn-link mui-pull-right save" @click="save">重置</a>
             </div>
             <div class="mui-page-content">
                 <form class="mui-input-group" autocomplete="off">
@@ -49,95 +49,171 @@
     </div>
 </template>
 <script>
-    export default {
-        data(){
-            return {
-                step:1,
-                show:true,
-                phone:'',
-                code:'',
-                password:'',
-                confirm_password:''
-            };
-        },
-        methods: {
-            back(){
-                this.step=1;
-            },
-            get_code(){
-                if(!this.phone){
-                    mui.toast('请输入手机号');
-                    return;
-                }
-                if(!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)){
-                    mui.toast('请输入正确的手机号');
-                    return;
-                }
-            },
-            next_step(){
-                if(!this.phone){
-                    mui.toast('请输入手机号');
-                    return;
-                }
-                if(!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)){
-                    mui.toast('请输入正确的手机号');
-                    return;
-                }
-                if(!this.code){
-                    mui.toast('请输入验证码');
-                    return;
-                }
-                this.step=2;
-            },
-            save(){
-                if(this.password!=this.confirm_password){
-                    mui.toast('输入的密码不一致');
-                    return;
-                }
-                let data = {
-                    phone:this.phone,
-                    password:this.password,
-                    confirm_password:this.confirm_password
-                };
-                console.log(data)
+import crypto from "crypto";
+export default {
+  data() {
+    return {
+      step: 1,
+      show: true,
+      phone: "",
+      code: "",
+      password: "",
+      confirm_password: "",
+      showText: "获取验证码",
+      countdown: 60,
+      start_flag: true
+    };
+  },
+  methods: {
+    back() {
+      this.step = 1;
+    },
+    get_code() {
+      let self = this;
+      if (!this.phone) {
+        mui.toast("请输入手机号");
+        return;
+      }
+      if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
+        mui.toast("请输入正确的手机号");
+        return;
+      }
+      if (self.start_flag) {
+        self.settime();
+        self.axios
+          .get("/send_message", { params: { tel: self.phone } })
+          .then(res => {
+            if (res.status != 200) {
+              mui.toast("服务器繁忙");
+              return;
             }
-        }
+            let data = res.data;
+            if (!data.status) {
+              mui.toast(data.msg);
+              return;
+            }
+            mui.toast(data.msg);
+          });
+      }
+    },
+    settime() {
+      let self = this;
+      if (this.countdown == 0) {
+        this.start_flag = true;
+        this.showText = "获取验证码";
+        this.countdown = 60;
+      } else {
+        this.start_flag = false;
+        this.showText = this.countdown + "秒后重新发送";
+        this.countdown--;
+        setTimeout(function() {
+          self.settime();
+        }, 1000);
+      }
+    },
+    next_step() {
+      if (!this.phone) {
+        mui.toast("请输入手机号");
+        return;
+      }
+      if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
+        mui.toast("请输入正确的手机号");
+        return;
+      }
+      if (!this.code) {
+        mui.toast("请输入验证码");
+        return;
+      }
+      this.axios
+        .get("/check_code", { params: { verify: this.code } })
+        .then(res => {
+          if (res.status != 200) {
+            mui.toast("服务器繁忙");
+            return;
+          }
+          let data = res.data;
+          if (!data.status) {
+            mui.toast(data.msg);
+            return;
+          }
+          this.step = 2;
+        });
+    },
+    save() {
+      if (this.password != this.confirm_password) {
+        mui.toast("输入的密码不一致");
+        return;
+      }
+      let data = {
+        phone: this.phone,
+        password: this._md5(this.password),
+        confirm_password: this._md5(this.confirm_password)
+      };
+      this.axios
+        .post("/set_password",data)
+        .then(res => {
+          if (res.status != 200) {
+            mui.toast("服务器繁忙");
+            return;
+          }
+          let data = res.data;
+          if (!data.status) {
+            mui.toast(data.msg);
+            return;
+          }
+          mui.toast(data.msg);
+          setTimeout(()=>{
+            this.$route.push('/login');
+          },500)
+        });
+    },
+    _md5(str = "") {
+      if (!str) {
+        return;
+      }
+      var md5 = crypto.createHash("md5");
+      md5.update(str);
+      return md5.digest("hex");
     }
+  }
+};
 </script>
 <style lang="scss" scoped>
-   @import "../assets/style/base";
-    .forget{
-        padding-top:150px;
-        text-align:center;
-        img{
-            width:4rem;
-            padding-bottom:2rem;
-        }
-        .mui-page{
-            .mui-bar-nav{
-                background-color:nth($baseColor,3);
-                button,h1,a{
-                    color:nth($baseColor,1)
-                }
-            }
-            form:before,form:after{
-                background-color: #fff;
-            }
-            .mui-input-group{
-                width:90%;
-                margin:0 auto;
-                .mui-input-row{
-                    margin-top:1.2rem;
-                }
-            }
-            .mui-content-padded{
-                margin-top:3rem;
-            }
-            .mui-btn-primary{
-                background-color:nth($baseColor,3);
-                border-color: nth($baseColor,3);
-            }
-        }
-        
+@import "../assets/style/base";
+.forget {
+  padding-top: 150px;
+  text-align: center;
+  img {
+    width: 4rem;
+    padding-bottom: 2rem;
+  }
+  .mui-page {
+    .mui-bar-nav {
+      background-color: nth($baseColor, 3);
+      button,
+      h1,
+      a {
+        color: nth($baseColor, 1);
+      }
     }
+    form:before,
+    form:after {
+      background-color: #fff;
+    }
+    .mui-input-group {
+      width: 90%;
+      margin: 0 auto;
+      .mui-input-row {
+        margin-top: 1.2rem;
+      }
+    }
+    .mui-content-padded {
+      margin-top: 3rem;
+    }
+    .mui-btn-primary {
+      background-color: nth($baseColor, 3);
+      border-color: nth($baseColor, 3);
+    }
+  }
+}
 </style>

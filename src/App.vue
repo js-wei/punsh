@@ -2,7 +2,7 @@
   <div id="app">
     <!-- <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive></transition> -->
      <router-view class="router" ref="router"/>
-    <v-footer :menu="menu" v-if="isFootershow" v-cloak></v-footer>
+    <v-footer :menu="menu" v-if="isFootershow"></v-footer>
   </div>
 </template>
 
@@ -10,7 +10,7 @@
 import vHead from "@/components/header.vue";
 import vSlider from "@/components/slider.vue";
 import vFooter from "@/components/footer.vue";
-import { mapState } from "vuex";
+import { mapState } from "vuex"
 
 export default {
   name: "App",
@@ -50,7 +50,7 @@ export default {
   computed: {
     // ...mapGetters(['getFooterState']),
     ...mapState({
-      direction: state => state.mutations.navigater.direction
+      direction: state => state.mutations.navigater.direction,
     })
   },
   components: {
@@ -72,17 +72,105 @@ export default {
           "none";
         document.querySelector(".spinner-holder").style.display = "block";
       });
+    },
+    _networkinfo() {
+      var types = {};
+      types[plus.networkinfo.CONNECTION_UNKNOW] = "Unknown connection";
+      types[plus.networkinfo.CONNECTION_NONE] = "None connection";
+      types[plus.networkinfo.CONNECTION_ETHERNET] = "Ethernet connection";
+      types[plus.networkinfo.CONNECTION_WIFI] = "WiFi connection";
+      types[plus.networkinfo.CONNECTION_CELL2G] = "Cellular 2G connection";
+      types[plus.networkinfo.CONNECTION_CELL3G] = "Cellular 3G connection";
+      types[plus.networkinfo.CONNECTION_CELL4G] = "Cellular 4G connection";
+      if(plus.networkinfo.getCurrentType()==3){
+        console.log(this._getWifiName())
+      }
+    },
+    _onNetChange() {
+      //获取当前网络类型
+      var nt = plus.networkinfo.getCurrentType();
+      switch (nt) {
+        case plus.networkinfo.CONNECTION_ETHERNET:
+        case plus.networkinfo.CONNECTION_WIFI:
+          mui.toast("当前网络为WiFi");
+          break;
+        case plus.networkinfo.CONNECTION_CELL2G:
+        case plus.networkinfo.CONNECTION_CELL3G:
+        case plus.networkinfo.CONNECTION_CELL4G:
+          mui.toast("当前网络非WiFi");
+          break;
+        default:
+          mui.toast("当前没有网络");
+          break;
+      }
+    },
+    _getWifiName() {
+      if (mui.os.android) {
+        var wifiManager, wifiInfo;
+        var Context = plus.android.importClass("android.content.Context");
+        var WifiManager = plus.android.importClass(
+          "android.net.wifi.WifiManager"
+        );
+        var WifiInfo = plus.android.importClass("android.net.wifi.WifiInfo");
+        wifiManager = plus.android
+          .runtimeMainActivity()
+          .getSystemService(Context.WIFI_SERVICE);
+        wifiInfo = wifiManager.getConnectionInfo();
+        var ssid = wifiInfo.getSSID() || "";
+        if (ssid.length == 0) {
+          return null;
+        }
+        //一些手机上获取SSID是有值的，但是实际IP为空，真实为未连接
+        var i = parseInt(wifiInfo.getIpAddress());
+        var ipStr =
+          (i & 0xff) +
+          "." +
+          ((i >> 8) & 0xff) +
+          "." +
+          ((i >> 16) & 0xff) +
+          "." +
+          ((i >> 24) & 0xff);
+        if (ipStr == "0.0.0.0") {
+          return null;
+        }
+        if (ssid != "<unknown ssid>" && ssid.toUpperCase() != "0X") {
+          return ssid.replace(/\"/g, "");
+        }
+        return null;
+      }
+      return null;
+    },
+    _getBaseConfig() {
+      localStorage.removeItem('cofing')
+      let config = localStorage.getItem("cofing");
+      if (!config) {
+        this.axios.get("config").then(res => {
+          if (res.status == 200) {
+            let _data = res.data.data;
+            localStorage.setItem("cofing", JSON.stringify(_data));
+            this.company_address = _data.address;
+            this.company = _data.title;
+          }
+        });
+      } else {
+        config = JSON.parse(config);
+        this.company_address = config.address;
+        this.company = config.title;
+      }
     }
   },
   mounted() {
+    let _this = this;
     mui.plusReady(function() {
+      _this._getBaseConfig();
       plus.navigator.setStatusBarBackground("#eb7d46");
+      _this._networkinfo();
+      document.addEventListener("netchange", _this._onNetChange, false);
     });
   },
   watch: {
     $route(newValue, oldValue) {
       this.isFootershow = newValue.name != "punch" || false;
-      
     }
   }
 };

@@ -25,6 +25,8 @@ Object.keys(Metheds).forEach(key => Vue.prototype[key] = Metheds[key])
 //axios
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+Vue.use(VueAxios,axios);
+axios.defaults.baseURL = 'http://w.jswei.cn/api/';
 
 //高德地图
 import VueAMap from 'vue-amap'
@@ -80,19 +82,17 @@ router.beforeEach((to, from, next) => {
     store.commit('UPDATE_DIRECTION', {direction: 'forward'})
   }
 
-
   if (to.matched.some(res => res.meta.requiresAuth)) {// 判断是否需要登录权限
-    if(!store.getters.logined){
-      /*
-      next({
+    let logined = localStorage.getItem('logined');  //!store.getters.logined ||
+    if(!logined){
+      /*next({
         path:'/login',
         query: {redirect: to.fullPath}
-      })*/
+      }) */
       next()
     }else{
       next()
     }
-   
   } else {
     next()
   }
