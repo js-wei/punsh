@@ -149,23 +149,21 @@ export default {
         password: this._md5(this.password),
         confirm_password: this._md5(this.confirm_password)
       };
-      this.axios
-        .post("/set_password",data)
-        .then(res => {
-          if (res.status != 200) {
-            mui.toast("服务器繁忙");
-            return;
-          }
-          let data = res.data;
-          if (!data.status) {
-            mui.toast(data.msg);
-            return;
-          }
+      this.axios.post("/set_password", data).then(res => {
+        if (res.status != 200) {
+          mui.toast("服务器繁忙");
+          return;
+        }
+        let data = res.data;
+        if (!data.status) {
           mui.toast(data.msg);
-          setTimeout(()=>{
-            this.$route.push('/login');
-          },500)
-        });
+          return;
+        }
+        mui.toast(data.msg);
+        setTimeout(() => {
+          this.$route.push("/login");
+        }, 500);
+      });
     },
     _md5(str = "") {
       if (!str) {
@@ -210,9 +208,18 @@ export default {
     .mui-content-padded {
       margin-top: 3rem;
     }
+    input{
+      &::-webkit-input-placeholder{
+        font-size:1.2rem;
+      }
+    }
     .mui-btn-primary {
       background-color: nth($baseColor, 3);
       border-color: nth($baseColor, 3);
+      height: 45px;
+      line-height: 20px;
+      margin: 0;
+      padding: 0;
     }
   }
 }

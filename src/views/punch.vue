@@ -14,14 +14,14 @@
 
 <template>
     <div class="punch">
-        <v-head :title="title" :isBack="show"></v-head>
+        <v-head :title="title" :isBack="show" :backHandler="back"></v-head>
         <div class="amap">
             <el-amap class="amap-demo" vid="amap" :zoom="zoom" ref="map" :events="events">
             </el-amap>
             <div class="toolbar">
                 <ul class="toolbar-address">
                     <li>公司:{{company}}</li>
-                    <li>地点:{{formattedAddress}}</li>
+                    <li>地点:{{company_address}}</li>
                     <li><i>提示:圆圈内为打卡区域</i></li>
                 </ul>
             </div>
@@ -43,6 +43,7 @@ export default {
       show: true,
       company: "苏州三铁企业集团", //打卡公司
       company_address: "苏州市玉山路99号钻石广场", //公司地址
+      sub_title:'打卡',
       zoom: 18,
       formattedAddress: "", //打卡地址
       isPunchDisabled: false, //不在范围禁止使用打卡按钮
@@ -67,20 +68,39 @@ export default {
   components: {
     vHead
   },
+  created(){
+    this._initConfig()
+  },
   methods: {
+    _initConfig() {
+      let config = localStorage.getItem("cofing"),
+          _this = this;
+      if (!config) {
+        _this.axios.get("config").then(res => {
+          if (res.status == 200) {
+            let _data = res.data.data;
+            localStorage.setItem("cofing", JSON.stringify(_data));
+            _this.company_address = _data.address;
+            _this.company = _data.title;
+            _this.sub_title = _data.short_title;
+          }
+        });
+      } else {
+        config = JSON.parse(config);
+        _this.company_address = config.address;
+        _this.company = config.title;
+        _this.sub_title = config.short_title;
+      }
+    },
     punch(e) {
       if (!this.isPunchDisabled) {
         return;
       }
       if (!this.circle.contains(this.position)) {
-        mui.toast("不在打卡范围内", {
-          duration: "short",
-          type: "div",
-          icon: "mui-icon mui-icon-checkmarkempty"
-        });
+        mui.toast("不在打卡范围内");
         return;
       }
-
+      console.log(e)
       //@todo something
       //mui.toast('恭喜你打卡成功');
       mui.toast("恭喜你打卡成功", {
@@ -104,7 +124,7 @@ export default {
         };
         let text = {
           title: self.company,
-          sub: "三铁"
+          sub: self.sub_title
         };
         self.addSimpleMarker(postion, text, map);
         map.setFitView();
@@ -216,6 +236,9 @@ export default {
           AMap.event.addListener(geolocation, "error", onError => {}); //返回定位出错信息
         });
       }
+    },
+    back(){
+      this.$router.push('/home')
     }
   }
 };

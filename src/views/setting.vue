@@ -82,8 +82,9 @@ export default {
   },
   methods: {
     yes(e) {
+      localStorage.clear();
+      this.$router.push("/home");
       mui.plusReady(() => {
-        localStorage.removeItem('logined');
         plus.runtime.quit();
       });
     },

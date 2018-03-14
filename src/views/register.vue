@@ -16,7 +16,6 @@
                 <label>密码</label>
                 <input type="password" class="mui-input-password " v-model="password" placeholder="请输入密码">
             </div>
-
             <div class="mui-button-row">
                 <button type="button" class="mui-btn mui-btn-block mui-btn-primary" @click="register" >注册新账号</button>
             </div>
@@ -168,7 +167,7 @@ form:after {
     padding-bottom: 2rem;
   }
   .mui-input-group {
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     height: auto;
     overflow: hidden;
@@ -179,6 +178,16 @@ form:after {
     .mui-input-row {
       margin-top: 0.8rem;
       position: relative;
+      label{
+        width:25%;
+        text-align:right;
+      }
+      input{
+        width:74%;
+        &::-webkit-input-placeholder{
+          font-size:1.2rem;
+        }
+      }
       .line {
         position: absolute;
         border-bottom: 0.1rem solid #e4e4e8;
@@ -204,6 +213,10 @@ form:after {
       .mui-btn-primary {
         background-color: nth($baseColor, 3);
         border-color: nth($baseColor, 3);
+        height:45px;
+        line-height:20px;
+        margin:0;
+        padding:0;
       }
     }
     .mui-input-row.del-line {
@@ -221,8 +234,8 @@ form:after {
       position: relative;
       button {
         position: absolute;
-        width: 120px;
-        top: 0;
+        width: 110px;
+        top:0;
         right: 0;
         background-color: nth($baseColor, 3);
         border-color: nth($baseColor, 3);

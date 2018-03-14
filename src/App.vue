@@ -139,30 +139,11 @@ export default {
         return null;
       }
       return null;
-    },
-    _getBaseConfig() {
-      localStorage.removeItem('cofing')
-      let config = localStorage.getItem("cofing");
-      if (!config) {
-        this.axios.get("config").then(res => {
-          if (res.status == 200) {
-            let _data = res.data.data;
-            localStorage.setItem("cofing", JSON.stringify(_data));
-            this.company_address = _data.address;
-            this.company = _data.title;
-          }
-        });
-      } else {
-        config = JSON.parse(config);
-        this.company_address = config.address;
-        this.company = config.title;
-      }
     }
   },
   mounted() {
     let _this = this;
     mui.plusReady(function() {
-      _this._getBaseConfig();
       plus.navigator.setStatusBarBackground("#eb7d46");
       _this._networkinfo();
       document.addEventListener("netchange", _this._onNetChange, false);

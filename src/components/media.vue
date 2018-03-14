@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-13 9:33:05
+ * Modified By: 2018-03-14 5:48:12
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -21,7 +21,7 @@
                     <div class="mui-media-body">
                         {{item.title}}
                         <p class='mui-ellipsis'>
-                            {{item.description}}
+                            {{item.author}}
                         </p>
                         <p>
                             {{item.date}}
@@ -51,24 +51,28 @@ export default {
   padding-top: 0px;
   .mui-table-view {
     .mui-table-view-cell {
+      padding: 12px 15px;
       a {
         .mui-media-object {
-            max-width: 80px;
-            width: 80px;
-            height:80px;
+          max-width: 80px;
+          width: 80px;
+          height: 80px;
         }
         .mui-media-body {
-          padding:0 4px;
+          padding: 0 2px;
           font-weight: normal;
           white-space: normal;
-          font-size:1.5rem;
-          p{
-              padding:1px 0;
-              font-size:1.2rem;
+          font-size: 1.5rem;
+          p {
+            padding: 1px 0;
+            font-size: 1.2rem;
           }
         }
       }
     }
+  }
+  .mui-table-view-cell>a:not(.mui-btn){
+      margin: -11px -17px;
   }
 }
 </style>

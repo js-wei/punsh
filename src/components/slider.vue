@@ -1,23 +1,23 @@
 <template>
-    <div class="mui-slider" id="mySlider" v-if="slider.show">
+    <div class="mui-slider" id="mySlider" v-if="slider.show && slider.images.length">
         <div class="mui-slider-group" :class="slider.loop?'mui-slider-loop':''">
             <!--支持循环，需要重复图片节点-->
             <div class="mui-slider-item mui-slider-item-duplicate">
-                <a :href="slider.images[slider.images.length-1].href?slider.images[slider.images.length-1].href:'javascript:;'">
-                    <img :src="slider.images[slider.images.length-1].src" />
+                <a :href="slider.images[slider.images.length-1].url?slider.images[slider.images.length-1].url:'javascript:;'">
+                    <img :src="slider.images[slider.images.length-1].image" />
                     <p class="mui-slider-title" v-if="slider.title">{{slider.images[slider.images.length-1].title}}</p>
                 </a>
             </div>
             <div class="mui-slider-item" v-for="(v,i) in slider.images" :key="i">
-                <a :href="v.href!=''?v.href:'javascript:;'">
-                    <img :src="v.src" />
+                <a :href="v.url!=''?v.url:'javascript:;'">
+                    <img :src="v.image" />
                     <p class="mui-slider-title" v-if="slider.title">{{v.title}}</p>
                 </a>
             </div>
             <!--支持循环，需要重复图片节点-->
             <div class="mui-slider-item mui-slider-item-duplicate">
-                <a :href="slider.images[0].href?slider.images[0].href:'javascript:;'">
-                    <img :src="slider.images[0].src" />
+                <a :href="slider.images[0].url?slider.images[0].url:'javascript:;'">
+                    <img :src="slider.images[0].image" />
                     <p class="mui-slider-title" v-if="slider.title">{{slider.images[0].title}}</p>
                 </a>
             </div>
@@ -33,9 +33,11 @@ export default {
     slider: Object
   },
   mounted() {
-    mui("#mySlider").slider({
-      interval: this.slider.timer || 4e3
-    });
+    if (this.slider.images.length > 0) {
+      mui("#mySlider").slider({
+        interval: this.slider.timer || 4e3
+      });
+    }
   }
 };
 </script>
@@ -51,20 +53,21 @@ export default {
         }
         p.mui-slider-title {
           color: nth($baseColor, 1);
-          font-size: 1.5rem;
+          font-size: 1.4rem;
           position: absolute;
-          left:0;
+          left: 0;
         }
       }
     }
   }
   .mui-slider-indicator {
     width: auto;
-    right: 10px;
-    bottom: 0.3rem;
-    .mui-indicator{
-      width:20px;
-      border-radius:25%;
+    right: 5px;
+    bottom: 4px;
+    .mui-indicator {
+      width: 15px;
+      border-radius: 20%;
+      margin:1px 3px;
     }
   }
 }

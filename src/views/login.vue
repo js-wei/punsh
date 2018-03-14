@@ -36,7 +36,8 @@ export default {
   data() {
     return {
       phone: "",
-      password: ""
+      password: "",
+      redirect:this.$route.query.redirect
     };
   },
   methods: {
@@ -59,8 +60,8 @@ export default {
           phone: _this.phone,
           password: _this._md5(_this.password)
         })
-        .then(res=> {
-         if (res.status !== 200) {
+        .then(res => {
+          if (res.status !== 200) {
             mui.toast("服务器繁忙或错误");
             return;
           }
@@ -70,11 +71,11 @@ export default {
             return;
           }
           mui.toast(_data.msg);
-          setTimeout(()=>{
-            localStorage.removeItem('logined');
-            localStorage.setItem('logined',JSON.stringify(_data.data));
-            this.$route.push('/personal');
-          },1e3)
+          setTimeout(() => {
+            localStorage.removeItem("logined");
+            localStorage.setItem("logined", JSON.stringify(_data.data));
+            _this.$router.push(this.redirect);
+          }, 2e3);
         });
     },
     _md5(str = "") {
@@ -86,7 +87,8 @@ export default {
       return md5.digest("hex");
     }
   },
-  mounted() {}
+  created() {
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -113,6 +115,17 @@ form:after {
     .mui-input-row {
       margin-top: 0.8rem;
       position: relative;
+      label {
+        width: 25%;
+        text-align: right;
+      }
+      input {
+        width: 74%;
+        &::-webkit-input-placeholder{
+          font-size:1.2rem;
+        }
+      }
+
       .line {
         position: absolute;
         border-bottom: 0.1rem solid #e4e4e8;
@@ -137,6 +150,10 @@ form:after {
       .mui-btn-primary {
         background-color: nth($baseColor, 3);
         border-color: nth($baseColor, 3);
+        height: 45px;
+        line-height: 20px;
+        margin: 0;
+        padding: 0;
       }
     }
     .mui-input-row.del-line {
