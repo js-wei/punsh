@@ -51,7 +51,8 @@ export default {
         loop: true,
         title: true,
         indicator: true,
-        images: [{}]
+        timer:2000,
+        images: []
       },
       mediaList: [],
       current_page: 1,

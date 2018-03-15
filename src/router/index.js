@@ -82,12 +82,6 @@ export default new Router({
       meta: { requiresAuth: true }
     },
     {
-      path:'/setting',
-      name:'setting',
-      component:Setting,
-      meta: { requiresAuth: true }
-    },
-    {
       path:'/punch',
       name:'punch',
       component:Punch,

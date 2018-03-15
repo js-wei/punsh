@@ -31,9 +31,9 @@ Vue.use(VueAxios, axios);
 
 //fly.js
 import fly from 'flyio'
-fly.config.baseURL='http://w.jswei.cn/api'
+fly.config.baseURL = 'http://w.jswei.cn/api'
 fly.engine = XMLHttpRequest
-Vue.prototype.$fly=fly
+Vue.prototype.$fly = fly
 
 //高德地图
 import VueAMap from 'vue-amap'
@@ -80,9 +80,9 @@ axios.interceptors.response.use(function (response) { //配置请求回来的信
 // history.setItem('/', 0);
 
 router.beforeEach((to, from, next) => {
-  if(to.name=='punch'){
+  if (to.name == 'punch') {
     store.commit('HIDE_FOOTER')
-  }else{
+  } else {
     store.commit('SHOW_FOOTER')
   }
   // const toIndex = history.getItem(to.path);
@@ -102,7 +102,7 @@ router.beforeEach((to, from, next) => {
   // }
 
   if (to.matched.some(res => res.meta.requiresAuth)) { // 判断是否需要登录权限
-    let logined = localStorage.getItem('logined'); //!store.getters.logined ||
+    let logined = localStorage.getItem('logined');
     if (!logined) {
       next({
         path: '/login',

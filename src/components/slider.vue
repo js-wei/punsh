@@ -3,20 +3,20 @@
         <div class="mui-slider-group" :class="slider.loop?'mui-slider-loop':''">
             <!--支持循环，需要重复图片节点-->
             <div class="mui-slider-item mui-slider-item-duplicate">
-                <a :href="slider.images[slider.images.length-1].url?slider.images[slider.images.length-1].url:'javascript:;'">
+                <a :href="slider.images[slider.images.length-1].url?slider.images[slider.images.length-1].url:'javascript:void(0);'">
                     <img :src="slider.images[slider.images.length-1].image" />
                     <p class="mui-slider-title" v-if="slider.title">{{slider.images[slider.images.length-1].title}}</p>
                 </a>
             </div>
             <div class="mui-slider-item" v-for="(v,i) in slider.images" :key="i">
-                <a :href="v.url!=''?v.url:'javascript:;'">
+                <a :href="v.url!=''?v.url:'javascript:void(0);'">
                     <img :src="v.image" />
                     <p class="mui-slider-title" v-if="slider.title">{{v.title}}</p>
                 </a>
             </div>
             <!--支持循环，需要重复图片节点-->
             <div class="mui-slider-item mui-slider-item-duplicate">
-                <a :href="slider.images[0].url?slider.images[0].url:'javascript:;'">
+                <a :href="slider.images[0].url?slider.images[0].url:'javascript:void(0);'">
                     <img :src="slider.images[0].image" />
                     <p class="mui-slider-title" v-if="slider.title">{{slider.images[0].title}}</p>
                 </a>
@@ -35,9 +35,9 @@ export default {
   mounted() {
     this.$nextTick(()=>{
       mui("#mySlider").slider({
-        interval: this.slider.timer || 3.5e3
-      });
-    });
+        interval: this.slider.timer || 4e3
+      }); 
+    })
   }
 };
 </script>
@@ -67,7 +67,7 @@ export default {
     .mui-indicator {
       width: 15px;
       border-radius: 20%;
-      margin:1px 3px;
+      margin: 1px 3px;
     }
   }
 }
