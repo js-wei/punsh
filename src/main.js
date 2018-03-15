@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import serverUrl from '../config/serverurl'
 
 Vue.config.productionTip = false
 
@@ -25,8 +26,14 @@ Object.keys(Metheds).forEach(key => Vue.prototype[key] = Metheds[key])
 //axios
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-axios.defaults.baseURL = '/api' //请求基地址
+axios.defaults.baseURL = '/api/' //请求基地址
 Vue.use(VueAxios, axios);
+
+//fly.js
+import fly from 'flyio'
+fly.config.baseURL='http://w.jswei.cn/api'
+fly.engine = XMLHttpRequest
+Vue.prototype.$fly=fly
 
 //高德地图
 import VueAMap from 'vue-amap'

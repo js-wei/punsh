@@ -11,13 +11,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api':{
-        target:'http://w.jswei.cn/api/',
-        changeOrigin:true,
-        pathRewrite:{
-          '^/api':''
-        }
-      }
+      
     },
 
     // Various Dev Server settings

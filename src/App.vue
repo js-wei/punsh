@@ -2,7 +2,7 @@
   <div id="app">
     <!-- <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive></transition> -->
      <router-view class="router" ref="router"/>
-    <v-footer :menu="menu" v-if="isFootershow"></v-footer>
+    <v-footer :menu="menu" v-if="isFootershow" id="tabbar"></v-footer>
   </div>
 </template>
 
@@ -145,8 +145,9 @@ export default {
     let _this = this;
     mui.plusReady(function() {
       plus.navigator.setStatusBarBackground("#eb7d46");
-      _this._networkinfo();
-      document.addEventListener("netchange", _this._onNetChange, false);
+      document.querySelector('#tabbar').style.top = (plus.display.resolutionHeight - 50) + "px";
+      //_this._networkinfo();
+      //document.addEventListener("netchange", _this._onNetChange, false);
     });
   },
   watch: {
