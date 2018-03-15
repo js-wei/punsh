@@ -70,15 +70,17 @@ export default {
   },
   created(){
     this._initConfig()
+    
   },
   methods: {
     _initConfig() {
       let config = localStorage.getItem("cofing"),
           _this = this;
       if (!config) {
-        _this.axios.get("config").then(res => {
-          if (res.status == 200) {
-            let _data = res.data.data;
+        _this.$fly.get("config").then(res => {
+          let _data = res.data;
+          if (res.engine.status == 200 && _data.status) {
+            _data = _data.data;
             localStorage.setItem("cofing", JSON.stringify(_data));
             _this.company_address = _data.address;
             _this.company = _data.title;
@@ -100,14 +102,16 @@ export default {
         mui.toast("不在打卡范围内");
         return;
       }
-      console.log(e)
-      //@todo something
-      //mui.toast('恭喜你打卡成功');
-      mui.toast("恭喜你打卡成功", {
-        duration: "short",
-        type: "div",
-        icon: "mui-icon mui-icon-checkmarkempty"
-      });
+      
+      this.$fly.post('/punsh',{
+        position:self.position,
+        address:self.formattedAddress,
+        time:this._timestamp()
+      }).then(res=>{
+        //@todo something
+      })
+      
+      
     },
     geocoderCallBack(data, map, self) {
       //地理编码结果数组

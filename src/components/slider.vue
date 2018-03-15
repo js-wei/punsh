@@ -33,11 +33,11 @@ export default {
     slider: Object
   },
   mounted() {
-    if (this.slider.images.length > 0) {
+    this.$nextTick(()=>{
       mui("#mySlider").slider({
-        interval: this.slider.timer || 4e3
+        interval: this.slider.timer || 3.5e3
       });
-    }
+    });
   }
 };
 </script>

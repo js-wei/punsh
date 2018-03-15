@@ -2,7 +2,7 @@
   <div id="app">
     <!-- <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive></transition> -->
      <router-view class="router" ref="router"/>
-    <v-footer :menu="menu" v-if="isFootershow" id="tabbar"></v-footer>
+    <v-footer :menu="menu" v-if="getFooterState" id="tabbar"></v-footer>
   </div>
 </template>
 
@@ -10,7 +10,7 @@
 import vHead from "@/components/header.vue";
 import vSlider from "@/components/slider.vue";
 import vFooter from "@/components/footer.vue";
-import { mapState } from "vuex"
+import { mapState,mapGetters} from "vuex"
 
 export default {
   name: "App",
@@ -48,7 +48,7 @@ export default {
     };
   },
   computed: {
-    // ...mapGetters(['getFooterState']),
+    ...mapGetters(['getFooterState']),
     ...mapState({
       direction: state => state.mutations.navigater.direction,
     })
@@ -151,9 +151,7 @@ export default {
     });
   },
   watch: {
-    $route(newValue, oldValue) {
-      this.isFootershow = newValue.name != "punch" || false;
-    }
+   
   }
 };
 </script>

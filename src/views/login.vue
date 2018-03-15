@@ -55,26 +55,29 @@ export default {
         mui.toast("请输入密码");
         return;
       }
-      _this.axios
+      mui.showLoading("正在登陆..","div")
+      _this.$fly
         .post("/login", {
           phone: _this.phone,
           password: _this._md5(_this.password)
         })
         .then(res => {
-          if (res.status !== 200) {
-            mui.toast("服务器繁忙或错误");
+          mui.hideLoading()
+          res = res.data
+          // if (res.engine.status !== 200) {
+          //   mui.toast("服务器繁忙或错误");
+          //   return;
+          // }
+          
+          if (!res.status) {
+            mui.toast(res.msg);
             return;
           }
-          let _data = res.data;
-          if (!_data.status) {
-            mui.toast(_data.msg);
-            return;
-          }
-          mui.toast(_data.msg);
+          mui.toast(res.msg);
           setTimeout(() => {
             localStorage.removeItem("logined");
-            localStorage.setItem("logined", JSON.stringify(_data.data));
-            _this.$router.push(this.redirect);
+            localStorage.setItem("logined", JSON.stringify(res.data));
+            _this.$router.push(_this.redirect);
           }, 2e3);
         });
     },
@@ -86,8 +89,6 @@ export default {
       md5.update(str);
       return md5.digest("hex");
     }
-  },
-  created() {
   }
 };
 </script>

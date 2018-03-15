@@ -3,7 +3,7 @@
  * Created Date: '2018-02-02 3:05:51
  * Author: 魏巍
  * -----
- * Last Modified: '2018-03-15 4:50:07
+ * Last Modified: '2018-03-15 7:41:50
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -61,4 +61,9 @@ export const ajax = (url = '', data = null, cb, methed = "GET") => {
       _cb(xhr);
     }
   });
+}
+
+export const _timestamp=()=>{
+  let ts = Math.round(new Date()/1000).toString();
+  return ts;
 }

@@ -3,7 +3,7 @@
  * Created Date: '2018-02-02 3:04:19
  * Author: 魏巍
  * -----
- * Last Modified: '2018-03-15 3:46:43
+ * Last Modified: '2018-03-15 7:32:18
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -11,9 +11,10 @@
  * Javascript will save your soul!
  */
 
-import {formart_date,ajax} from './methed';
+import {formart_date,ajax,_timestamp} from './methed';
 
 export default {
 	formart_date,
-	ajax
+	ajax,
+	_timestamp
 };

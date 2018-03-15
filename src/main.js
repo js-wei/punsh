@@ -80,6 +80,11 @@ axios.interceptors.response.use(function (response) { //配置请求回来的信
 // history.setItem('/', 0);
 
 router.beforeEach((to, from, next) => {
+  if(to.name=='punch'){
+    store.commit('HIDE_FOOTER')
+  }else{
+    store.commit('SHOW_FOOTER')
+  }
   // const toIndex = history.getItem(to.path);
   // const fromIndex = history.getItem(from.path);
 
