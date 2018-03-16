@@ -58,6 +58,7 @@ export default {
   },
   methods: {
     _addTouchEvents() {
+      document.querySelector(".spinner-holder").style.display = "none";
       document
         .querySelector("._v-content")
         .addEventListener("touchstart", e => {
@@ -142,7 +143,7 @@ export default {
     }
   },
   mounted() {
-    let _this = this;
+    let _this = this
     mui.plusReady(function() {
       plus.navigator.setStatusBarBackground("#eb7d46");
       document.querySelector('#tabbar').style.top = (plus.display.resolutionHeight - 50) + "px";
@@ -216,6 +217,7 @@ body {
 :focus {
   outline: 0;
 }
+.mui-card-content img {width:87%}
 a:hover,
 a:visited,
 a:link,

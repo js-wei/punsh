@@ -3,35 +3,29 @@
         <v-head :title="title"></v-head>
         <div class="mui-content">
             <ul class="mui-table-view">
-                <!-- <li class="mui-table-view-cell1">
-                    非WIFI网络提醒
-                    <div class="mui-switch mui-switch-mini mui-active" id="wifiSwitch">
-                        <div class="mui-switch-handle"></div>
-                    </div>
-                </li> -->
                 <li class="mui-table-view-cell1">
                     提醒打卡
                     <span class="text-tips">在打卡正点前15分钟提示</span>
-                    <div class="mui-switch mui-switch-mini mui-active" id="tellSwitch">
+                    <div class="mui-switch mui-switch-mini" :class="{'mui-active':notify.punch}" id="tellSwitch">
                         <div class="mui-switch-handle"></div>
                     </div>
                 </li>
                 <li class="mui-table-view-cell1">
                     迟到通知
-                    <div class="mui-switch mui-switch-mini mui-active" id="laterSwitch">
+                    <div class="mui-switch mui-switch-mini" :class="{'mui-active':notify.later}"  id="laterSwitch">
                         <div class="mui-switch-handle"></div>
                     </div>
                 </li>
                 <li class="mui-table-view-cell1">
                     自动打卡
                     <span class="text-tips">链接公司网络自动完成打卡</span>
-                    <div class="mui-switch mui-switch-mini mui-active" id="punchSwitch">
+                    <div class="mui-switch mui-switch-mini" :class="{'mui-active':notify.tell_punsh}"  id="punchSwitch">
                         <div class="mui-switch-handle"></div>
                     </div>
                 </li>
                 <li class="mui-table-view-cell1">
                     公司新闻通知
-                    <div class="mui-switch mui-switch-mini" id="newsSwitch">
+                    <div class="mui-switch mui-switch-mini" :class="{'mui-active':notify.news}"  id="newsSwitch">
                         <div class="mui-switch-handle"></div>
                     </div>
                 </li>
@@ -58,12 +52,12 @@ export default {
     return {
       title: "设置",
       show: false,
+      _user:null,
       notify: {
-        wifi: false,
-        news: false,
-        later: false,
         punch: false,
-        tell_punsh: false
+        later: false,
+        tell_punsh: false,
+        news: false
       },
       modal: {
         show: false,
@@ -92,47 +86,59 @@ export default {
     logout() {
       this.modal.show = true;
       this.modal.content = "您确定要退出登录?";
+    },
+    setNotify(uid,t,p){
+      this.$fly.get('/set_sysconf',{uid:uid,power:p,notify:t}).then(res=>{
+        mui.toast(res.data.msg)
+      });
     }
   },
   mounted() {
-    mui(".mui-switch")["switch"]();
-    /*
-    //WIFI提醒
-    document.getElementById("wifiSwitch").addEventListener('toggle',(e)=>{
-        e.preventDefault();
-        let isActive = e.detail.isActive;
-        this.notify.wifi=isActive;
-        console.log('WIFI提醒',isActive);
-    });*/
+    let _user = JSON.parse(localStorage.getItem('logined'))
+    
+    if(_user.settings.notify ==1 && _user.notify.power){
+        this.notify.punch=true
+        
+    }
+    if(_user.settings.notify ==2 && _user.notify.power){
+        this.notify.later=true
+    }
+    if(_user.settings.notify ==2 && _user.notify.power){
+        this.notify.tell_punsh=true
+    }
+    if(_user.settings.notify ==4 && _user.notify.power){
+        this.notify.news=true
+    }
 
     //提醒打卡
-    document.getElementById("tellSwitch").addEventListener("toggle", e => {
+    document.querySelector("#tellSwitch").addEventListener("toggle", e => {
       e.preventDefault();
       let isActive = e.detail.isActive;
-      this.notify.tell_punsh = isActive;
-      console.log("打卡提醒", isActive);
+      let power = isActive?1:0
+      this.setNotify(_user.user_id,1,power)
     });
     //迟到通知
     document.getElementById("laterSwitch").addEventListener("toggle", e => {
       e.preventDefault();
       let isActive = e.detail.isActive;
-      this.notify.later = isActive;
-      console.log("迟到通知", isActive);
-    });
-    //新闻通知
-    document.getElementById("newsSwitch").addEventListener("toggle", e => {
-      e.preventDefault();
-      let isActive = e.detail.isActive;
-      this.notify.news = isActive;
-      console.log("新闻通知", isActive);
+      let power = isActive?1:0
+      this.setNotify(_user.user_id,2,power)
     });
     //自动打卡
     document.getElementById("punchSwitch").addEventListener("toggle", e => {
       e.preventDefault();
       let isActive = e.detail.isActive;
-      this.notify.punch = isActive;
-      console.log("自动打卡", isActive);
+      let power = isActive?1:0
+      this.setNotify(_user.user_id,3,power)
     });
+    //新闻通知
+    document.getElementById("newsSwitch").addEventListener("toggle", e => {
+      e.preventDefault();
+      let isActive = e.detail.isActive;
+      let power = isActive?1:0
+      this.setNotify(_user.user_id,4,power)
+    });
+    mui(".mui-switch")["switch"]();
   }
 };
 </script>

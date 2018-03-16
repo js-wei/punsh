@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-12 10:00:49
+ * Modified By: 2018-03-16 11:18:31
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -108,6 +108,7 @@
 <style lang="scss" scoped>
     @import '../assets/style/base';
     .mui-content{
+        padding-bottom:80px;
         background-color: nth($baseColor,1);
         .mui-card{
             margin-top:20px;

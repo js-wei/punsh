@@ -47,16 +47,16 @@ export default {
       count: 0,
       isLoaded: false,
       slider: {
-        show: true,
         loop: true,
         title: true,
         indicator: true,
-        timer:2000,
-        images: []
+        limit: 4,
+        images: [{}, {}, {}, {}]
       },
       mediaList: [],
       current_page: 1,
-      last_id: 0
+      last_id: 0,
+      last_page: 1
     };
   },
   components: {
@@ -70,27 +70,32 @@ export default {
   },
   mounted() {
     document.querySelector("._v-content").style.paddingBottom = 260 + "px";
+    document.querySelector("._v-content").addEventListener('onscroll',()=>{
+      console.log(1)
+    });
   },
   methods: {
+    onScroll($event){
+      console.log($event)
+    },
     refresh(done) {
       let _this = this;
       _this.ajax(
         "/query",
         {
-          action: "page",
+          action: "refresh",
           mod: "article",
           field: "id,title,author,description,image,date",
           limit: 3,
           column_id: 1,
-          order: "date desc",
+          order: "sort asc,date desc",
           where: [
             {
               field: "id",
               op: "gt",
               val: this.last_id
             }
-          ],
-          p: 1
+          ]
         },
         res => {
           done();
@@ -99,60 +104,24 @@ export default {
           }
           _this.isLoaded = true;
           let result = res.data;
-          _this.count = result.data.length || 0;
+          _this.count = result.length || 0;
           if (_this.count) {
-            result.data.forEach(item => {
-              this.mediaList.unshift(item);
-              this.last_id = item.id;
+            result.forEach(item => {
+              _this.mediaList.unshift(item);
+              _this.last_id = item.id;
             });
-            this.current_page = 1;
+            _this.current_page = 1;
           }
           setTimeout(() => {
-            _this.isLoaded = false;
-          },1.5e3);
+            _this.isLoaded = result.false;
+          }, 1.5e3);
         },
         "POST"
       );
-      // _this.axios
-      //   .post("/query", {
-      //     action: "page",
-      //     mod: "article",
-      //     field: "id,title,author,description,image,date",
-      //     limit: 3,
-      //     column_id: 1,
-      //     order: "date desc",
-      //     where: [
-      //       {
-      //         field: "id",
-      //         op: "gt",
-      //         val: this.last_id
-      //       }
-      //     ],
-      //     p: 1
-      //   })
-      //   .then(res => {
-      //     let _data = res.data;
-      //     if (_data.status) {
-      //       _this.isLoaded = true;
-      //       let result = _data.data;
-      //       _this.count = result.data.length || 0;
-      //       if (_this.count) {
-      //         result.data.forEach(item => {
-      //           this.mediaList.unshift(item);
-      //           this.last_id = item.id;
-      //         });
-      //         this.current_page = 1;
-      //       }
-      //     }
-      //     setTimeout(() => {
-      //       _this.isLoaded = false;
-      //       done();
-      //     }, 1.8e3);
-      //   });
     },
     infinite(done) {
       let self = this;
-      if (this.current_page == this.last_page) {
+      if (this.current_page > this.last_page) {
         done(true);
         return;
       }
@@ -183,12 +152,23 @@ export default {
       });
     },
     _initCarousel() {
-      this.ajax("/carousel", res => {
-        if (!res.status) {
-          return;
-        }
-        this.slider.images = res.data;
-      });
+      let self = this;
+      this.$fly
+        .get("/query", {
+          action: "list",
+          mod: "carousel",
+          limit: self.slider.limit,
+          order: "sort asc,date desc",
+          sql: 1
+        })
+        .then(res => {
+          if (res.engine.status != 200) return;
+          res = res.data;
+          if (!res.status) {
+            return;
+          }
+          self.slider.images = res.data;
+        });
     },
     _initNews() {
       this.$fly
@@ -198,7 +178,7 @@ export default {
           field: "id,title,author,description,image,date",
           limit: 3,
           column_id: 1,
-          order: "date desc"
+          order: "sort asc,date desc"
         })
         .then(res => {
           res = res.data;
@@ -206,6 +186,7 @@ export default {
             console.log(res.msg);
             return;
           }
+
           let _data = res.data;
           this.last_id = _data.data[0].id;
           this.mediaList = _data.data;

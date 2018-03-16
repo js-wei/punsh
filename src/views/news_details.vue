@@ -1,17 +1,17 @@
-/**
- * File: d:\works\punsh\src\views\get_leave.vue
- * Created Date: 2018-03-05 5:33:53
+/*
+ * File: d:\works\punsh\src\views\news_details.vue
+ * Created Date: 2018-03-16 11:07:40
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-05 5:40:50
+ * Modified By: 2018-03-16 11:18:18
  * -----
  * Copyright (c) 2018 魏巍
  * ------
  * All shall be well and all shall be well and all manner of things shall be well.
  * We're doomed!
  */
-
+ 
 <template>
     <div>
         <v-head :title="title">
@@ -26,8 +26,8 @@
                     <img src="../assets/logo.png" />
                     <div class="mui-media-body">
                         {{article.title}}
-                        <p>发布人 {{article.author}}</p>
-                        <p>发布日期 {{article.date}}</p>
+                        <p>{{article.author}}</p>
+                        <p>{{article.date|time_ago}}前</p>
                     </div>
                 </div>
                 <!--内容区-->
@@ -46,19 +46,22 @@
             return {
                 title: '查看消息',
                 id:this.$route.params.id,
-                article:{
-                    title:'关于清明节3天假期的放假通知',
-                    date:'2018-03-14 08:30',
-                    author:'人事部',
-                    content:`<p>根据国家规定公司决定在3月8,9,10三天进行放假,请给我同事互相转告</p>`
-                }
+                article:{}
             }
         },
         components: {
             vHead,
         },
         created(){
-            console.log(this.id);
+            this.$fly.get('/query',{
+                action:'details',
+                mod:'article',
+                id:this.id
+            }).then(res=>{
+                if(res.data.status){
+                    this.article = res.data.data;
+                }
+            })
         }
     }
 </script>
@@ -66,8 +69,8 @@
 <style lang="scss" scoped>
     @import '../assets/style/base';
     .mui-content{
-        padding-bottom:80px;
         background-color: nth($baseColor,1);
+        padding-bottom:80px;
         .mui-card{
             margin-top:20px;
             .mui-card-header{
@@ -79,10 +82,8 @@
             }
             .mui-card-content{
                 padding:5px 10px;
+                text-indent:2em;
                 min-height:120px;
-                img{
-                    
-                }
             }
         }
     }

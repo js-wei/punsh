@@ -11,9 +11,9 @@ import VueScroller from 'vue-scroller'
 Vue.use(VueScroller)
 
 //font-icon
-import 'vue-awesome-for-toolbar/icons'
-import Icon from 'vue-awesome-for-toolbar/components/Icon.vue'
-Vue.component('icon', Icon)
+// import 'vue-awesome-for-toolbar/icons'
+// import Icon from 'vue-awesome-for-toolbar/components/Icon.vue'
+// Vue.component('icon', Icon)
 
 //过滤器
 import Filters from './filters'

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-15 12:37:10
+ * Modified By: 2018-03-16 11:34:16
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,7 +16,7 @@
     <div class="media">
         <ul class="mui-table-view">
             <li class="mui-table-view-cell mui-media" v-for="(item,index) in mediaList" :key="index">
-                <a href="javascript:;">
+                <router-link :to="'/news_defailt/'+item.id">
                     <img class="mui-media-object mui-pull-right" :src="item.image" v-if="item.image">
                     <div class="mui-media-body">
                         {{item.title}}
@@ -27,7 +27,7 @@
                             {{item.date}}
                         </p>
                     </div>
-                </a>
+                </router-link>
             </li>
         </ul>
     </div>

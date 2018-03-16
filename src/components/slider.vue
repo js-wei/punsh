@@ -1,14 +1,14 @@
 <template>
-    <div class="mui-slider" id="mySlider" v-if="slider.show && slider.images.length">
+    <div class="mui-slider" id="mySlider" v-if="images.length">
         <div class="mui-slider-group" :class="slider.loop?'mui-slider-loop':''">
             <!--支持循环，需要重复图片节点-->
             <div class="mui-slider-item mui-slider-item-duplicate">
-                <a :href="slider.images[slider.images.length-1].url?slider.images[slider.images.length-1].url:'javascript:void(0);'">
-                    <img :src="slider.images[slider.images.length-1].image" />
-                    <p class="mui-slider-title" v-if="slider.title">{{slider.images[slider.images.length-1].title}}</p>
+                <a :href="images[images.length-1].url?images[images.length-1].url:'javascript:void(0);'">
+                    <img :src="images[images.length-1].image" />
+                    <p class="mui-slider-title" v-if="slider.title">{{images[images.length-1].title}}</p>
                 </a>
             </div>
-            <div class="mui-slider-item" v-for="(v,i) in slider.images" :key="i">
+            <div class="mui-slider-item" v-for="(v,i) in images" :key="i">
                 <a :href="v.url!=''?v.url:'javascript:void(0);'">
                     <img :src="v.image" />
                     <p class="mui-slider-title" v-if="slider.title">{{v.title}}</p>
@@ -16,35 +16,45 @@
             </div>
             <!--支持循环，需要重复图片节点-->
             <div class="mui-slider-item mui-slider-item-duplicate">
-                <a :href="slider.images[0].url?slider.images[0].url:'javascript:void(0);'">
-                    <img :src="slider.images[0].image" />
-                    <p class="mui-slider-title" v-if="slider.title">{{slider.images[0].title}}</p>
+                <a :href="images[0].url?images[0].url:'javascript:void(0);'">
+                    <img :src="images[0].image" />
+                    <p class="mui-slider-title" v-if="slider.title">{{images[0].title}}</p>
                 </a>
             </div>
         </div>
         <div class="mui-slider-indicator" v-if="slider.indicator">
-            <div class="mui-indicator" :class="i==0?'mui-active':''" v-for="(v,i) in slider.images" :key="i"></div>
+            <div class="mui-indicator" :class="i==0?'mui-active':''" v-for="(v,i) in images" :key="i"></div>
         </div>
     </div>
 </template>
 <script>
 export default {
+  data() {
+    return {
+      //images:[]
+    };
+  },
+  computed: {
+    images() {
+      return this.slider.images;
+    }
+  },
   props: {
     slider: Object
   },
   mounted() {
-    this.$nextTick(()=>{
-      mui("#mySlider").slider({
-        interval: this.slider.timer || 4e3
-      }); 
-    })
+    mui("#mySlider").slider({
+      interval: this.slider.timer || 4e3
+    });
   }
 };
 </script>
 <style lang="scss" scoped>
 @import "../assets/style/base";
 .mui-slider {
+  background-color:white;
   .mui-slider-group {
+    background-color:white;
     .mui-slider-item {
       a {
         img {

@@ -5,6 +5,7 @@ html{
 }
 $fontSize:1rem;
 $headings: (red:red,darkred: darkred,green:green,darkgreen:darkgreen, pink: pink,blue:blue,darkblue:darkblue);
+$_width: 0,10,20,30,40,50,60,70,80,90,100;
 
 .hide{
   display:none;
@@ -27,4 +28,14 @@ $headings: (red:red,darkred: darkred,green:green,darkgreen:darkgreen, pink: pink
     margin-right:#{$x}px;
   }
 }
+@each $x in $_width{
+  .w-#{$x}{
+    width:#{$x}px;
+  }
+  .h-#{$x}{
+    height:#{$x}px;
+  }
+}
+
+
 
