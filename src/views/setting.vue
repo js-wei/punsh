@@ -52,7 +52,8 @@ export default {
     return {
       title: "设置",
       show: false,
-      _user:null,
+      _user: null,
+      user_id: 0,
       notify: {
         punch: false,
         later: false,
@@ -87,56 +88,76 @@ export default {
       this.modal.show = true;
       this.modal.content = "您确定要退出登录?";
     },
-    setNotify(uid,t,p){
-      this.$fly.get('/set_sysconf',{uid:uid,power:p,notify:t}).then(res=>{
-        mui.toast(res.data.msg)
+    setNotify(uid, t, p) {
+      let self = this;
+      self.$fly
+        .get("/set_sysconf", { uid: uid, power: p, notify: t })
+        .then(res => {
+          mui.toast(res.data.msg);
+          self._resetUser();
+        });
+    },
+    _makeSetting(settings) {
+      settings.forEach(item => {
+        if (item.notify == 1 && item.power) {
+          this.notify.punch = true;
+        }
+        if (item.notify == 2 && item.power) {
+          this.notify.later = true;
+        }
+        if (item.notify == 3 && item.power) {
+          this.notify.tell_punsh = true;
+        }
+        if (item.notify == 4 && item.power) {
+          this.notify.news = true;
+        }
+      });
+    },
+    _resetUser() {
+      this.$fly.get("/personal", { id: this.user_id }).then(res => {
+        if (res.engine.status != 200) {
+          mui.toast("服务器或请求错误");
+          return;
+        }
+        res = res.data.data;
+        if(res){
+          localStorage.setItem("logined",JSON.stringify(res));
+        }
       });
     }
   },
   mounted() {
-    let _user = JSON.parse(localStorage.getItem('logined'))
+    let _user = JSON.parse(localStorage.getItem("logined"));
+    this.user_id = _user.user_id;
+    this._makeSetting(_user.settings);
     
-    if(_user.settings.notify ==1 && _user.notify.power){
-        this.notify.punch=true
-        
-    }
-    if(_user.settings.notify ==2 && _user.notify.power){
-        this.notify.later=true
-    }
-    if(_user.settings.notify ==2 && _user.notify.power){
-        this.notify.tell_punsh=true
-    }
-    if(_user.settings.notify ==4 && _user.notify.power){
-        this.notify.news=true
-    }
-
     //提醒打卡
     document.querySelector("#tellSwitch").addEventListener("toggle", e => {
       e.preventDefault();
       let isActive = e.detail.isActive;
-      let power = isActive?1:0
-      this.setNotify(_user.user_id,1,power)
+      let power = isActive ? 1 : 0;
+      this.setNotify(_user.user_id, 1, power);
     });
     //迟到通知
     document.getElementById("laterSwitch").addEventListener("toggle", e => {
       e.preventDefault();
       let isActive = e.detail.isActive;
-      let power = isActive?1:0
-      this.setNotify(_user.user_id,2,power)
+      let power = isActive ? 1 : 0;
+      this.setNotify(_user.user_id, 2, power);
     });
     //自动打卡
     document.getElementById("punchSwitch").addEventListener("toggle", e => {
       e.preventDefault();
       let isActive = e.detail.isActive;
-      let power = isActive?1:0
-      this.setNotify(_user.user_id,3,power)
+      let power = isActive ? 1 : 0;
+      this.setNotify(_user.user_id, 3, power);
     });
     //新闻通知
     document.getElementById("newsSwitch").addEventListener("toggle", e => {
       e.preventDefault();
       let isActive = e.detail.isActive;
-      let power = isActive?1:0
-      this.setNotify(_user.user_id,4,power)
+      let power = isActive ? 1 : 0;
+      this.setNotify(_user.user_id, 4, power);
     });
     mui(".mui-switch")["switch"]();
   }

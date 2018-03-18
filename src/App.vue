@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive></transition> -->
-     <router-view class="router" ref="router"/>
+     <router-view class="router" ref="router" keep-alive/>
     <v-footer :menu="menu" v-if="getFooterState" id="tabbar"></v-footer>
   </div>
 </template>
@@ -10,7 +10,7 @@
 import vHead from "@/components/header.vue";
 import vSlider from "@/components/slider.vue";
 import vFooter from "@/components/footer.vue";
-import { mapState,mapGetters} from "vuex"
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "App",
@@ -48,9 +48,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getFooterState']),
+    ...mapGetters(["getFooterState"]),
     ...mapState({
-      direction: state => state.mutations.navigater.direction,
+      direction: state => state.mutations.navigater.direction
     })
   },
   components: {
@@ -83,8 +83,8 @@ export default {
       types[plus.networkinfo.CONNECTION_CELL2G] = "Cellular 2G connection";
       types[plus.networkinfo.CONNECTION_CELL3G] = "Cellular 3G connection";
       types[plus.networkinfo.CONNECTION_CELL4G] = "Cellular 4G connection";
-      if(plus.networkinfo.getCurrentType()==3){
-        console.log(this._getWifiName())
+      if (plus.networkinfo.getCurrentType() == 3) {
+        console.log(this._getWifiName());
       }
     },
     _onNetChange() {
@@ -143,16 +143,27 @@ export default {
     }
   },
   mounted() {
-    let _this = this
+    let _this = this;
     mui.plusReady(function() {
       plus.navigator.setStatusBarBackground("#eb7d46");
-      document.querySelector('#tabbar').style.top = (plus.display.resolutionHeight - 50) + "px";
+      document.querySelector("#tabbar").style.top =
+        plus.display.resolutionHeight - 50 + "px";
       //_this._networkinfo();
       //document.addEventListener("netchange", _this._onNetChange, false);
     });
   },
   watch: {
-   
+    '$route'(to, from) {
+      const _this = this;
+      if (from.name === "home" && to.name !== "home") {
+        let positionStore = {
+          x: window.pageXOffset,
+          y: window.pageYOffset
+        };
+        console.log(positionStore)
+        sessionStorage.setItem("indexScrollTop", JSON.stringify(positionStore));
+      }
+    }
   }
 };
 </script>
@@ -217,7 +228,9 @@ body {
 :focus {
   outline: 0;
 }
-.mui-card-content img {width:87%}
+.mui-card-content img {
+  width: 90%;
+}
 a:hover,
 a:visited,
 a:link,

@@ -24,15 +24,17 @@ import NewsDetails from '@/views/news_details'
 Vue.use(Router)
 
 export default new Router({
-  //mode: 'history',
+  mode: 'history',
+  hashbang:true,
+  saveScrollPosition:true,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
     } else {
-      return {
-        x: 0,
-        y: 0
+      if (from.meta.keepAlive) {
+        from.meta.savedPosition = document.body.scrollTop
       }
+      return { x: 0, y: to.meta.savedPosition || 0 }
     }
   },
   routes: [{
