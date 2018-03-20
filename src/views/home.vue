@@ -51,7 +51,7 @@ export default {
         title: true,
         indicator: true,
         limit: 4,
-        images: [{}, {}, {}, {}]
+        images: [{},{},{},{}]
       },
       mediaList: [],
       current_page: 1,
@@ -70,14 +70,8 @@ export default {
   },
   mounted() {
     document.querySelector("._v-content").style.paddingBottom = 260 + "px";
-    document.querySelector("._v-content").addEventListener('onscroll',()=>{
-      console.log(1)
-    });
   },
   methods: {
-    onScroll($event){
-      console.log($event)
-    },
     refresh(done) {
       let _this = this;
       _this.ajax(
@@ -114,7 +108,7 @@ export default {
           }
           setTimeout(() => {
             _this.isLoaded = result.false;
-          }, 1.5e3);
+          },0.5e3);
         },
         "POST"
       );
@@ -148,11 +142,16 @@ export default {
               self.mediaList.push(item);
             });
             done();
-          }, 1.8e3);
+          },0.5e3);
       });
     },
     _initCarousel() {
       let self = this;
+      let carousel = sessionStorage.getItem('_carousel');
+      if(carousel){
+        self.slider.images = JSON.parse(carousel);
+        return;
+      }
       this.$fly
         .get("/query", {
           action: "list",
@@ -167,6 +166,8 @@ export default {
           if (!res.status) {
             return;
           }
+          let carousel = res.data;
+          sessionStorage.setItem('_carousel',JSON.stringify(carousel))
           self.slider.images = res.data;
         });
     },
@@ -186,7 +187,6 @@ export default {
             console.log(res.msg);
             return;
           }
-
           let _data = res.data;
           this.last_id = _data.data[0].id;
           this.mediaList = _data.data;

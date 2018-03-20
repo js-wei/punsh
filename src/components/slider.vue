@@ -29,11 +29,6 @@
 </template>
 <script>
 export default {
-  data() {
-    return {
-      //images:[]
-    };
-  },
   computed: {
     images() {
       return this.slider.images;
@@ -56,6 +51,7 @@ export default {
   .mui-slider-group {
     background-color:white;
     .mui-slider-item {
+      touch-action: none;
       a {
         img {
           height: 220px;
