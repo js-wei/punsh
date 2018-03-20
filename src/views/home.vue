@@ -51,7 +51,7 @@ export default {
         title: true,
         indicator: true,
         limit: 4,
-        images: [{},{},{},{}]
+        images: [{}, {}, {}, {}]
       },
       mediaList: [],
       current_page: 1,
@@ -74,9 +74,8 @@ export default {
   methods: {
     refresh(done) {
       let _this = this;
-      _this.ajax(
-        "/query",
-        {
+      _this.$fly
+        .get("/query", {
           action: "refresh",
           mod: "article",
           field: "id,title,author,description,image,date",
@@ -90,8 +89,9 @@ export default {
               val: this.last_id
             }
           ]
-        },
-        res => {
+        })
+        .then(res => {
+          res = res.data;
           done();
           if (!res.status) {
             return;
@@ -108,10 +108,8 @@ export default {
           }
           setTimeout(() => {
             _this.isLoaded = result.false;
-          },0.5e3);
-        },
-        "POST"
-      );
+          }, 0.5e3);
+        });
     },
     infinite(done) {
       let self = this;
@@ -142,13 +140,13 @@ export default {
               self.mediaList.push(item);
             });
             done();
-          },0.5e3);
+          }, 0.5e3);
       });
     },
     _initCarousel() {
       let self = this;
-      let carousel = sessionStorage.getItem('_carousel');
-      if(carousel){
+      let carousel = sessionStorage.getItem("_carousel");
+      if (carousel) {
         self.slider.images = JSON.parse(carousel);
         return;
       }
@@ -167,7 +165,7 @@ export default {
             return;
           }
           let carousel = res.data;
-          sessionStorage.setItem('_carousel',JSON.stringify(carousel))
+          sessionStorage.setItem("_carousel", JSON.stringify(carousel));
           self.slider.images = res.data;
         });
     },

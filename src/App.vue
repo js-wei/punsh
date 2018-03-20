@@ -84,7 +84,7 @@ export default {
       types[plus.networkinfo.CONNECTION_CELL3G] = "Cellular 3G connection";
       types[plus.networkinfo.CONNECTION_CELL4G] = "Cellular 4G connection";
       if (plus.networkinfo.getCurrentType() == 3) {
-        console.log(this._getWifiName());
+        
       }
     },
     _onNetChange() {
@@ -99,6 +99,7 @@ export default {
         case plus.networkinfo.CONNECTION_CELL3G:
         case plus.networkinfo.CONNECTION_CELL4G:
           mui.toast("当前网络非WiFi");
+          
           break;
         default:
           mui.toast("当前没有网络");
