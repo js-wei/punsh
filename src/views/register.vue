@@ -101,7 +101,7 @@ export default {
         }
         if (self.start_flag) {
           self.settime();
-          self.axios
+          self.$fly
             .get("/send_message", { params: { tel: self.phone } })
             .then(res => {
               if (res.status != 200) {

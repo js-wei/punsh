@@ -32,10 +32,10 @@
                         <p>
                             日期:{{item.date}} 签到:{{item.punsh}}
                             <span class="mui-pull-right">
-                                <span v-if="item.type==2" class="mui-btn-success">正点</span>
-                                <span v-if="item.type==3" class="mui-btn-primary">迟到</span>
-                                <span v-if="item.type==4" class="mui-btn-warning">早退</span>
-                                <span v-if="item.type==5" class="mui-btn-danger">旷工</span>
+                                <span v-if="item.type==1" class="mui-btn-success">正点</span>
+                                <span v-if="item.type==2" class="mui-btn-primary">迟到</span>
+                                <span v-if="item.type==3" class="mui-btn-warning">早退</span>
+                                <span v-if="item.type==4" class="mui-btn-danger">旷工</span>
                             </span>
                         </p>
                         <p>{{item.content}}</p>  
@@ -64,23 +64,23 @@ export default {
       current: 1,
       pushType: [
         {
-          id: 1,
+          id: 0,
           text: "全部"
         },
         {
-          id: 2,
+          id: 1,
           text: "正点"
         },
         {
-          id: 3,
+          id: 2,
           text: "迟到"
         },
         {
-          id: 4,
+          id: 3,
           text: "早退"
         },
         {
-          id: 5,
+          id: 4,
           text: "旷工"
         }
       ],

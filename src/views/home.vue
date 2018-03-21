@@ -81,7 +81,7 @@ export default {
           field: "id,title,author,description,image,date",
           limit: 3,
           column_id: 1,
-          order: "sort asc,date desc",
+          order: "sort asc,date asc",
           where: [
             {
               field: "id",
@@ -113,7 +113,7 @@ export default {
     },
     infinite(done) {
       let self = this;
-      if (this.current_page > this.last_page) {
+      if (this.current_page >= this.last_page) {
         done(true);
         return;
       }
@@ -131,7 +131,6 @@ export default {
           })
           .then(res => {
             if (!res.data.status) {
-              console.log(res.data.msg);
               return;
             }
             res = res.data.data;

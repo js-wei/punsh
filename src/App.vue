@@ -238,6 +238,9 @@ a:link,
 a:active {
   background-color: unset;
 }
+.loading-layer{
+  padding-bottom:20px;
+}
 .amap-simple-marker .amap-simple-marker-label {
   color: #fff;
   font-size: 12px;
@@ -281,6 +284,11 @@ span.mint-cell-text {
 .mint-cell-wrapper {
   background: none;
   border-bottom: 1px solid #f2f2f2;
+}
+._v-container{
+  ._v-content{
+    padding-bottom: 50px;
+  }
 }
 // .my-scroller {
 //   .pull-to-refresh-layer {
