@@ -50,7 +50,7 @@ export default {
   computed: {
     ...mapGetters(["getFooterState"]),
     ...mapState({
-      direction: state => state.mutations.navigater.direction
+      isBack: state=> state.mutations.navigaterBack
     })
   },
   components: {
@@ -155,15 +155,15 @@ export default {
   },
   watch: {
     '$route'(to, from) {
-      const _this = this;
-      if (from.name === "home" && to.name !== "home") {
-        let positionStore = {
-          x: window.pageXOffset,
-          y: window.pageYOffset
-        };
-        console.log(positionStore)
-        sessionStorage.setItem("indexScrollTop", JSON.stringify(positionStore));
-      }
+      let back = localStorage.getItem('isBack');
+      mui.plusReady(()=>{
+        plus.key.addEventListener('backbutton', function() {
+          console.log(back)
+          if(!back){
+            return;
+          }
+        }, false);
+      });
     }
   }
 };
