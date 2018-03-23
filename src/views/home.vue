@@ -75,12 +75,9 @@ export default {
     });
   },
   methods: {
-    onScroll($event){
-      console.log($event)
-    },
     refresh(done) {
       let _this = this;
-      _this.ajax(
+      _this.$fly.get(
         "/query",
         {
           action: "refresh",
@@ -96,28 +93,26 @@ export default {
               val: this.last_id
             }
           ]
-        },
-        res => {
-          done();
-          if (!res.status) {
-            return;
-          }
-          _this.isLoaded = true;
-          let result = res.data;
-          _this.count = result.length || 0;
-          if (_this.count) {
-            result.forEach(item => {
-              _this.mediaList.unshift(item);
-              _this.last_id = item.id;
-            });
-            _this.current_page = 1;
-          }
-          setTimeout(() => {
-            _this.isLoaded = result.false;
-          }, 1.5e3);
-        },
-        "POST"
-      );
+        }).then(res=>{
+            done();
+            res = res.data
+            if (!res.status) {
+              return;
+            }
+            _this.isLoaded = true;
+            let result = res.data;
+            _this.count = result.length || 0;
+            if (_this.count) {
+              result.forEach(item => {
+                _this.mediaList.unshift(item);
+                _this.last_id = item.id;
+              });
+              _this.current_page = 1;
+            }
+            setTimeout(() => {
+              _this.isLoaded = result.false;
+            }, 1.5e3);
+        });
     },
     infinite(done) {
       let self = this;
