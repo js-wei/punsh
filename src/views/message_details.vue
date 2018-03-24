@@ -26,8 +26,8 @@
                     <img src="../assets/logo.png" />
                     <div class="mui-media-body">
                         {{article.title}}
-                        <p>发布人 {{article.author}}</p>
-                        <p>发布日期 {{article.date}}</p>
+                        <p>发布人 {{article.author|is_default("公司人事部")}}</p>
+                        <p>发布日期 {{article.date_format}}</p>
                     </div>
                 </div>
                 <!--内容区-->
@@ -46,19 +46,27 @@
             return {
                 title: '查看消息',
                 id:this.$route.params.id,
-                article:{
-                    title:'关于清明节3天假期的放假通知',
-                    date:'2018-03-14 08:30',
-                    author:'人事部',
-                    content:`<p>根据国家规定公司决定在3月8,9,10三天进行放假,请给我同事互相转告</p>`
-                }
+                article:{}
             }
         },
         components: {
             vHead,
         },
+        methods: {
+            _initData() {
+                this.$fly.get('/query',{
+                    action:'details',
+                    mod:'message',
+                    id:this.id
+                }).then(res=>{
+                    if(res.data){
+                        this.article = res.data.data;
+                    }
+                })
+            }
+        },
         created(){
-            console.log(this.id);
+            this._initData()
         }
     }
 </script>

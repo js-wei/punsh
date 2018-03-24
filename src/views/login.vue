@@ -63,12 +63,11 @@ export default {
         })
         .then(res => {
           mui.hideLoading()
+          if (res.engine.status !== 200) {
+            mui.toast("服务器繁忙或错误");
+            return;
+          }
           res = res.data
-          // if (res.engine.status !== 200) {
-          //   mui.toast("服务器繁忙或错误");
-          //   return;
-          // }
-          
           if (!res.status) {
             mui.toast(res.msg);
             return;
@@ -78,7 +77,7 @@ export default {
             localStorage.removeItem("logined");
             localStorage.setItem("logined", JSON.stringify(res.data));
             _this.$router.push(_this.redirect);
-          }, 2e3);
+          }, 1.2e3);
         });
     },
     _md5(str = "") {

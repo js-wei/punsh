@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-18 3:37:09
+ * Modified By: 2018-03-20 8:50:20
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -27,7 +27,7 @@
                     <div class="mui-media-body">
                         {{article.title}}
                         <p>{{article.author}}</p>
-                        <p>{{article.date|time_ago}}前</p>
+                        <p>{{article.date|time_ago}}</p>
                     </div>
                 </div>
                 <!--内容区-->

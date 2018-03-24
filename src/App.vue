@@ -50,7 +50,7 @@ export default {
   computed: {
     ...mapGetters(["getFooterState"]),
     ...mapState({
-      direction: state => state.mutations.navigater.direction
+      isBack: state=> state.mutations.navigaterBack
     })
   },
   components: {
@@ -84,7 +84,7 @@ export default {
       types[plus.networkinfo.CONNECTION_CELL3G] = "Cellular 3G connection";
       types[plus.networkinfo.CONNECTION_CELL4G] = "Cellular 4G connection";
       if (plus.networkinfo.getCurrentType() == 3) {
-        console.log(this._getWifiName());
+        
       }
     },
     _onNetChange() {
@@ -99,6 +99,7 @@ export default {
         case plus.networkinfo.CONNECTION_CELL3G:
         case plus.networkinfo.CONNECTION_CELL4G:
           mui.toast("当前网络非WiFi");
+          
           break;
         default:
           mui.toast("当前没有网络");
@@ -154,15 +155,15 @@ export default {
   },
   watch: {
     '$route'(to, from) {
-      const _this = this;
-      if (from.name === "home" && to.name !== "home") {
-        let positionStore = {
-          x: window.pageXOffset,
-          y: window.pageYOffset
-        };
-        console.log(positionStore)
-        sessionStorage.setItem("indexScrollTop", JSON.stringify(positionStore));
-      }
+      let back = localStorage.getItem('isBack');
+      mui.plusReady(()=>{
+        plus.key.addEventListener('backbutton', function() {
+          console.log(back)
+          if(!back){
+            return;
+          }
+        }, false);
+      });
     }
   }
 };
@@ -237,6 +238,9 @@ a:link,
 a:active {
   background-color: unset;
 }
+.loading-layer{
+  padding-bottom:20px;
+}
 .amap-simple-marker .amap-simple-marker-label {
   color: #fff;
   font-size: 12px;
@@ -280,6 +284,11 @@ span.mint-cell-text {
 .mint-cell-wrapper {
   background: none;
   border-bottom: 1px solid #f2f2f2;
+}
+._v-container{
+  ._v-content{
+    padding-bottom: 50px;
+  }
 }
 // .my-scroller {
 //   .pull-to-refresh-layer {

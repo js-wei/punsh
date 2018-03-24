@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:24:18
  * Author: 魏巍
  * -----
- * Last Modified: '2018-03-16 9:32:04
+ * Last Modified: '2018-03-22 11:53:29
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -20,7 +20,8 @@ import {
 	HIDE_HEADER,
 	HIDE_FOOTER,
 	UPDATE_DIRECTION,
-	UPDATE_SITE_CONFIG
+	UPDATE_SITE_CONFIG,
+	UPDATE_NAVIGATER_BACK,
 } from './mutation-type'
 
 const state={
@@ -30,6 +31,7 @@ const state={
 	footer:true,
 	navigater:null,
 	site:null,
+	navigaterBack:null
 };
 
 const mutations={
@@ -60,6 +62,10 @@ const mutations={
 	},
 	[UPDATE_SITE_CONFIG](state,config){
 		state.site = config;
+	},
+	[UPDATE_NAVIGATER_BACK](state,status){
+		state.navigaterBack=status
+		localStorage.setItem('isBack',status);
 	}
 };
 
@@ -78,6 +84,9 @@ const getters={
 	},
 	getSiteState(state){
 		return state.site
+	},
+	getNavigaterBackState(state){
+		return state.navigaterBack
 	}
 };
 

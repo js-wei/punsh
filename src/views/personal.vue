@@ -3,7 +3,7 @@
         <v-head :title="title" :isBack="isBack"></v-head>
         <div class="personal">
             <div class="personal-title">
-                <img src="static/images/logo.png" alt="header">
+                <img src="/static/images/logo.png" alt="header">
                 <div class="information" v-if="isLogin">
                     <div>魏巍</div>
                     <div>ID:1325565</div>

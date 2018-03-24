@@ -70,22 +70,18 @@ export default {
   },
   mounted() {
     document.querySelector("._v-content").style.paddingBottom = 260 + "px";
-    document.querySelector("._v-content").addEventListener('onscroll',()=>{
-      console.log(1)
-    });
   },
   methods: {
     refresh(done) {
       let _this = this;
-      _this.$fly.get(
-        "/query",
-        {
+      _this.$fly
+        .get("/query", {
           action: "refresh",
           mod: "article",
           field: "id,title,author,description,image,date",
           limit: 3,
           column_id: 1,
-          order: "sort asc,date desc",
+          order: "sort asc,date asc",
           where: [
             {
               field: "id",
@@ -93,25 +89,26 @@ export default {
               val: this.last_id
             }
           ]
-        }).then(res=>{
-            done();
-            res = res.data
-            if (!res.status) {
-              return;
-            }
-            _this.isLoaded = true;
-            let result = res.data;
-            _this.count = result.length || 0;
-            if (_this.count) {
-              result.forEach(item => {
-                _this.mediaList.unshift(item);
-                _this.last_id = item.id;
-              });
-              _this.current_page = 1;
-            }
-            setTimeout(() => {
-              _this.isLoaded = result.false;
-            }, 1.5e3);
+        })
+        .then(res => {
+          res = res.data;
+          done();
+          if (!res.status) {
+            return;
+          }
+          _this.isLoaded = true;
+          let result = res.data;
+          _this.count = result.length || 0;
+          if (_this.count) {
+            result.forEach(item => {
+              _this.mediaList.unshift(item);
+              _this.last_id = item.id;
+            });
+            _this.current_page = 1;
+          }
+          setTimeout(() => {
+            _this.isLoaded = result.false;
+          }, 0.5e3);
         });
     },
     infinite(done) {
@@ -134,7 +131,6 @@ export default {
           })
           .then(res => {
             if (!res.data.status) {
-              console.log(res.data.msg);
               return;
             }
             res = res.data.data;
@@ -143,11 +139,16 @@ export default {
               self.mediaList.push(item);
             });
             done();
-          }, 1.8e3);
+          }, 0.5e3);
       });
     },
     _initCarousel() {
       let self = this;
+      let carousel = sessionStorage.getItem("_carousel");
+      if (carousel) {
+        self.slider.images = JSON.parse(carousel);
+        return;
+      }
       this.$fly
         .get("/query", {
           action: "list",
@@ -162,6 +163,8 @@ export default {
           if (!res.status) {
             return;
           }
+          let carousel = res.data;
+          sessionStorage.setItem("_carousel", JSON.stringify(carousel));
           self.slider.images = res.data;
         });
     },
@@ -181,7 +184,6 @@ export default {
             console.log(res.msg);
             return;
           }
-
           let _data = res.data;
           this.last_id = _data.data[0].id;
           this.mediaList = _data.data;

@@ -20,6 +20,8 @@ import GetLeave from '@/views/get_leave'
 import ApplyFor from '@/views/applyfor'
 import PushDetails from '@/views/push_details'
 import NewsDetails from '@/views/news_details'
+import Quora from '@/views/quora'
+
 
 Vue.use(Router)
 
@@ -40,29 +42,55 @@ export default new Router({
   routes: [{
       path: '/home',
       name: 'home',
-      component: Home
+      component: Home,
+      meta: {
+        requiresAuth: false,
+        isBack: false
+      }
     },
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
+    },
+    {
+      path: '/quora',
+      name: 'quora',
+      component: Quora,
+      meta: {
+        requiresAuth: false,
+        isBack: false
+      }
     },
     {
       path: '/register',
       name: 'register',
-      component: Register
+      component: Register,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
     },
     {
       path: '/forget',
       name: 'forget',
-      component: Forget
+      component: Forget,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
     },
     {
       path: '/personal',
       name: 'personal',
       component: Personal,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:false
       }
     },
     {
@@ -70,7 +98,8 @@ export default new Router({
       name: 'setting',
       component: Setting,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -78,7 +107,8 @@ export default new Router({
       name: 'safe',
       component: Safe,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -86,7 +116,8 @@ export default new Router({
       name: 'password',
       component: Password,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -94,7 +125,8 @@ export default new Router({
       name: 'phone',
       component: Phone,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -102,7 +134,8 @@ export default new Router({
       name: 'feedback',
       component: Feedback,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -110,7 +143,8 @@ export default new Router({
       name: 'punch',
       component: Punch,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:false
       }
     },
     {
@@ -118,7 +152,8 @@ export default new Router({
       name: 'message',
       component: Message,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -126,7 +161,8 @@ export default new Router({
       name: 'message_details',
       component: MessageDetails,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -134,7 +170,8 @@ export default new Router({
       name: 'push',
       component: Push,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -142,7 +179,8 @@ export default new Router({
       name: 'leave',
       component: Leave,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -150,7 +188,8 @@ export default new Router({
       name: 'applyfor',
       component: ApplyFor,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -158,7 +197,8 @@ export default new Router({
       name: 'leave_detail',
       component: GetLeave,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
@@ -166,13 +206,18 @@ export default new Router({
       name: 'push_details',
       component: PushDetails,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        isBack:true
       }
     },
     {
       path: '/news_defailt/:id',
       name: 'news_defailt',
-      component: NewsDetails
+      component: NewsDetails,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
     },
     {
       path: '/',

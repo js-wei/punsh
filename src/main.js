@@ -80,6 +80,11 @@ axios.interceptors.response.use(function (response) { //配置请求回来的信
 // history.setItem('/', 0);
 
 router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.isBack)) {
+    store.commit('UPDATE_NAVIGATER_BACK',true)
+  }else{
+    store.commit('UPDATE_NAVIGATER_BACK',false)
+  }
   if (to.name == 'punch') {
     store.commit('HIDE_FOOTER')
   } else {
@@ -100,7 +105,7 @@ router.beforeEach((to, from, next) => {
   //   to.path !== '/' && history.setItem(to.path, historyCount);
   //   store.commit('UPDATE_DIRECTION', {direction: 'forward'})
   // }
-
+ 
   if (to.matched.some(res => res.meta.requiresAuth)) { // 判断是否需要登录权限
     let logined = localStorage.getItem('logined');
     if (!logined) {

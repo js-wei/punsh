@@ -122,9 +122,9 @@ export function time_ago (time,t='zh') {
 	const between = Date.now() / 1000 - Number(time)
 	let lang = {
 		zh:[
-			'分钟',
-			'小时',
-			'天'
+			'分钟前',
+			'小时前',
+			'天前'
 		],
 		en:[
 			'minute',
@@ -132,8 +132,10 @@ export function time_ago (time,t='zh') {
 			'day'
 		]
 	};
-	
 	if (between < 3600) {
+		if(between<60){
+			return t=='zh'?'刚刚':'a moment ago'
+		}
 		return pluralize(~~(between / 60),lang[t][0],t)
 	} else if (between < 86400) {
 		return pluralize(~~(between / 3600),lang[t][1],t)
