@@ -151,6 +151,7 @@ export default {
         plus.display.resolutionHeight - 50 + "px";
       //_this._networkinfo();
       //document.addEventListener("netchange", _this._onNetChange, false);
+      
     });
   },
   watch: {

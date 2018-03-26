@@ -35,7 +35,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import crypto from 'crypto'
+import crypto from "crypto";
 
 export default {
   data() {
@@ -45,6 +45,7 @@ export default {
       phone: "",
       verify: "",
       password: "",
+      clinetId:0,
       countdown: 60,
       start_flag: true
     };
@@ -60,35 +61,35 @@ export default {
     },
     register() {
       if (!this.phone) {
-        mui.toast("请输入手机号");
-        return;
-      }
-      if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
-        mui.toast("请输入正确的手机号");
-        return;
-      }
-      if (!this.password) {
-        mui.toast("请输入密码");
-        return;
-      }
-      this.axios
-        .post("/register", {
-          phone: this.phone,
-          password: this._md5(this.password),
-          verify: this.verify
-        })
-        .then(res => {
-          if (res.status !== 200) {
-            mui.toast("服务器繁忙或错误");
-            return;
-          }
-          let data = res.data;
-          if (!data.status) {
+          mui.toast("请输入手机号");
+          return;
+        }
+        if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
+          mui.toast("请输入正确的手机号");
+          return;
+        }
+        if (!this.password) {
+          mui.toast("请输入密码");
+          return;
+        }
+        this.axios
+          .post("/register", {
+            phone: this.phone,
+            password: this._md5(this.password),
+            verify: this.verify
+          })
+          .then(res => {
+            if (res.status !== 200) {
+              mui.toast("服务器繁忙或错误");
+              return;
+            }
+            let data = res.data;
+            if (!data.status) {
+              mui.toast(data.msg);
+              return;
+            }
             mui.toast(data.msg);
-            return;
-          }
-          mui.toast(data.msg);
-        });
+          });
     },
     send_code() {
       let self = this;
@@ -133,14 +134,21 @@ export default {
         }, 1000);
       }
     },
-    _md5(str=''){
-        if(!str){
-            return;
-        }
-        var md5 = crypto.createHash("md5");
-        md5.update(str);
-        return md5.digest('hex')
+    _md5(str = "") {
+      if (!str) {
+        return;
+      }
+      var md5 = crypto.createHash("md5");
+      md5.update(str);
+      return md5.digest("hex");
     }
+  },
+  mounted(){
+    //this.clinetId = 
+    mui.plusReay(function() {
+      let push = plus.push.getClientInfo();
+      mui.alert(push);
+    });
   },
   watch: {
     phone(newValue, oldValue) {
@@ -178,14 +186,14 @@ form:after {
     .mui-input-row {
       margin-top: 0.8rem;
       position: relative;
-      label{
-        width:25%;
-        text-align:right;
+      label {
+        width: 25%;
+        text-align: right;
       }
-      input{
-        width:74%;
-        &::-webkit-input-placeholder{
-          font-size:1.2rem;
+      input {
+        width: 74%;
+        &::-webkit-input-placeholder {
+          font-size: 1.2rem;
         }
       }
       .line {
@@ -213,10 +221,10 @@ form:after {
       .mui-btn-primary {
         background-color: nth($baseColor, 3);
         border-color: nth($baseColor, 3);
-        height:45px;
-        line-height:20px;
-        margin:0;
-        padding:0;
+        height: 45px;
+        line-height: 20px;
+        margin: 0;
+        padding: 0;
       }
     }
     .mui-input-row.del-line {
@@ -235,7 +243,7 @@ form:after {
       button {
         position: absolute;
         width: 110px;
-        top:0;
+        top: 0;
         right: 0;
         background-color: nth($baseColor, 3);
         border-color: nth($baseColor, 3);
