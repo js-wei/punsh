@@ -45,7 +45,6 @@ export default {
       phone: "",
       verify: "",
       password: "",
-      clinetId:0,
       countdown: 60,
       start_flag: true
     };
@@ -56,40 +55,36 @@ export default {
     })
   },
   methods: {
-    change_phone(value) {
-      console.log(value);
-    },
     register() {
       if (!this.phone) {
-          mui.toast("请输入手机号");
+        mui.toast("请输入手机号");
+        return;
+      }
+      if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
+        mui.toast("请输入正确的手机号");
+        return;
+      }
+      if (!this.password) {
+        mui.toast("请输入密码");
+        return;
+      }
+      let data = {
+        phone: this.phone,
+        password: this._md5(this.password),
+        verify: this.verify,
+        push_cleint_id: this.getPushClenitId()
+      };
+      this.$fly.post("/register", data).then(res => {
+        let data = res.data;
+        if (!data.status) {
+          mui.toast(data.msg);
           return;
         }
-        if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
-          mui.toast("请输入正确的手机号");
-          return;
-        }
-        if (!this.password) {
-          mui.toast("请输入密码");
-          return;
-        }
-        this.axios
-          .post("/register", {
-            phone: this.phone,
-            password: this._md5(this.password),
-            verify: this.verify
-          })
-          .then(res => {
-            if (res.status !== 200) {
-              mui.toast("服务器繁忙或错误");
-              return;
-            }
-            let data = res.data;
-            if (!data.status) {
-              mui.toast(data.msg);
-              return;
-            }
-            mui.toast(data.msg);
-          });
+        mui.toast(data.msg);
+        setTimeout(() => {
+          this.$router.push("/login");
+        }, 800);
+      });
     },
     send_code() {
       let self = this;
@@ -102,20 +97,14 @@ export default {
         }
         if (self.start_flag) {
           self.settime();
-          self.$fly
-            .get("/send_message", { params: { tel: self.phone } })
-            .then(res => {
-              if (res.status != 200) {
-                mui.toast("服务器繁忙");
-                return;
-              }
-              let data = res.data;
-              if (!data.status) {
-                mui.toast(data.msg);
-                return;
-              }
+          self.$fly.post("/send_message", { tel: self.phone }).then(res => {
+            let data = res.data;
+            if (!data.status) {
               mui.toast(data.msg);
-            });
+              return;
+            }
+            mui.toast(data.msg);
+          });
         }
       }
     },
@@ -141,15 +130,13 @@ export default {
       var md5 = crypto.createHash("md5");
       md5.update(str);
       return md5.digest("hex");
+    },
+    getPushClenitId() {
+      let push = plus.push.getClientInfo();
+      return push.clientid || "";
     }
   },
-  mounted(){
-    //this.clinetId = 
-    mui.plusReay(function() {
-      let push = plus.push.getClientInfo();
-      mui.alert(push);
-    });
-  },
+  mounted() {},
   watch: {
     phone(newValue, oldValue) {
       if (newValue.length > 0) {

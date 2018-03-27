@@ -37,7 +37,7 @@ export default {
     return {
       phone: "",
       password: "",
-      redirect:this.$route.query.redirect
+      redirect:this.$route.query.redirect || '/'
     };
   },
   methods: {
@@ -59,7 +59,8 @@ export default {
       _this.$fly
         .post("/login", {
           phone: _this.phone,
-          password: _this._md5(_this.password)
+          password: _this._md5(_this.password),
+          push_cleint_id: this.getPushClenitId()
         })
         .then(res => {
           mui.hideLoading()
@@ -87,6 +88,10 @@ export default {
       var md5 = crypto.createHash("md5");
       md5.update(str);
       return md5.digest("hex");
+    },
+    getPushClenitId() {
+      // let push = plus.push.getClientInfo()
+      // return push.clientid || "";
     }
   }
 };

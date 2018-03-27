@@ -40,6 +40,9 @@ export default {
   components: {
     vHead
   },
+  mounted(){
+    //let user = JSON.parse(localStorage.getItem("logined"));
+  },
   watch: {
     ophone: function(o, n) {
       this.disabled_first = o ? false : true;
@@ -52,6 +55,23 @@ export default {
     }
   },
   methods: {
+    changePhone(){
+      let user = JSON.stringify(localStorage.getItem('logined'))
+      this.$fly
+        .post("/upgrade_phone",{ uid:user.user_id ,phone: self.nphone,verify:this.code })
+        .then(res => {
+          let data = res.data;
+          if (!data.status) {
+            mui.toast(data.msg);
+            return;
+          }
+          mui.toast(data.msg);
+          setTimeout(()=>{
+            localStorage.clear('logined')
+            this.$router.push('/login')
+          })
+        });
+    },
     next_step() {
       if (this.disabled_first) {
         mui.toast("请填写绑定或新手机");
@@ -95,12 +115,8 @@ export default {
         if (self.start_flag) {
           self.settime();
           self.$fly
-            .get("/send_message", { params: { tel: self.nphone } })
+            .post("/send_message",{ tel: self.nphone })
             .then(res => {
-              if (res.status != 200) {
-                mui.toast("服务器繁忙");
-                return;
-              }
               let data = res.data;
               if (!data.status) {
                 mui.toast(data.msg);
@@ -132,24 +148,24 @@ export default {
         return "";
       }
       //TODO 修改请求
-      let user = JSON.parse(localStorage.getItem('logined'))
+      let user = JSON.parse(localStorage.getItem("logined"));
       this.$fly
-      .post("/change_phone", {tel:this.nphone,uid:user.user_id})
-      .then(res => {
-        if (res.status != 200) {
-          mui.toast("服务器繁忙");
-          return;
-        }
-        let data = res.data;
-        if (!data.status) {
+        .post("/change_phone", { tel: this.nphone, uid: user.user_id })
+        .then(res => {
+          if (res.status != 200) {
+            mui.toast("服务器繁忙");
+            return;
+          }
+          let data = res.data;
+          if (!data.status) {
+            mui.toast(data.msg);
+            return;
+          }
           mui.toast(data.msg);
-          return;
-        }
-        mui.toast(data.msg);
-        setTimeout(() => {
-          this.$router.go(-1);
-        }, 2e3);
-      });
+          setTimeout(() => {
+            this.$router.go(-1);
+          }, 2e3);
+        });
     }
   }
 };

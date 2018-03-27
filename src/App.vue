@@ -159,7 +159,6 @@ export default {
       let back = localStorage.getItem('isBack');
       mui.plusReady(()=>{
         plus.key.addEventListener('backbutton', function() {
-          console.log(back)
           if(!back){
             return;
           }

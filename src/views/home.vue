@@ -69,7 +69,7 @@ export default {
     this._initNews();
   },
   mounted() {
-    document.querySelector("._v-content").style.paddingBottom = 260 + "px";
+    document.querySelector("._v-content").style.paddingBottom = 270 + "px";
   },
   methods: {
     refresh(done) {

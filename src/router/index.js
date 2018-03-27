@@ -21,6 +21,9 @@ import ApplyFor from '@/views/applyfor'
 import PushDetails from '@/views/push_details'
 import NewsDetails from '@/views/news_details'
 import Quora from '@/views/quora'
+import Edit from '@/views/edit'
+import Avatar from '@/views/avatar'
+import Information from '@/views/information'
 
 
 Vue.use(Router)
@@ -67,6 +70,15 @@ export default new Router({
       }
     },
     {
+      path:'/base',
+      name: 'base',
+      component: Edit,
+      meta: {
+        requiresAuth: false,
+        isBack: false
+      }
+    },
+    {
       path: '/register',
       name: 'register',
       component: Register,
@@ -75,6 +87,25 @@ export default new Router({
         isBack: true
       }
     },
+    {
+      path: '/avatar',
+      name: 'avatar',
+      component: Avatar,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
+    },
+    {
+      path: '/information',
+      name: 'information',
+      component: Information,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
+    },
+    
     {
       path: '/forget',
       name: 'forget',

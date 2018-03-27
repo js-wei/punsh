@@ -49,11 +49,19 @@
 		methods:{
             changePhone(e){
               this.modal.show=true;
-              this.modal.content='您确定要向手机发送验证码吗?'
+              this.modal.content='您确定更改密码?将向手机发送验证码!'
 			},
             yes(e){
 				//TODO 发送验证码
-				
+				let user = JSON.parse(localStorage.getItem('logined'));
+				this.$fly.post("/send_message", { tel: user.phone}).then(res => {
+					let data = res.data;
+					if (!data.status) {
+					mui.toast(data.msg);
+					return;
+					}
+					mui.toast(data.msg);
+				});
 				this.$router.push({path:'/password'});
             },
             no(e){}
