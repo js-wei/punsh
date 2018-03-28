@@ -24,6 +24,7 @@ import Quora from '@/views/quora'
 import Edit from '@/views/edit'
 import Avatar from '@/views/avatar'
 import Information from '@/views/information'
+import Map from '@/views/map'
 
 
 Vue.use(Router)
@@ -82,6 +83,15 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: Register,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: Map,
       meta: {
         requiresAuth: false,
         isBack: true

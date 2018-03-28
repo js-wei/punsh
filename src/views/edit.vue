@@ -30,30 +30,32 @@
                       介绍
                     </div>
                     <div class="toolbar-right" style="width:78%">
-                      {{user.information|is_default('您似乎很懒,没有留下任何脚印')}}
+                      <span>{{user.information|is_default('您似乎很懒,没有留下任何脚印')}}</span>
                       <span class="mui-icon mui-icon-arrowright"></span>
                     </div>
                 </router-link>
             </div>
             <div class="function border-top">
-                <a href="javascript:;" class="dtpicker" data-options='{"type":"date","beginYear":1970,"endYear":2250}'>
+                <a class="dtpicker" @click.stop="change_birthday">
                     <div class="toolbar-left">
                         生日
                     </div>
                     <div class="toolbar-right">
-                        <span id="date">1988-4-14</span>
+                        <span  v-if="birthday">{{birthday}}</span>
+                        <span  v-if="!birthday">{{user.birthday_format|is_default('未填写')}}</span>
                         <span class="mui-icon mui-icon-arrowright"></span>
                     </div>
                 </a>
             </div>
             <div class="function border-top">
                 <a href="javascript:;" id="showCityPicker" @click.stop="change_address">
-                    <div class="toolbar-left">
+                    <div class="toolbar-left" style="width:14%">
                         地区
                     </div>
-                    <div class="toolbar-right">
-                       <span id="area">{{user.address|is_default("江苏省 苏州市")}}</span>
-                       <span class="mui-icon mui-icon-arrowright"></span>
+                    <div class="toolbar-right" style="width:78%">
+                       <p class="mui-ellipsis mui-pull-left" style="width:90%" v-if="!city">{{user.address|is_default('未填写')}}</p>
+                       <p class="mui-ellipsis mui-pull-left" style="width:90%" v-if="city">{{city}}</p>
+                       <span class="mui-icon mui-pull-right mui-icon-arrowright" style="margin-top:18px;"></span>
                     </div>
                 </a>
             </div>
@@ -63,12 +65,14 @@
 <script>
 import "../../static/javascript/mui.picker.min.js";
 import "../../static/javascript/mui.poppicker.js";
+import Cities from "../../static/javascript/city.data-3";
 import vHead from "../components/header";
-import cityData from "../../static/javascript/city.data";
 export default {
   data() {
     return {
-      title: "编辑资料"
+      title: "编辑资料",
+      city: "",
+      birthday: ""
     };
   },
   computed: {
@@ -82,44 +86,62 @@ export default {
   methods: {
     change_address() {
       let _this = this;
-      let cityPicker = new mui.PopPicker({
-        layer: 2
+      var cityPicker3 = new mui.PopPicker({
+        layer: 3
       });
-      cityPicker.setData(cityData);
-      let index = 0;
-      cityPicker.show(function(items) {
-        if (items.length > 0 && index > 0) {
-          let area = items[0].text + " " + items[1].text;
-          _this.$fly.post('/upgrade_address',{
-            uid:_this.user.user_id,
-            addrass:area
-          }).then(res=>{
-            console.log(res)
-          });
-          document.querySelector("#area").innerText = area;
-          mui.toast("地区修改成功");
+      cityPicker3.setData(Cities.cityData3);
+      let i = 0;
+      cityPicker3.show(function(items) {
+        let city = items[0].text + " " + items[1].text + " " + items[1].text;
+        if (i) {
+          _this.city = city;
+          _this.$fly
+            .post("/upgrade_address", {
+              uid: _this.user.user_id,
+              address: city
+            })
+            .then(res => {
+              res = res.data;
+              if (!res.status) {
+                mui.toast(res.msg);
+                return;
+              }
+              mui.toast(res.msg);
+              _this.city = city;
+            });
         }
-        index++;
+        i++;
+      });
+    },
+    change_birthday() {
+      let picker = new mui.DtPicker({
+        type: "date",
+        beginYear: 1970,
+        endYear: 2100
+      });
+      let _this = this;
+      let i = 0;
+      picker.show(function(rs) {
+        let date = rs.text;
+        if (i) {
+           _this.birthday = date;
+          _this.$fly
+            .post("/upgrade_birthday", {
+              uid: _this.user.user_id,
+              date: date
+            })
+            .then(res => {
+              res = res.data;
+              if (!res.status) {
+                mui.toast(res.msg);
+                return;
+              }
+              mui.toast(res.msg);
+            });
+        }
+        i++;
       });
     }
-  },
-  mounted() {
-    let btn = document.querySelector(".dtpicker");
-    btn.addEventListener(
-      "tap",
-      e => {
-        let optionsJson = btn.getAttribute("data-options") || "{}",
-          options = JSON.parse(optionsJson);
-        let picker = new mui.DtPicker(options);
-        picker.show(function(rs) {
-          let date = rs.value;
-          mui.toast("生日修改成功");
-          document.querySelector("#date").innerText = date;
-          picker.dispose();
-        });
-      },
-      false
-    );
   }
 };
 </script>

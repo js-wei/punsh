@@ -50,7 +50,7 @@ export default {
   computed: {
     ...mapGetters(["getFooterState"]),
     ...mapState({
-      isBack: state=> state.mutations.navigaterBack
+      isBack: state => state.mutations.navigaterBack
     })
   },
   components: {
@@ -84,25 +84,34 @@ export default {
       types[plus.networkinfo.CONNECTION_CELL3G] = "Cellular 3G connection";
       types[plus.networkinfo.CONNECTION_CELL4G] = "Cellular 4G connection";
       if (plus.networkinfo.getCurrentType() == 3) {
-        
+        localStorage.setItem("network_type", 2);
+      }
+      if (plus.networkinfo.getCurrentType() > 3) {
+        localStorage.setItem("network_type", 1);
+      }
+      if (plus.networkinfo.getCurrentType() == 1) {
+        localStorage.setItem("network_type", 0);
       }
     },
     _onNetChange() {
+      localStorage.clear("network_type");
       //获取当前网络类型
       var nt = plus.networkinfo.getCurrentType();
       switch (nt) {
         case plus.networkinfo.CONNECTION_ETHERNET:
         case plus.networkinfo.CONNECTION_WIFI:
           mui.toast("当前网络为WiFi");
+          localStorage.setItem("network_type", 2);
           break;
         case plus.networkinfo.CONNECTION_CELL2G:
         case plus.networkinfo.CONNECTION_CELL3G:
         case plus.networkinfo.CONNECTION_CELL4G:
           mui.toast("当前网络非WiFi");
-          
+          localStorage.setItem("network_type", 1);
           break;
         default:
           mui.toast("当前没有网络");
+          localStorage.setItem("network_type", 0);
           break;
       }
     },
@@ -149,20 +158,23 @@ export default {
       plus.navigator.setStatusBarBackground("#eb7d46");
       document.querySelector("#tabbar").style.top =
         plus.display.resolutionHeight - 50 + "px";
-      //_this._networkinfo();
-      //document.addEventListener("netchange", _this._onNetChange, false);
-      
+      _this._networkinfo();
+      document.addEventListener("netchange", _this._onNetChange, false);
     });
   },
   watch: {
-    '$route'(to, from) {
-      let back = localStorage.getItem('isBack');
-      mui.plusReady(()=>{
-        plus.key.addEventListener('backbutton', function() {
-          if(!back){
-            return;
-          }
-        }, false);
+    $route(to, from) {
+      let back = localStorage.getItem("isBack");
+      mui.plusReady(() => {
+        plus.key.addEventListener(
+          "backbutton",
+          function() {
+            if (!back) {
+              return;
+            }
+          },
+          false
+        );
       });
     }
   }
@@ -238,8 +250,8 @@ a:link,
 a:active {
   background-color: unset;
 }
-.loading-layer{
-  padding-bottom:20px;
+.loading-layer {
+  padding-bottom: 20px;
 }
 .amap-simple-marker .amap-simple-marker-label {
   color: #fff;
@@ -285,8 +297,8 @@ span.mint-cell-text {
   background: none;
   border-bottom: 1px solid #f2f2f2;
 }
-._v-container{
-  ._v-content{
+._v-container {
+  ._v-content {
     padding-bottom: 50px;
   }
 }

@@ -41,14 +41,15 @@ export default {
     return {
       title: "打卡签到",
       show: true,
-      company: "苏州三铁企业集团", //打卡公司
-      company_address: "苏州市玉山路99号钻石广场", //公司地址
-      sub_title:'打卡',
+      company: "", //打卡公司
+      company_address: "", //公司地址
+      sub_title: "",
       zoom: 18,
       formattedAddress: "", //打卡地址
       isPunchDisabled: false, //不在范围禁止使用打卡按钮
       position: [0, 0], //打卡坐标
       circle: null,
+      coordsType: "gps",
       events: {
         init(map) {
           let geocoder = new AMap.Geocoder({
@@ -58,7 +59,63 @@ export default {
           geocoder.getLocation(self.company_address, function(status, result) {
             if (status === "complete" && result.info === "OK") {
               self.circle = self.geocoderCallBack(result, map, self);
-              self.geoLocation(map, self);
+              mui.plusReady(() => {
+                if (plus.os.name == "Android") {
+                  var context = plus.android.importClass(
+                    "android.content.Context"
+                  );
+                  var locationManager = plus.android.importClass(
+                    "android.location.LocationManager"
+                  );
+                  var main = plus.android.runtimeMainActivity();
+                  var mainSvr = main.getSystemService(context.LOCATION_SERVICE);
+                  let androidIsOpen = mainSvr.isProviderEnabled(
+                    locationManager.GPS_PROVIDER
+                  );
+                  if (androidIsOpen) {
+                    plus.nativeUI.showWaiting("位置信息定位中...");
+                    plus.geolocation.getCurrentPosition(
+                      function(p) {
+                        let location = {
+                          lat: p.coords.latitude,
+                          lng: p.coords.longitude
+                        };
+                        self.coordsType = p.coordsType;
+                        self.geoLocation(map, self, location);
+                      },
+                      function(e) {
+                        plus.nativeUI.closeWaiting();
+                        mui.alert("请打开定位服务");
+                      },
+                      { geocode: true }
+                    );
+                  } else {
+                    plus.nativeUI.closeWaiting();
+                    mui.alert("请打开定位服务");
+                    setTimeout(() => {
+                      self.$router.push('/')
+                    }, 2.5e3);
+                    // if (self.network == 0) {
+                    //   plus.nativeUI.closeWaiting();
+                    //   mui.toast("没有网络");
+                    //   setTimeout(() => {
+                    //     mui.back();
+                    //   }, 2e3);
+                    //   return;
+                    // } else if (self.network == 1) {
+                    //   plus.nativeUI.closeWaiting();
+                    //   mui.toast("非WIFI网络请打开GPS");
+                    //   setTimeout(() => {
+                    //     mui.back();
+                    //   }, 2e3);
+                    //   return;
+                    // } else {
+                    //   plus.nativeUI.showWaiting("WIFI网络定位中...");
+                    //   self.geoLocation(map, self);
+                    // }
+                  }
+                }
+              });
             }
           });
         }
@@ -68,14 +125,18 @@ export default {
   components: {
     vHead
   },
-  created(){
-    this._initConfig()
-    
+  computed: {
+    network() {
+      return localStorage.getItem("network_type");
+    }
+  },
+  created() {
+    this._initConfig();
   },
   methods: {
     _initConfig() {
       let config = localStorage.getItem("cofing"),
-          _this = this;
+        _this = this;
       if (!config) {
         _this.$fly.get("config").then(res => {
           let _data = res.data;
@@ -91,10 +152,10 @@ export default {
         config = JSON.parse(config);
         _this.company_address = config.address;
         _this.company = config.title;
-        _this.sub_title = config.short_title;
+        _this.sub_title = config.short_title || "公司";
       }
     },
-    punch(e) {
+    punch() {
       if (!this.isPunchDisabled) {
         return;
       }
@@ -102,16 +163,68 @@ export default {
         mui.toast("不在打卡范围内");
         return;
       }
-      
-      this.$fly.post('/punsh',{
-        position:self.position,
-        address:self.formattedAddress,
-        time:this._timestamp()
-      }).then(res=>{
-        //@todo something
-      })
-      
-      
+      mui.toast("打卡成功");
+
+      // this.$fly.post('/punsh',{
+      //   position:self.position,
+      //   address:self.formattedAddress,
+      //   time:this._timestamp()
+      // }).then(res=>{
+      //   //@todo something
+      // })
+    },
+    geoLocation(map, self, gps = "") {
+      //定位
+      if (gps) {
+        let lnglat = new AMap.LngLat(gps.lng, gps.lat);
+        AMap.convertFrom(lnglat, self.coordsType, (status, data) => {
+          if (status === "complete") {
+            let text = {
+              title: "我",
+              sub: "我"
+            };
+            let position = {
+              lng: data.locations[0].lng,
+              lat: data.locations[0].lat
+            };
+            self.addSimpleMarker(position, text, map);
+            self.position = [position.lng, position.lat];
+            self.isPunchDisabled = true;
+            plus.nativeUI.closeWaiting();
+          }
+        });
+        //console.log("as a gps");
+      } else {
+        //console.log("not as gps");
+        map.plugin("AMap.Geolocation", function() {
+          let geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true, //是否使用高精度定位，默认:true
+            timeout: 10000, //超过10秒后停止定位，默认：无穷大
+            buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+            zoomToAccuracy: true, //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+            buttonPosition: "RB"
+          });
+          map.addControl(geolocation);
+          geolocation.getCurrentPosition();
+          AMap.event.addListener(geolocation, "complete", onComplete => {
+            let postion = {
+              lng: onComplete.position.lng,
+              lat: onComplete.position.lat
+            };
+            let text = {
+              title: "我",
+              sub: "我"
+            };
+            self.addSimpleMarker(postion, text, map);
+            self.position = [onComplete.position.lng, onComplete.position.lat];
+            self.isPunchDisabled = true;
+            plus.nativeUI.closeWaiting();
+          }); //返回定位信息
+          AMap.event.addListener(geolocation, "error", onError => {
+            plus.nativeUI.closeWaiting();
+          }); //返回定位出错信息
+        });
+      }
     },
     geocoderCallBack(data, map, self) {
       //地理编码结果数组
@@ -184,65 +297,8 @@ export default {
       circle.setMap(map);
       return circle;
     },
-    reGeocoder(position, cb = {}) {
-      //逆地理编码
-      var geocoder = new AMap.Geocoder({
-        radius: 1000,
-        extensions: "all"
-      });
-      geocoder.getAddress(position, function(status, result) {
-        if (status === "complete" && result.info === "OK") {
-          result = result.regeocode.formattedAddress; //返回地址描述
-          cb(result);
-        }
-      });
-    },
-    geoLocation(map, self, gps = []) {
-      //定位
-      if (!gps) {
-        AMap.convertFrom(gps, "gps", data => {
-          let postion = {
-            lng: data.locations.lng,
-            lat: data.locations.lat
-          };
-          let text = {
-            title: "我",
-            sub: "我"
-          };
-          self.addSimpleMarker(postion, text, map);
-          self.position = [data.locations.lng, data.locations.lat];
-          self.isPunchDisabled = true;
-        });
-      } else {
-        map.plugin("AMap.Geolocation", function() {
-          let geolocation = new AMap.Geolocation({
-            enableHighAccuracy: true, //是否使用高精度定位，默认:true
-            timeout: 10000, //超过10秒后停止定位，默认：无穷大
-            buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-            zoomToAccuracy: true, //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-            buttonPosition: "RB"
-          });
-          map.addControl(geolocation);
-          geolocation.getCurrentPosition();
-          AMap.event.addListener(geolocation, "complete", onComplete => {
-            let postion = {
-              lng: onComplete.position.lng,
-              lat: onComplete.position.lat
-            };
-            let text = {
-              title: "我",
-              sub: "我"
-            };
-            self.addSimpleMarker(postion, text, map);
-            self.position = [onComplete.position.lng, onComplete.position.lat];
-            self.isPunchDisabled = true;
-          }); //返回定位信息
-          AMap.event.addListener(geolocation, "error", onError => {}); //返回定位出错信息
-        });
-      }
-    },
-    back(){
-      this.$router.push('/home')
+    back() {
+      this.$router.push("/home");
     }
   }
 };

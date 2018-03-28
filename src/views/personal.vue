@@ -81,10 +81,10 @@ export default {
       res = res.data;
       if (res.status) {
         this.user = res.data;
-          console.log(this.user)
+        localStorage.clear("logined");
+        localStorage.setItem("logined", JSON.stringify(this.user));
       }
     });
-  
   },
   components: {
     vHead,
