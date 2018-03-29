@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-09 4:57:09
+ * Modified By: 2018-03-29 8:22:48
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -27,8 +27,8 @@ export default {
   data() {
     return {
       title: "请假申请",
-      people:{
-          name:'魏巍'
+      people: {
+        name: "魏巍"
       }
     };
   },
@@ -39,7 +39,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .mui-conntent{
-        margin:20px auto;
-    }
+.mui-conntent {
+  margin: 20px auto;
+}
 </style>

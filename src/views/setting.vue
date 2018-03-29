@@ -191,7 +191,7 @@ export default {
     }
     .logout {
       width: 98%;
-      margin: 10px auto;
+      margin: 20px auto;
       background-color: nth($baseColor, 3);
       color: nth($baseColor, 1);
       border-color: nth($baseColor, 3);

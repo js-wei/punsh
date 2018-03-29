@@ -15,16 +15,16 @@ $_width: 0,10,20,30,40,50,60,70,80,90,100;
 }
 
 @each $x in $px{
-  .margin-top#{$x}{
+  .margin-top-#{$x}{
     margin-top:#{$x}px;
   }
-  .margin-bottom#{$x}{
+  .margin-bottom-#{$x}{
     margin-bottom:#{$x}px;
   }
-  .margin-left#{$x}{
+  .margin-left-#{$x}{
     margin-left:#{$x}px;
   }
-  .margin-right#{$x}{
+  .margin-right-#{$x}{
     margin-right:#{$x}px;
   }
 }

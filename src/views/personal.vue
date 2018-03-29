@@ -3,7 +3,9 @@
         <v-head :title="title" :isBack="isBack"></v-head>
         <div class="personal">
             <div class="personal-title">
-                <img :src="user.head|is_default('http://w.jswei.cn/static/images/logo.png')" alt="header">
+                <router-link to="/avatar">
+                  <img :src="user.head" alt="header" v-if="user.head">
+                </router-link>
                 <div class="information">
                     <div>{{user.nickname|is_default(user.phone)}}</div>
                     <!-- <div>ID:1325565</div> -->
@@ -98,7 +100,7 @@ export default {
   width: 100vw;
   height: auto;
   .personal-title {
-    height: auto;
+    height: 125px;
     padding-bottom: 10px;
     width: 100%;
     background-color: lighten(nth($baseColor, 3), 12%);

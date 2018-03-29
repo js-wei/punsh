@@ -71,11 +71,17 @@ export default {
     get_code() {
       let self = this;
       if (!this.phone) {
-        mui.toast("请输入手机号");
+        mui.toast("请输入手机号", {
+          duration: "long",
+          type: "div"
+        });
         return;
       }
       if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
-        mui.toast("请输入正确的手机号");
+        mui.toast("请输入正确的手机号", {
+          duration: "long",
+          type: "div"
+        });
         return;
       }
       if (self.start_flag) {
@@ -84,15 +90,24 @@ export default {
           .get("/send_message", { params: { tel: self.phone } })
           .then(res => {
             if (res.status != 200) {
-              mui.toast("服务器繁忙");
+              mui.toast("服务器繁忙", {
+                duration: "long",
+                type: "div"
+              });
               return;
             }
             let data = res.data;
             if (!data.status) {
-              mui.toast(data.msg);
+              mui.toast(data.msg, {
+                duration: "long",
+                type: "div"
+              });
               return;
             }
-            mui.toast(data.msg);
+            mui.toast(data.msg, {
+              duration: "long",
+              type: "div"
+            });
           });
       }
     },
@@ -113,27 +128,39 @@ export default {
     },
     next_step() {
       if (!this.phone) {
-        mui.toast("请输入手机号");
+        mui.toast("请输入手机号", {
+          duration: "long",
+          type: "div"
+        });
         return;
       }
       if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
-        mui.toast("请输入正确的手机号");
+        mui.toast("请输入正确的手机号", {
+          duration: "long"
+        });
         return;
       }
       if (!this.code) {
-        mui.toast("请输入验证码");
+        mui.toast("请输入验证码", {
+          duration: "long"
+        });
         return;
       }
       this.axios
         .get("/check_code", { params: { verify: this.code } })
         .then(res => {
           if (res.status != 200) {
-            mui.toast("服务器繁忙");
+            mui.toast("服务器繁忙", {
+              duration: "long"
+            });
             return;
           }
           let data = res.data;
           if (!data.status) {
-            mui.toast(data.msg);
+            mui.toast(data.msg, {
+              duration: "long",
+              type: "div"
+            });
             return;
           }
           this.step = 2;
@@ -141,7 +168,9 @@ export default {
     },
     save() {
       if (this.password != this.confirm_password) {
-        mui.toast("输入的密码不一致");
+        mui.toast("输入的密码不一致", {
+          duration: "long"
+        });
         return;
       }
       let data = {
@@ -151,15 +180,21 @@ export default {
       };
       this.axios.post("/set_password", data).then(res => {
         if (res.status != 200) {
-          mui.toast("服务器繁忙");
+          mui.toast("服务器繁忙", {
+            duration: "long"
+          });
           return;
         }
         let data = res.data;
         if (!data.status) {
-          mui.toast(data.msg);
+          mui.toast(data.msg, {
+            duration: "long"
+          });
           return;
         }
-        mui.toast(data.msg);
+        mui.toast(data.msg, {
+          duration: "long"
+        });
         setTimeout(() => {
           this.$route.push("/login");
         }, 500);
@@ -208,9 +243,9 @@ export default {
     .mui-content-padded {
       margin-top: 3rem;
     }
-    input{
-      &::-webkit-input-placeholder{
-        font-size:1.2rem;
+    input {
+      &::-webkit-input-placeholder {
+        font-size: 1.2rem;
       }
     }
     .mui-btn-primary {

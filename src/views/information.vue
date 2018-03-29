@@ -37,7 +37,9 @@ export default {
     change_info() {
       let _this = this;
       if (!_this.content) {
-        mui.toast("请填写个性签名");
+        mui.toast("请填写个性签名", {
+          duration: "long"
+        });
         return;
       }
       _this.$fly
@@ -48,10 +50,14 @@ export default {
         .then(res => {
           res = res.data;
           if (!res.status) {
-            mui.toast(res.msg);
+            mui.toast(res.msg, {
+              duration: "long"
+            });
             return;
           }
-          mui.toast(res.info);
+          mui.toast(res.info, {
+            duration: "long"
+          });
           _this.user.infomation = _this.content;
           setTimeout(() => {
             _this.$router.push("/personal");

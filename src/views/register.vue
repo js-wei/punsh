@@ -16,6 +16,7 @@
                 <label>密码</label>
                 <input type="password" class="mui-input-password " v-model="password" placeholder="请输入密码">
             </div>
+            <div class="mui-clearfix"></div>
             <div class="mui-button-row">
                 <button type="button" class="mui-btn mui-btn-block mui-btn-primary" @click="register" >注册新账号</button>
             </div>
@@ -57,22 +58,28 @@ export default {
   methods: {
     register() {
       if (!this.phone) {
-        mui.toast("请输入手机号");
+        mui.toast("请输入手机号", {
+          duration: "long"
+        });
         return;
       }
       if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
-        mui.toast("请输入正确的手机号");
+        mui.toast("请输入正确的手机号", {
+          duration: "long"
+        });
         return;
       }
       if (!this.password) {
-        mui.toast("请输入密码");
+        mui.toast("请输入密码", {
+          duration: "long"
+        });
         return;
       }
       let data = {
         phone: this.phone,
         password: this._md5(this.password),
         verify: this.verify,
-        push_cleint_id: this.getPushClenitId()
+        push_client_id: this.getPushClenitId()
       };
       this.$fly.post("/register", data).then(res => {
         let data = res.data;
@@ -83,7 +90,7 @@ export default {
         mui.toast(data.msg);
         setTimeout(() => {
           this.$router.push("/login");
-        }, 800);
+        }, 2e3);
       });
     },
     send_code() {
@@ -92,7 +99,9 @@ export default {
         return;
       } else {
         if (!/^1[3|4|5|7|8][0-9]{9}$/.test(self.phone)) {
-          mui.toast("请输入正确的手机号");
+          mui.toast("请输入正确的手机号", {
+            duration: "long"
+          });
           return;
         }
         if (self.start_flag) {
@@ -100,10 +109,14 @@ export default {
           self.$fly.post("/send_message", { tel: self.phone }).then(res => {
             let data = res.data;
             if (!data.status) {
-              mui.toast(data.msg);
+              mui.toast(data.msg, {
+                duration: "long"
+              });
               return;
             }
-            mui.toast(data.msg);
+            mui.toast(data.msg, {
+              duration: "long"
+            });
           });
         }
       }

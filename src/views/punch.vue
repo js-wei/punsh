@@ -49,75 +49,67 @@ export default {
       isPunchDisabled: false, //不在范围禁止使用打卡按钮
       position: [0, 0], //打卡坐标
       circle: null,
+      radius: 50, //打卡圆心半斤(单位:米)
       coordsType: "gps",
       events: {
         init(map) {
-          let geocoder = new AMap.Geocoder({
-            city: "全国",
-            radius: 50
-          });
-          geocoder.getLocation(self.company_address, function(status, result) {
-            if (status === "complete" && result.info === "OK") {
-              self.circle = self.geocoderCallBack(result, map, self);
-              mui.plusReady(() => {
-                if (plus.os.name == "Android") {
-                  var context = plus.android.importClass(
-                    "android.content.Context"
-                  );
-                  var locationManager = plus.android.importClass(
-                    "android.location.LocationManager"
-                  );
-                  var main = plus.android.runtimeMainActivity();
-                  var mainSvr = main.getSystemService(context.LOCATION_SERVICE);
-                  let androidIsOpen = mainSvr.isProviderEnabled(
-                    locationManager.GPS_PROVIDER
-                  );
-                  if (androidIsOpen) {
-                    plus.nativeUI.showWaiting("位置信息定位中...");
-                    plus.geolocation.getCurrentPosition(
-                      function(p) {
-                        let location = {
-                          lat: p.coords.latitude,
-                          lng: p.coords.longitude
-                        };
-                        self.coordsType = p.coordsType;
-                        self.geoLocation(map, self, location);
-                      },
-                      function(e) {
+          setTimeout(() => {
+            let geocoder = new AMap.Geocoder({
+              city: "全国",
+              radius: 50
+            });
+            geocoder.getLocation(self.company_address, function(
+              status,
+              result
+            ) {
+              if (status === "complete" && result.info === "OK") {
+                self.circle = self.geocoderCallBack(result, map, self);
+                mui.plusReady(() => {
+                  plus.nativeUI.showWaiting("位置信息定位中...");
+                  setTimeout(() => {
+                    if (plus.os.name == "Android") {
+                      var context = plus.android.importClass(
+                        "android.content.Context"
+                      );
+                      var locationManager = plus.android.importClass(
+                        "android.location.LocationManager"
+                      );
+                      var main = plus.android.runtimeMainActivity();
+                      var mainSvr = main.getSystemService(
+                        context.LOCATION_SERVICE
+                      );
+                      let androidIsOpen = mainSvr.isProviderEnabled(
+                        locationManager.GPS_PROVIDER
+                      );
+                      if (androidIsOpen) {
+                        plus.geolocation.getCurrentPosition(
+                          function(p) {
+                            let location = {
+                              lat: p.coords.latitude,
+                              lng: p.coords.longitude
+                            };
+                            self.coordsType = p.coordsType;
+                            self.geoLocation(map, self, location);
+                          },
+                          function(e) {
+                            plus.nativeUI.closeWaiting();
+                            mui.toast("请打开定位服务", { duration: "long" });
+                          },
+                          { geocode: true }
+                        );
+                      } else {
                         plus.nativeUI.closeWaiting();
-                        mui.alert("请打开定位服务");
-                      },
-                      { geocode: true }
-                    );
-                  } else {
-                    plus.nativeUI.closeWaiting();
-                    mui.alert("请打开定位服务");
-                    setTimeout(() => {
-                      self.$router.push('/')
-                    }, 2.5e3);
-                    // if (self.network == 0) {
-                    //   plus.nativeUI.closeWaiting();
-                    //   mui.toast("没有网络");
-                    //   setTimeout(() => {
-                    //     mui.back();
-                    //   }, 2e3);
-                    //   return;
-                    // } else if (self.network == 1) {
-                    //   plus.nativeUI.closeWaiting();
-                    //   mui.toast("非WIFI网络请打开GPS");
-                    //   setTimeout(() => {
-                    //     mui.back();
-                    //   }, 2e3);
-                    //   return;
-                    // } else {
-                    //   plus.nativeUI.showWaiting("WIFI网络定位中...");
-                    //   self.geoLocation(map, self);
-                    // }
-                  }
-                }
-              });
-            }
-          });
+                        mui.toast("请打开定位服务", { duration: "long" });
+                        setTimeout(() => {
+                          self.$router.push("/home");
+                        }, 3.5e3);
+                      }
+                    }
+                  }, 600);
+                });
+              }
+            });
+          }, 600);
         }
       }
     };
@@ -145,7 +137,8 @@ export default {
             localStorage.setItem("cofing", JSON.stringify(_data));
             _this.company_address = _data.address;
             _this.company = _data.title;
-            _this.sub_title = _data.short_title;
+            _this.sub_title = _data.short_title || "公司";
+            _this.radius = _data.radius || 80;
           }
         });
       } else {
@@ -153,6 +146,7 @@ export default {
         _this.company_address = config.address;
         _this.company = config.title;
         _this.sub_title = config.short_title || "公司";
+        _this.radius = config.radius || 80;
       }
     },
     punch() {
@@ -248,7 +242,7 @@ export default {
         return _result;
       }
     },
-    addSimpleMarker(
+    addSimpleMarker( //自定义marker
       d = { lng: 0, lat: 0, address: "" },
       text = { title: "公司全称", sub: "简称" },
       map
@@ -262,7 +256,6 @@ export default {
           showPositionPoint: true,
           position: [d.lng, d.lat]
         });
-        //信息框
         if (d.address) {
           let infoWindow = new AMap.InfoWindow({
             content: d.address + " " + text.title,
@@ -276,6 +269,7 @@ export default {
       });
     },
     addMarker(position, map) {
+      //默认marker
       var marker = new AMap.Marker({
         //添加自定义点标记
         map: map,
@@ -285,9 +279,10 @@ export default {
       });
     },
     addCircle(lnglat, map, self) {
+      //添加圆心
       let circle = new AMap.Circle({
         center: lnglat, // 圆心位置
-        radius: 60, //半径
+        radius: self.radius, //半径
         strokeColor: "#eb7d46", //线颜色
         strokeOpacity: 1, //线透明度
         strokeWeight: 3, //线粗细度

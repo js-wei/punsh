@@ -94,23 +94,28 @@ export default {
       }
     },
     _onNetChange() {
-      localStorage.clear("network_type");
       //获取当前网络类型
       var nt = plus.networkinfo.getCurrentType();
       switch (nt) {
         case plus.networkinfo.CONNECTION_ETHERNET:
         case plus.networkinfo.CONNECTION_WIFI:
-          mui.toast("当前网络为WiFi");
+          mui.toast("当前网络为WiFi", {
+            duration: "long"
+          });
           localStorage.setItem("network_type", 2);
           break;
         case plus.networkinfo.CONNECTION_CELL2G:
         case plus.networkinfo.CONNECTION_CELL3G:
         case plus.networkinfo.CONNECTION_CELL4G:
-          mui.toast("当前网络非WiFi");
+          mui.toast("非WiFi网络,请注意流量", {
+            duration: "long"
+          });
           localStorage.setItem("network_type", 1);
           break;
         default:
-          mui.toast("当前没有网络");
+          mui.toast("当前没有网络", {
+            duration: "long"
+          });
           localStorage.setItem("network_type", 0);
           break;
       }

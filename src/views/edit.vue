@@ -103,10 +103,14 @@ export default {
             .then(res => {
               res = res.data;
               if (!res.status) {
-                mui.toast(res.msg);
+                mui.toast(res.msg, {
+                  duration: "long"
+                });
                 return;
               }
-              mui.toast(res.msg);
+              mui.toast(res.msg, {
+                duration: "long"
+              });
               _this.city = city;
             });
         }
@@ -124,7 +128,7 @@ export default {
       picker.show(function(rs) {
         let date = rs.text;
         if (i) {
-           _this.birthday = date;
+          _this.birthday = date;
           _this.$fly
             .post("/upgrade_birthday", {
               uid: _this.user.user_id,
@@ -133,10 +137,14 @@ export default {
             .then(res => {
               res = res.data;
               if (!res.status) {
-                mui.toast(res.msg);
+                mui.toast(res.msg, {
+                  duration: "long"
+                });
                 return;
               }
-              mui.toast(res.msg);
+              mui.toast(res.msg, {
+                duration: "long"
+              });
             });
         }
         i++;
