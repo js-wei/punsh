@@ -40,11 +40,6 @@ export default {
       user: {},
       menu: [
         {
-          title: "基本信息",
-          href: "/base",
-          icon: "fa-jibenxinxi"
-        },
-        {
           title: "消息中心",
           href: "/message",
           icon: "fa-xiaoxi"
@@ -58,6 +53,11 @@ export default {
           title: "请假记录",
           href: "/leave",
           icon: "fa-qingjia"
+        },
+        {
+          title: "基本信息",
+          href: "/base",
+          icon: "fa-jibenxinxi"
         },
         {
           title: "安全设置",

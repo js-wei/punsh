@@ -78,9 +78,7 @@ export default {
           }
           user.head = res.fullpath;
           localStorage.setItem("logined", JSON.stringify(user));
-          mui.toast(res.msg, {
-            duration: "long"
-          });
+          mui.toast(res.msg);
           setTimeout(() => {
             self.$router.push("/personal");
           }, 1e3);

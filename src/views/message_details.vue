@@ -40,58 +40,64 @@
 </template>
 
 <script>
-    import vHead from "@/components/header";
-    export default {
-        data() {
-            return {
-                title: '查看消息',
-                id:this.$route.params.id,
-                article:{}
-            }
-        },
-        components: {
-            vHead,
-        },
-        methods: {
-            _initData() {
-                this.$fly.get('/query',{
-                    action:'details',
-                    mod:'message',
-                    id:this.id
-                }).then(res=>{
-                    if(res.data){
-                        this.article = res.data.data;
-                    }
-                })
-            }
-        },
-        created(){
-            this._initData()
-        }
+import vHead from "@/components/header";
+import { mapState } from "vuex";
+export default {
+  data() {
+    return {
+      title: "查看消息",
+      id: this.$route.params.id,
+      article: {}
+    };
+  },
+  components: {
+    vHead
+  },
+  computed: {
+    ...mapState({
+      _article: state => state.mutations.article
+    })
+  },
+  created() {
+    if (this._article && this._article.id == this.id) {
+      this.article = this._article;
+    } else {
+      this.$fly
+        .get("/query", {
+          action: "details",
+          mod: "message",
+          id: this.id
+        })
+        .then(res => {
+          if (res.data.status) {
+            this.article = res.data.data;
+          }
+        });
     }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-    @import '../assets/style/base';
-    .mui-content{
-        padding-bottom:80px;
-        background-color: nth($baseColor,1);
-        .mui-card{
-            margin-top:20px;
-            .mui-card-header{
-                img{
-                    border:1px solid lighten(nth($baseColor,2),70%);
-                    padding:5px 2px;
-                    border-radius:50%;
-                }
-            }
-            .mui-card-content{
-                padding:5px 10px;
-                min-height:120px;
-                img{
-                    
-                }
-            }
-        }
+@import "../assets/style/base";
+.mui-content {
+  padding-bottom: 80px;
+  background-color: nth($baseColor, 1);
+  .mui-card {
+    margin-top: 20px;
+    .mui-card-header {
+      img {
+        border: 1px solid lighten(nth($baseColor, 2), 70%);
+        padding: 5px 2px;
+        border-radius: 50%;
+      }
     }
+    .mui-card-content {
+      padding: 5px 10px;
+      min-height: 120px;
+      img {
+      }
+    }
+  }
+}
 </style>

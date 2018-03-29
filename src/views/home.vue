@@ -51,7 +51,12 @@ export default {
         title: true,
         indicator: true,
         limit: 4,
-        images: [{}, {}, {}, {}]
+        images: [
+          { image: "http://w.jswei.cn/static/images/16pic_2002642_b.jpg" },
+          { image: "http://w.jswei.cn/static/images/16pic_2002642_b.jpg" },
+          { image: "http://w.jswei.cn/static/images/16pic_2002642_b.jpg" },
+          { image: "http://w.jswei.cn/static/images/16pic_2002642_b.jpg" }
+        ]
       },
       mediaList: [],
       current_page: 1,

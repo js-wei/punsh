@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-20 8:44:15
+ * Modified By: 2018-03-29 11:42:37
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,7 +16,7 @@
     <div class="media">
         <ul class="mui-table-view">
             <li class="mui-table-view-cell mui-media" v-for="(item,index) in mediaList" :key="index">
-                <router-link :to="'/news_defailt/'+item.id">
+                <a @click.stop="forwad('/news_defailt/'+item.id,item.id)">
                     <img class="mui-media-object mui-pull-right" :src="item.image" v-if="item.image">
                     <div class="mui-media-body">
                         {{item.title}}
@@ -27,7 +27,7 @@
                             {{item.date|time_ago}}发布
                         </p>
                     </div>
-                </router-link>
+                </a>
             </li>
         </ul>
     </div>
@@ -41,7 +41,24 @@ export default {
       default: []
     }
   },
-  methods: {}
+  methods: {
+    forwad($url, $id) {
+      this.$fly
+        .get("/query", {
+          action: "details",
+          mod: "article",
+          id: $id,
+          field: "id,author,content,image,date,description,keywords,title,hits"
+        })
+        .then(res => {
+          if (res.data.status) {
+            let _data = res.data.data;
+            this.$store.commit("CATCH_ARTICLE", _data);
+            this.$router.push($url);
+          }
+        });
+    }
+  }
 };
 </script>
 
@@ -71,8 +88,8 @@ export default {
       }
     }
   }
-  .mui-table-view-cell>a:not(.mui-btn){
-      margin: -11px -17px;
+  .mui-table-view-cell > a:not(.mui-btn) {
+    margin: -11px -17px;
   }
 }
 </style>

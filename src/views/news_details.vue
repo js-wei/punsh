@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-20 8:50:20
+ * Modified By: 2018-03-29 11:44:14
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -40,51 +40,64 @@
 </template>
 
 <script>
-    import vHead from "@/components/header";
-    export default {
-        data() {
-            return {
-                title: '查看消息',
-                id:this.$route.params.id,
-                article:{}
-            }
-        },
-        components: {
-            vHead,
-        },
-        created(){
-            this.$fly.get('/query',{
-                action:'details',
-                mod:'article',
-                id:this.id
-            }).then(res=>{
-                if(res.data.status){
-                    this.article = res.data.data;
-                }
-            })
-        }
+import vHead from "@/components/header";
+import { mapState } from "vuex";
+export default {
+  data() {
+    return {
+      title: "查看消息",
+      id: this.$route.params.id,
+      article: {}
+    };
+  },
+  components: {
+    vHead
+  },
+  computed: {
+    ...mapState({
+      _article: state => state.mutations.article
+    })
+  },
+  created() {
+    if (this._article && this._article.id == this.id) {
+      this.article = this._article;
+    } else {
+      this.$fly
+        .get("/query", {
+          action: "details",
+          mod: "article",
+          id: this.id,
+          field: "id,author,content,image,date,description,keywords,title,hits"
+        })
+        .then(res => {
+          if (res.data.status) {
+            this.article = res.data.data;
+          }
+        });
     }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-    @import '../assets/style/base';
-    .mui-content{
-        background-color: nth($baseColor,1);
-        padding-bottom:80px;
-        .mui-card{
-            margin-top:20px;
-            .mui-card-header{
-                img{
-                    border:1px solid lighten(nth($baseColor,2),90%);
-                    padding:5px 2px;
-                    border-radius:50%;
-                }
-            }
-            .mui-card-content{
-                padding:5px 10px;
-                text-indent:2em;
-                min-height:120px;
-            }
-        }
+@import "../assets/style/base";
+.mui-content {
+  background-color: nth($baseColor, 1);
+  padding-bottom: 80px;
+  .mui-card {
+    margin-top: 20px;
+    .mui-card-header {
+      img {
+        border: 1px solid lighten(nth($baseColor, 2), 90%);
+        padding: 5px 2px;
+        border-radius: 50%;
+      }
     }
+    .mui-card-content {
+      padding: 5px 10px;
+      text-indent: 2em;
+      min-height: 120px;
+    }
+  }
+}
 </style>
