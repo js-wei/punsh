@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-29 12:45:46
+ * Modified By: 2018-03-29 5:42:11
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -51,7 +51,14 @@ export default {
       let request = {
         action: "details",
         mod: _this.mod,
-        id: $id
+        id: $id,
+        where: [
+          {
+            field: "status",
+            op: "eq",
+            val: _this.mod=='punch'?1:0
+          }
+        ]
       };
       _this.$fly.get("/query", request).then(res => {
         if (res.data.status) {

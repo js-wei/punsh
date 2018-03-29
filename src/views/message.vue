@@ -27,7 +27,7 @@
 </template>
 <script>
 import vHead from "@/components/header.vue";
-import vMediaList from '@/components/mediaList'
+import vMediaList from "@/components/mediaList";
 export default {
   data() {
     return {

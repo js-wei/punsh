@@ -51,6 +51,8 @@ export default {
       circle: null,
       radius: 50, //打卡圆心半斤(单位:米)
       coordsType: "gps",
+      is_on_punch: false,
+      is_go_punch: false,
       events: {
         init(map) {
           setTimeout(() => {
@@ -89,6 +91,7 @@ export default {
                               lng: p.coords.longitude
                             };
                             self.coordsType = p.coordsType;
+                            self.formattedAddress = p.addresses;
                             self.geoLocation(map, self, location);
                           },
                           function(e) {
@@ -120,10 +123,14 @@ export default {
   computed: {
     network() {
       return localStorage.getItem("network_type");
+    },
+    user() {
+      return JSON.parse(localStorage.getItem("logined"));
     }
   },
   created() {
     this._initConfig();
+    this.isPunch();
   },
   methods: {
     _initConfig() {
@@ -150,22 +157,49 @@ export default {
       }
     },
     punch() {
-      if (!this.isPunchDisabled) {
+      let _this = this;
+      if (!_this.isPunchDisabled) {
         return;
       }
-      if (!this.circle.contains(this.position)) {
+      if (!_this.circle.contains(_this.position)) {
         mui.toast("不在打卡范围内");
         return;
       }
-      mui.toast("打卡成功");
-
-      // this.$fly.post('/punsh',{
-      //   position:self.position,
-      //   address:self.formattedAddress,
-      //   time:this._timestamp()
-      // }).then(res=>{
-      //   //@todo something
-      // })
+      if (!_this.is_on_punch && !_this.is_on_punch) {
+        mui.toast("你的签到次数已用完,如有疑问请去申诉");
+        return;
+      }
+      if (_this.is_on_punch && _this.is_on_punch) {
+        _this.$fly
+          .post("/punch", {
+            position: _this.position,
+            address: _this.formattedAddress,
+            uid: _this.user.user_id
+          })
+          .then(res => {
+            res = res.data;
+            mui.toast(res.msg);
+            setTimeout(() => {
+              _this.$router.push("/push");
+            }, 2e3);
+          });
+      }
+      if (!_this.is_on_punch && _this.is_go_punch) {
+        _this.$fly
+          .post("/punch", {
+            position: _this.position,
+            address: _this.formattedAddress,
+            uid: _this.user.user_id,
+            type: 1
+          })
+          .then(res => {
+            res = res.data;
+            mui.toast(res.msg);
+            setTimeout(() => {
+              _this.$router.push("/push");
+            }, 2e3);
+          });
+      }
     },
     geoLocation(map, self, gps = "") {
       //定位
@@ -181,8 +215,8 @@ export default {
               lng: data.locations[0].lng,
               lat: data.locations[0].lat
             };
+            self.position = [data.locations[0].lng, data.locations[0].lat];
             self.addSimpleMarker(position, text, map);
-            self.position = [position.lng, position.lat];
             self.isPunchDisabled = true;
             plus.nativeUI.closeWaiting();
           }
@@ -227,7 +261,7 @@ export default {
       for (var i = 0; i < geocode.length; i++) {
         let lnglat = [geocode[i].location.lng, geocode[i].location.lat];
         _result = self.addCircle(lnglat, map, self);
-        self.formattedAddress = geocode[i].formattedAddress;
+        //self.formattedAddress = geocode[i].formattedAddress;
         let postion = {
           lng: geocode[i].location.lng,
           lat: geocode[i].location.lat,
@@ -294,6 +328,34 @@ export default {
     },
     back() {
       this.$router.push("/home");
+    },
+    isPunch() {
+      //判定是否可以执行签到
+      let _this = this;
+      _this.$fly
+        .post("/is_punch", {
+          uid: _this.user.user_id,
+          type: 0
+        })
+        .then(res => {
+          if (res.engine.status != 200) {
+            mui.toast("服务器出错了");
+            return;
+          }
+          _this.is_on_punch = !res.data;
+        });
+      _this.$fly
+        .post("/is_punch", {
+          uid: _this.user.user_id,
+          type: 1
+        })
+        .then(res => {
+          if (res.engine.status != 200) {
+            mui.toast("服务器出错了");
+            return;
+          }
+          _this.is_go_punch = !res.data;
+        });
     }
   }
 };
