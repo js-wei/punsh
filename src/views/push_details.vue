@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-29 6:14:01
+ * Modified By: 2018-03-30 1:42:50
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -40,8 +40,8 @@
                     <img src="../assets/logo.png" />
                     <div class="mui-media-body">
                         {{article.title}}
-                        <p v-if="article._type==0">类型:上班签到</p>
-                        <p v-if="article._type==1">类型:下班签到</p>
+                        <p v-if="article.ec==0">类型:上班签到</p>
+                        <p v-if="article.ec==1">类型:下班签到</p>
                         <p>签到时间:{{article.date_format1}}</p>
                         <p>
                             签到状态
@@ -55,7 +55,7 @@
                 </div>
                 <!--内容区-->
                 <div class="mui-card-content">
-                    <span v-html="text"></span>
+                    <span v-html="article.content?article.content:text"></span>
                 </div>
             </div>
         </div>
@@ -138,7 +138,6 @@ export default {
           }
         });
     }
-    console.log(this.article);
   }
 };
 </script>

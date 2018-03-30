@@ -4,7 +4,7 @@
         <form class="mui-input-group" autocomplete="off">
             <div class="mui-input-row">
                 <label>手机号</label>
-                <input type="text" class="mui-input-clear phone" v-model="phone" placeholder="请输入手机">
+                <input type="tel" class="mui-input-clear phone" v-model="phone" placeholder="请输入手机">
             </div>
             <div class="mui-input-row">
                 <label>密码</label>

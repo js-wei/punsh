@@ -165,7 +165,7 @@ export default {
         mui.toast("不在打卡范围内");
         return;
       }
-      if (!_this.is_on_punch && !_this.is_on_punch) {
+      if (!_this.is_on_punch && !_this.is_go_punch) {
         mui.toast("你的签到次数已用完,如有疑问请去申诉");
         return;
       }
