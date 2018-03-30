@@ -40,8 +40,8 @@ export default {
   components: {
     vHead
   },
-  mounted(){
-    //let user = JSON.parse(localStorage.getItem("logined"));
+  created(){
+     this.$store.commit('HIDE_FOOTER');
   },
   watch: {
     ophone: function(o, n) {

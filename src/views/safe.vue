@@ -24,70 +24,63 @@
 	</div>
 </template>
 <script>
-	import vHead from '@/components/header.vue'
-	import vModal from '@/components/dialog.vue'
+import vHead from "@/components/header.vue";
+import vModal from "@/components/dialog.vue";
 
-	export default{
-		data(){
-			return{
-				title:'安全和隐私设置',
-                modal:{
-                    show:false,
-                    isHeader:true,
-                    isFooter:true,
-                    title:'友情提示',
-                    yes:'确定',
-                    cancel:'取消',
-                    content:''
-                }
-			}
-		},
-		components:{
-			vHead,
-            vModal
-		},
-		methods:{
-            changePhone(e){
-              this.modal.show=true;
-              this.modal.content='您确定更改密码?将向手机发送验证码!'
-			},
-            yes(e){
-				//TODO 发送验证码
-				let user = JSON.parse(localStorage.getItem('logined'));
-				this.$fly.post("/send_message", { tel: user.phone}).then(res => {
-					let data = res.data;
-					if (!data.status) {
-					mui.toast(data.msg);
-					return;
-					}
-					mui.toast(data.msg);
-				});
-				this.$router.push({path:'/password'});
-            },
-            no(e){}
-		}
-	}
+export default {
+  data() {
+    return {
+      title: "安全和隐私设置",
+      modal: {
+        show: false,
+        isHeader: true,
+        isFooter: true,
+        title: "友情提示",
+        yes: "确定",
+        cancel: "取消",
+        content: ""
+      }
+    };
+  },
+  components: {
+    vHead,
+    vModal
+  },
+  methods: {
+    changePhone(e) {
+      this.modal.show = true;
+      this.modal.content = "您确定更改密码?将向手机发送验证码!";
+    },
+    yes(e) {
+      this.$router.push({ path: "/password" });
+    },
+    no(e) {}
+  },
+  created() {
+    this.$store.commit("HIDE_FOOTER");
+  }
+};
 </script>
 <style lang="scss">
-	@import "../assets/style/base";
-	.safe{
-		.mui-content1{
-			background-color: nth($baseColor,1);
-			.mui-table-view{
-				.mui-table-view-cell{
-					height:50px;
-					line-height:40px;
-					a{
-						font-size:2rem;
-						.mui-pull-right{
-							margin-right:20px;
-						}
-					}
-				}
-			}
-		}
-		
-		/*
+@import "../assets/style/base";
+.safe {
+  .mui-content1 {
+    background-color: nth($baseColor, 1);
+    .mui-table-view {
+      .mui-table-view-cell {
+        height: 50px;
+        line-height: 40px;
+        a {
+          font-size: 2rem;
+          .mui-pull-right {
+            margin-right: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  /*
 		.toolbar{
 			width:100vw;
 			height:60px;
@@ -132,5 +125,5 @@
 				}
 			}
 		}*/
-	}
+}
 </style>

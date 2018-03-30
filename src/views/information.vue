@@ -33,13 +33,14 @@ export default {
       return JSON.parse(localStorage.getItem("logined"));
     }
   },
+  created(){
+    this.$store.commit("HIDE_FOOTER");
+  },
   methods: {
     change_info() {
       let _this = this;
       if (!_this.content) {
-        mui.toast("请填写个性签名", {
-          duration: "long"
-        });
+        mui.toast("请填写个性签名");
         return;
       }
       _this.$fly
@@ -50,14 +51,10 @@ export default {
         .then(res => {
           res = res.data;
           if (!res.status) {
-            mui.toast(res.msg, {
-              duration: "long"
-            });
+            mui.toast(res.msg);
             return;
           }
-          mui.toast(res.info, {
-            duration: "long"
-          });
+          mui.toast(res.info);
           _this.user.infomation = _this.content;
           setTimeout(() => {
             _this.$router.push("/personal");
@@ -100,11 +97,11 @@ export default {
       &.input {
         margin-top: 0.5rem;
         height: 3.2rem;
-        padding-top: 0.5rem;
         font-size: 1.2rem;
       }
     }
     .tips {
+      margin-top:-15px;
       color: lighten(nth($baseColor, 2), 50%);
       font-size: 1rem;
       text-align: right;

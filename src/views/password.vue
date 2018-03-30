@@ -122,7 +122,8 @@ export default {
     }
   },
   mounted() {
-    document.querySelector(".send-code").click();
+    this.$store.commit('HIDE_FOOTER');
+    document.querySelector(".send-code").click(); //模拟点击
   }
 };
 </script>

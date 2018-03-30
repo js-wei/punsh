@@ -56,30 +56,29 @@ export default {
         return;
       }
       mui.showLoading("正在登陆..", "div");
-      _this.$fly
-        .post("/login", {
-          phone: _this.phone,
-          password: _this._md5(_this.password),
-          push_cleint_id: _this.getPushClenitId()
-        })
-        .then(res => {
-          mui.hideLoading();
-          if (res.engine.status !== 200) {
-            mui.toast("服务器繁忙或错误");
-            return;
-          }
-          res = res.data;
-          if (!res.status) {
-            mui.toast(res.msg);
-            return;
-          }
+      let $data = {
+        phone: _this.phone,
+        password: _this._md5(_this.password),
+        push_client_id: _this.getPushClientId()
+      };
+      _this.$fly.post("/login", $data).then(res => {
+        mui.hideLoading();
+        if (res.engine.status !== 200) {
+          mui.toast("服务器繁忙或错误");
+          return;
+        }
+        res = res.data;
+        if (!res.status) {
           mui.toast(res.msg);
-          setTimeout(() => {
-            localStorage.removeItem("logined");
-            localStorage.setItem("logined", JSON.stringify(res.data));
-            _this.$router.push(_this.redirect);
-          }, 2.5e3);
-        });
+          return;
+        }
+        mui.toast(res.msg);
+        setTimeout(() => {
+          localStorage.removeItem("logined");
+          localStorage.setItem("logined", JSON.stringify(res.data));
+          _this.$router.push(_this.redirect);
+        }, 2.5e3);
+      });
     },
     _md5(str = "") {
       if (!str) {
@@ -89,7 +88,7 @@ export default {
       md5.update(str);
       return md5.digest("hex");
     },
-    getPushClenitId() {
+    getPushClientId() {
       if (!window.plus) {
         return "";
       }

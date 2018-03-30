@@ -4,7 +4,7 @@
         <form class="mui-input-group" autocomplete="off">
             <div class="mui-input-row">
                 <label>手机号</label>
-                <input type="text" v-model="phone" placeholder="请输入手机">
+                <input type="tel" v-model="phone" placeholder="请输入手机">
             </div>
             <div class="mui-input-row verify">
                 <label>验证码</label>
@@ -79,7 +79,7 @@ export default {
         phone: this.phone,
         password: this._md5(this.password),
         verify: this.verify,
-        push_client_id: this.getPushClenitId()
+        push_client_id: this.getPushClientId()
       };
       this.$fly.post("/register", data).then(res => {
         let data = res.data;
@@ -144,7 +144,10 @@ export default {
       md5.update(str);
       return md5.digest("hex");
     },
-    getPushClenitId() {
+    getPushClientId() {
+      if (!window.plus) {
+        return "";
+      }
       let push = plus.push.getClientInfo();
       return push.clientid || "";
     }

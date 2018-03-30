@@ -83,6 +83,9 @@ export default {
   components: {
     vHead
   },
+  created() {
+    this.$store.commit("HIDE_FOOTER");
+  },
   methods: {
     change_address() {
       let _this = this;
@@ -106,7 +109,6 @@ export default {
                 mui.toast(res.msg);
                 return;
               }
-              mui.toast(res.msg);
               _this.city = city;
             });
         }
@@ -136,7 +138,6 @@ export default {
                 mui.toast(res.msg);
                 return;
               }
-              mui.toast(res.msg);
             });
         }
         i++;

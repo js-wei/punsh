@@ -93,7 +93,6 @@ export default {
       self.$fly
         .get("/set_sysconf", { uid: uid, power: p, notify: t })
         .then(res => {
-          mui.toast(res.data.msg);
           self._resetUser();
         });
     },
@@ -120,17 +119,18 @@ export default {
           return;
         }
         res = res.data.data;
-        if(res){
-          localStorage.setItem("logined",JSON.stringify(res));
+        if (res) {
+          localStorage.setItem("logined", JSON.stringify(res));
         }
       });
     }
   },
   mounted() {
+    this.$store.commit('HIDE_FOOTER');
     let _user = JSON.parse(localStorage.getItem("logined"));
     this.user_id = _user.user_id;
     this._makeSetting(_user.settings);
-    
+
     //提醒打卡
     document.querySelector("#tellSwitch").addEventListener("toggle", e => {
       e.preventDefault();
