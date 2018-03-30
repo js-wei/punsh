@@ -28,6 +28,8 @@
         </div>
         <div class="punch-button">
             <button class="btn btn-punch" :class="{'disabled':!isPunchDisabled}" @click="punch">打卡</button>
+            <button @click="captureWebview">截屏</button>
+            <button @click="chooceImage">打开截图</button>
         </div>
     </div>
 </template>
@@ -58,7 +60,7 @@ export default {
           setTimeout(() => {
             let geocoder = new AMap.Geocoder({
               city: "全国",
-              radius: 50
+              radius: 80
             });
             geocoder.getLocation(self.company_address, function(
               status,
@@ -84,7 +86,7 @@ export default {
                           self.geoLocation(map, self);
                         } else {
                           plus.nativeUI.closeWaiting();
-                          mui.toast("使用的是非WIFI网络,请打开定位服务定位");
+                          mui.toast("当前非WIFI网络,请打开定位服务");
                           setTimeout(() => {
                             self.$router.push("/home");
                           }, 1.5e3);
@@ -92,7 +94,7 @@ export default {
                       },
                       { geocode: true }
                     );
-                  }, 600);
+                  }, 800);
                 } else {
                   //plus not ok use  network
                   mui.showLoading("位置信息定位中..", "div");
@@ -100,7 +102,7 @@ export default {
                 }
               }
             });
-          }, 600);
+          }, 800);
         }
       }
     };
@@ -350,6 +352,47 @@ export default {
           }
           _this.is_go_punch = !res.data;
         });
+    },
+    chooceImage() {
+      plus.io.resolveLocalFileSystemURL("_doc/images/", function(entry) {
+        var path = entry.toLocalURL();
+        console.log(path);
+      });
+    },
+    captureWebview() {
+      let path = "_doc/images/" + new Date().getTime() + ".jpg";
+      let bitmap = null;
+      if (window.plus) {
+        let ws = plus.webview.currentWebview();
+        bitmap = new plus.nativeObj.Bitmap("test");
+        // 将webview内容绘制到Bitmap对象中
+        ws.draw(
+          bitmap,
+          e => {
+            bitmap.save(
+              path,
+              {
+                overwrite: true,
+                format: "jpg",
+                quality: 40
+              },
+              i => {
+                console.log("保存图片成功：" + JSON.stringify(i));
+              },
+              e => {
+                console.log("保存图片失败：" + JSON.stringify(e));
+              }
+            );
+          },
+          e => {
+            console.log("截屏绘制图片失败：" + JSON.stringify(e));
+          },
+          {
+            check: false, // 设置为检测白屏
+            clip: { top: "0px", left: "0px", height: "100%", width: "100%" } // 设置截屏区域
+          }
+        );
+      }
     }
   }
 };
@@ -366,7 +409,7 @@ export default {
       height: 70%;
     }
     .toolbar {
-      height: 30%;
+      height: 28%;
       padding-top: 5px;
       .toolbar-address {
         list-style-type: none;
