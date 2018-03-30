@@ -14,7 +14,7 @@
                         </div>
                     </div>
                     <div class="modal-footer" v-show="modal.isFooter">
-                        <input class="btn blue" type="button" v-model="modal.yes" @click="ok" />
+                        <input class="btn primary" type="button" v-model="modal.yes" @click="ok" />
                         <input class="btn" type="button" v-model="modal.cancel" @click="cancel" />
                     </div>
                 </div>
@@ -50,7 +50,7 @@
       padding: 1.3rem 0.8rem;
       height: auto;
       overflow: hidden;
-      line-height:2em;
+      line-height: 2em;
       font-size: 1.5rem;
     }
     .modal-footer {
@@ -61,6 +61,7 @@
         border: 1px solid #d1d1d1;
         border-radius: 3px;
         background-color: #f7f7f7;
+        width: 80px;
         background: -webkit-gradient(
           linear,
           0 0,
@@ -68,61 +69,18 @@
           from(#f7f7f7),
           to(#f2f2f2)
         );
-        background: -moz-gradient(
-          linear,
-          0 0,
-          0 100%,
-          from(#f7f7f7),
-          to(#f2f2f2)
-        );
-        background: -o-gradient(
-          linear,
-          0 0,
-          0 100%,
-          from(#f7f7f7),
-          to(#f2f2f2)
-        );
-        background: -ms-gradient(
-          linear,
-          0 0,
-          0 100%,
-          from(#f7f7f7),
-          to(#f2f2f2)
-        );
-        height: auto;
-        padding: 0.2rem 1.2rem;
+        padding: 4px;
         cursor: pointer;
         line-height: 28px;
         display: inline-block;
         color: #666666;
-        margin-right: 5px;
+        margin-right: 1px;
         outline: none;
       }
-      .blue {
+      .primary {
         border: 1px solid nth($baseColor, 3);
         background-color: nth($baseColor, 3);
         background: -webkit-gradient(
-          linear,
-          0 0,
-          0 100%,
-          from(lighten(nth($baseColor, 3), 10%)),
-          to(nth($baseColor, 3))
-        );
-        background: -moz-gradient(
-          linear,
-          0 0,
-          0 100%,
-          from(lighten(nth($baseColor, 3), 10%)),
-          to(#5e9fa1)
-        );
-        background: -o-gradient(
-          linear,
-          0 0,
-          0 100%,
-          from(lighten(nth($baseColor, 3), 10%)),
-          to(nth($baseColor, 3))
-        );
-        background: -ms-gradient(
           linear,
           0 0,
           0 100%,
@@ -134,15 +92,15 @@
     }
   }
 }
-// .modal-backdrop {
-//   position: fixed;
-//   top: 0;
-//   right: 0;
-//   bottom: 0;
-//   left: 0;
-//   z-index: 998;
-//   background-color: rgba(0, 0, 0, 0.3);
-// }
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 998;
+  background-color: rgba(0, 0, 0, 0.3);
+}
 </style>
 <script>
 export default {

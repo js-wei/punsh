@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive></transition> -->
-     <router-view class="router" ref="router" keep-alive/>
+     <router-view class="router" ref="router" keep-alive v-cloak/>
     <v-footer :menu="menu" v-if="getFooterState" id="tabbar"></v-footer>
   </div>
 </template>
@@ -242,6 +242,9 @@ body {
   margin: 0;
   padding: 0;
   background-color: #fff;
+}
+.v-cloak{
+  display:none;
 }
 :focus {
   outline: 0;

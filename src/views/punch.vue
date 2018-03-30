@@ -66,50 +66,37 @@ export default {
             ) {
               if (status === "complete" && result.info === "OK") {
                 self.circle = self.geocoderCallBack(result, map, self);
-                mui.plusReady(() => {
+                if (!window.plus) {
+                  mui.showLoading("位置信息定位中..", "div");
+                  self.geoLocation(map, self);
+                } else {
                   plus.nativeUI.showWaiting("位置信息定位中...");
                   setTimeout(() => {
-                    if (plus.os.name == "Android") {
-                      var context = plus.android.importClass(
-                        "android.content.Context"
-                      );
-                      var locationManager = plus.android.importClass(
-                        "android.location.LocationManager"
-                      );
-                      var main = plus.android.runtimeMainActivity();
-                      var mainSvr = main.getSystemService(
-                        context.LOCATION_SERVICE
-                      );
-                      let androidIsOpen = mainSvr.isProviderEnabled(
-                        locationManager.GPS_PROVIDER
-                      );
-                      if (androidIsOpen) {
-                        plus.geolocation.getCurrentPosition(
-                          function(p) {
-                            let location = {
-                              lat: p.coords.latitude,
-                              lng: p.coords.longitude
-                            };
-                            self.coordsType = p.coordsType;
-                            self.formattedAddress = p.addresses;
-                            self.geoLocation(map, self, location);
-                          },
-                          function(e) {
-                            plus.nativeUI.closeWaiting();
-                            mui.toast("请打开定位服务", { duration: "long" });
-                          },
-                          { geocode: true }
-                        );
-                      } else {
-                        plus.nativeUI.closeWaiting();
-                        mui.toast("请打开定位服务", { duration: "long" });
-                        setTimeout(() => {
-                          self.$router.push("/home");
-                        }, 3.5e3);
-                      }
-                    }
+                    plus.geolocation.getCurrentPosition(
+                      function(p) {
+                        let location = {
+                          lat: p.coords.latitude,
+                          lng: p.coords.longitude
+                        };
+                        self.coordsType = p.coordsType;
+                        self.formattedAddress = p.addresses;
+                        self.geoLocation(map, self, location);
+                      },
+                      function(e) {
+                        if (self.network == 3) {
+                          self.geoLocation(map, self);
+                        } else {
+                          plus.nativeUI.closeWaiting();
+                          mui.toast("请打开定位服务");
+                          setTimeout(() => {
+                            self.$router.push("/home");
+                          }, 1.5e3);
+                        }
+                      },
+                      { geocode: true }
+                    );
                   }, 600);
-                });
+                }
               }
             });
           }, 600);
@@ -155,7 +142,6 @@ export default {
         _this.sub_title = config.short_title || "公司";
         _this.radius = config.radius || 80;
       }
-     
     },
     punch() {
       let _this = this;
@@ -219,7 +205,12 @@ export default {
             self.position = [data.locations[0].lng, data.locations[0].lat];
             self.addSimpleMarker(position, text, map);
             self.isPunchDisabled = true;
-            plus.nativeUI.closeWaiting();
+            if (!window.plus) {
+              //关闭loading
+              mui.hideLoading();
+            } else {
+              plus.nativeUI.closeWaiting();
+            }
           }
         });
       } else {
@@ -245,11 +236,14 @@ export default {
             self.addSimpleMarker(postion, text, map);
             self.position = [onComplete.position.lng, onComplete.position.lat];
             self.isPunchDisabled = true;
-            plus.nativeUI.closeWaiting();
+            if (!window.plus) {
+              //关闭loading
+              mui.hideLoading();
+            } else {
+              plus.nativeUI.closeWaiting();
+            }
           }); //返回定位信息
-          AMap.event.addListener(geolocation, "error", onError => {
-            plus.nativeUI.closeWaiting();
-          }); //返回定位出错信息
+          AMap.event.addListener(geolocation, "error", onError => {}); //返回定位出错信息
         });
       }
     },
@@ -372,7 +366,7 @@ export default {
     }
     .toolbar {
       height: 30%;
-      padding-top:5px;
+      padding-top: 5px;
       .toolbar-address {
         list-style-type: none;
         margin: 10px 0 0 0;
