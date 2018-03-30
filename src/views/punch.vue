@@ -66,11 +66,8 @@ export default {
             ) {
               if (status === "complete" && result.info === "OK") {
                 self.circle = self.geocoderCallBack(result, map, self);
-                if (!window.plus) {
-                  mui.showLoading("位置信息定位中..", "div");
-                  self.geoLocation(map, self);
-                } else {
-                  plus.nativeUI.showWaiting("位置信息定位中...");
+                if (window.plus) {
+                  //plus ok use gps or network,gps level is high
                   setTimeout(() => {
                     plus.geolocation.getCurrentPosition(
                       function(p) {
@@ -87,7 +84,7 @@ export default {
                           self.geoLocation(map, self);
                         } else {
                           plus.nativeUI.closeWaiting();
-                          mui.toast("请打开定位服务");
+                          mui.toast("使用的是非WIFI网络,请打开定位服务定位");
                           setTimeout(() => {
                             self.$router.push("/home");
                           }, 1.5e3);
@@ -96,6 +93,10 @@ export default {
                       { geocode: true }
                     );
                   }, 600);
+                } else {
+                  //plus not ok use  network
+                  mui.showLoading("位置信息定位中..", "div");
+                  self.geoLocation(map, self);
                 }
               }
             });
