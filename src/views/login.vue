@@ -37,7 +37,7 @@ export default {
     return {
       phone: "",
       password: "",
-      redirect:this.$route.query.redirect || '/'
+      redirect: this.$route.query.redirect || "/"
     };
   },
   methods: {
@@ -55,20 +55,20 @@ export default {
         mui.toast("请输入密码");
         return;
       }
-      mui.showLoading("正在登陆..","div")
+      mui.showLoading("正在登陆..", "div");
       _this.$fly
         .post("/login", {
           phone: _this.phone,
           password: _this._md5(_this.password),
-          push_cleint_id: this.getPushClenitId()
+          push_cleint_id: _this.getPushClenitId()
         })
         .then(res => {
-          mui.hideLoading()
+          mui.hideLoading();
           if (res.engine.status !== 200) {
             mui.toast("服务器繁忙或错误");
             return;
           }
-          res = res.data
+          res = res.data;
           if (!res.status) {
             mui.toast(res.msg);
             return;
@@ -78,7 +78,7 @@ export default {
             localStorage.removeItem("logined");
             localStorage.setItem("logined", JSON.stringify(res.data));
             _this.$router.push(_this.redirect);
-          }, 1.2e3);
+          }, 2.5e3);
         });
     },
     _md5(str = "") {
@@ -90,8 +90,11 @@ export default {
       return md5.digest("hex");
     },
     getPushClenitId() {
-      // let push = plus.push.getClientInfo()
-      // return push.clientid || "";
+      if (!window.plus) {
+        return "";
+      }
+      let push = plus.push.getClientInfo();
+      return push.clientid || "";
     }
   }
 };
@@ -126,8 +129,8 @@ form:after {
       }
       input {
         width: 74%;
-        &::-webkit-input-placeholder{
-          font-size:1.2rem;
+        &::-webkit-input-placeholder {
+          font-size: 1.2rem;
         }
       }
 

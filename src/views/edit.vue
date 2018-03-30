@@ -13,7 +13,7 @@
                     </div>
                 </router-link>
             </div>
-            <div class="function border-top">
+            <!-- <div class="function border-top">
                <router-link to="/information">
                     <div class="toolbar-left">
                         用户昵称
@@ -23,7 +23,7 @@
                         <span class="mui-icon mui-icon-arrowright"></span>
                     </div>
                 </router-link>
-            </div>
+            </div> -->
             <div class="function border-top">
                 <router-link to="/information">
                     <div class="toolbar-left" style="width:15%">
@@ -103,14 +103,10 @@ export default {
             .then(res => {
               res = res.data;
               if (!res.status) {
-                mui.toast(res.msg, {
-                  duration: "long"
-                });
+                mui.toast(res.msg);
                 return;
               }
-              mui.toast(res.msg, {
-                duration: "long"
-              });
+              mui.toast(res.msg);
               _this.city = city;
             });
         }
@@ -137,14 +133,10 @@ export default {
             .then(res => {
               res = res.data;
               if (!res.status) {
-                mui.toast(res.msg, {
-                  duration: "long"
-                });
+                mui.toast(res.msg);
                 return;
               }
-              mui.toast(res.msg, {
-                duration: "long"
-              });
+              mui.toast(res.msg);
             });
         }
         i++;

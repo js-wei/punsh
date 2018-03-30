@@ -21,7 +21,7 @@
             <div class="toolbar">
                 <ul class="toolbar-address">
                     <li>公司:{{company}}</li>
-                    <li>地点:{{company_address}}</li>
+                    <li>地址:{{company_address}}</li>
                     <li><i>提示:圆圈内为打卡区域</i></li>
                 </ul>
             </div>
@@ -155,6 +155,7 @@ export default {
         _this.sub_title = config.short_title || "公司";
         _this.radius = config.radius || 80;
       }
+     
     },
     punch() {
       let _this = this;
@@ -221,9 +222,7 @@ export default {
             plus.nativeUI.closeWaiting();
           }
         });
-        //console.log("as a gps");
       } else {
-        //console.log("not as gps");
         map.plugin("AMap.Geolocation", function() {
           let geolocation = new AMap.Geolocation({
             enableHighAccuracy: true, //是否使用高精度定位，默认:true
@@ -367,12 +366,13 @@ export default {
   height: auto;
   overflow: hidden;
   .amap {
-    height: 95vh;
+    height: 93.5vh;
     .amap-demo {
       height: 70%;
     }
     .toolbar {
       height: 30%;
+      padding-top:5px;
       .toolbar-address {
         list-style-type: none;
         margin: 10px 0 0 0;
@@ -380,8 +380,8 @@ export default {
         height: 50px;
         li {
           margin-left: 10px;
-          line-height: 1.5rem;
-          font-size: 1.2rem;
+          line-height: 1.8rem;
+          font-size: 1.5rem;
           i {
             font-size: 0.8rem;
             color: nth($baseColor, 3);
