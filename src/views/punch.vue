@@ -28,8 +28,8 @@
         </div>
         <div class="punch-button">
             <button class="btn btn-punch" :class="{'disabled':!isPunchDisabled}" @click="punch">打卡</button>
-            <button @click="captureWebview">截屏</button>
-            <button @click="chooceImage">打开截图</button>
+            <!-- <button @click="captureWebview">截屏</button>
+            <button @click="chooceImage">打开截图</button> -->
         </div>
     </div>
 </template>
@@ -354,17 +354,26 @@ export default {
         });
     },
     chooceImage() {
-      plus.io.resolveLocalFileSystemURL("_doc/images/", function(entry) {
-        var path = entry.toLocalURL();
-        console.log(path);
-      });
+      plus.gallery.pick(
+        s => {
+          console.log(JSON.stringify(s));
+        },
+        e => {
+          console.log(JSON.stringify(e));
+        },
+        {
+          animation: true,
+          filename: "_doc/images/",
+          filter: "image"
+        }
+      );
     },
     captureWebview() {
       let path = "_doc/images/" + new Date().getTime() + ".jpg";
       let bitmap = null;
       if (window.plus) {
         let ws = plus.webview.currentWebview();
-        bitmap = new plus.nativeObj.Bitmap("test");
+        bitmap = new plus.nativeObj.Bitmap("clip");
         // 将webview内容绘制到Bitmap对象中
         ws.draw(
           bitmap,
