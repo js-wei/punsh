@@ -52,10 +52,10 @@ export default {
         indicator: true,
         limit: 4,
         images: [
-          { image: "http://w.jswei.cn/static/images/16pic_2002642_b.jpg" },
-          { image: "http://w.jswei.cn/static/images/16pic_2002642_b.jpg" },
-          { image: "http://w.jswei.cn/static/images/16pic_2002642_b.jpg" },
-          { image: "http://w.jswei.cn/static/images/16pic_2002642_b.jpg" }
+          { image: "http://iph.href.lu/450x250?text=Banner" },
+          { image: "http://iph.href.lu/450x250?text=Banner" },
+          { image: "http://iph.href.lu/450x250?text=Banner" },
+          { image: "http://iph.href.lu/450x250?text=Banner" }
         ]
       },
       mediaList: [],
@@ -86,7 +86,7 @@ export default {
           field: "id,title,author,description,image,date",
           limit: 3,
           column_id: 1,
-          order: "sort asc,date asc",
+          order: "sort asc,date desc",
           where: [
             {
               field: "id",
@@ -105,15 +105,17 @@ export default {
           let result = res.data;
           _this.count = result.length || 0;
           if (_this.count) {
-            result.forEach(item => {
-              _this.mediaList.unshift(item);
-              _this.last_id = item.id;
-            });
+            _this.mediaList.unshift(...result);
+            _this.last_id = result[0].id;
+            // result.forEach(item => {
+            //   _this.mediaList.unshift(item);
+            //   _this.last_id = item.id;
+            // });
             _this.current_page = 1;
           }
           setTimeout(() => {
             _this.isLoaded = result.false;
-          }, 0.5e3);
+          }, 0.8e3);
         });
     },
     infinite(done) {
@@ -140,11 +142,12 @@ export default {
             }
             res = res.data.data;
             let _data = res.data;
-            _data.forEach(item => {
-              self.mediaList.push(item);
-            });
+            self.mediaList.push(..._data);
+            // _data.forEach(item => {
+            //   self.mediaList.push(item);
+            // });
             done();
-          }, 0.5e3);
+          }, 0.8e3);
       });
     },
     _initCarousel() {

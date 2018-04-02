@@ -114,14 +114,16 @@ export default {
               val: this.current ? this.current : ""
             }
           ],
-          order: "id asc"
+          order: "id desc"
         })
         .then(res => {
           res = res.data.data;
-          res.forEach(item => {
-            _this.messages.unshift(item);
-            _this.last_id = item.id;
-          });
+          _this.messages.unshift(...res);
+          _this.last_id = res[0].id;
+          // res.forEach(item => {
+          //   _this.messages.unshift(item);
+          //   _this.last_id = item.id;
+          // });
           _this.current_page = 1;
         });
       setTimeout(() => {
@@ -161,9 +163,10 @@ export default {
             }
             res = res.data.data;
             let _data = res.data;
-            _data.forEach(item => {
-              self.messages.push(item);
-            });
+            self.messages.push(..._data);
+            // _data.forEach(item => {
+            //   self.messages.push(item);
+            // });
             done();
           });
         done();
@@ -217,7 +220,7 @@ export default {
       box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
       background-color: #fff;
       z-index: 1000;
-      padding-top:8px;
+      padding-top: 8px;
       color: #666;
       li {
         width: 20%;
