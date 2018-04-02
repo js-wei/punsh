@@ -52,10 +52,10 @@ export default {
         indicator: true,
         limit: 4,
         images: [
-          { image: "http://iph.href.lu/450x250?text=Banner" },
-          { image: "http://iph.href.lu/450x250?text=Banner" },
-          { image: "http://iph.href.lu/450x250?text=Banner" },
-          { image: "http://iph.href.lu/450x250?text=Banner" }
+          { image: "http://w.jswei.cn/uploads/image/temp_image.png" },
+          { image: "http://w.jswei.cn/uploads/image/temp_image.png" },
+          { image: "http://w.jswei.cn/uploads/image/temp_image.png" },
+          { image: "http://w.jswei.cn/uploads/image/temp_image.png" }
         ]
       },
       mediaList: [],
@@ -107,10 +107,6 @@ export default {
           if (_this.count) {
             _this.mediaList.unshift(...result);
             _this.last_id = result[0].id;
-            // result.forEach(item => {
-            //   _this.mediaList.unshift(item);
-            //   _this.last_id = item.id;
-            // });
             _this.current_page = 1;
           }
           setTimeout(() => {
@@ -143,9 +139,6 @@ export default {
             res = res.data.data;
             let _data = res.data;
             self.mediaList.push(..._data);
-            // _data.forEach(item => {
-            //   self.mediaList.push(item);
-            // });
             done();
           }, 0.8e3);
       });

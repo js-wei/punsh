@@ -38,20 +38,21 @@ export default {
       if ($event != "report") {
         return;
       }
+      let self = this;
       mui.plusReady(() => {
         plus.nativeUI.actionSheet(
           {
             cancel: "取消",
             buttons: [
-              { title: "发表文字" },
-              { title: "发表图片" },
-              { title: "发表视频" }
+              { title: "加班申请" },
+              { title: "假条申请" },
+              { title: "迟到申诉" }
             ]
           },
           e => {
             switch (e.index) {
               case 1:
-                this.reportText();
+                self.$router.push('/applyfor')
                 break;
               case 2:
                 this.reportPicture();
@@ -59,8 +60,6 @@ export default {
               case 3:
                 this.reportVedio();
                 break;
-              default:
-                mui.toast("用户取消");
             }
           }
         );

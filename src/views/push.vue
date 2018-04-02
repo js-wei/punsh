@@ -118,12 +118,9 @@ export default {
         })
         .then(res => {
           res = res.data.data;
+          if (!res.length) return;
           _this.messages.unshift(...res);
           _this.last_id = res[0].id;
-          // res.forEach(item => {
-          //   _this.messages.unshift(item);
-          //   _this.last_id = item.id;
-          // });
           _this.current_page = 1;
         });
       setTimeout(() => {

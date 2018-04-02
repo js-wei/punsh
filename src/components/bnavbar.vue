@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-30 11:55:05
+ * Modified By: 2018-04-02 2:24:54
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -99,6 +99,7 @@ export default {
       flex: 0 0 60px;
       width: 60px;
       list-style-type: none;
+      text-align:center;
       &.active {
         color: #eb7d46;
       }

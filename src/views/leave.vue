@@ -38,13 +38,10 @@
         </v-head>
         <div>
             <ul class="mui-navbar">
-                <li :class="{'active':v.id==current}" v-for="(v,i) in pushType" :key="i" @click="changeType(v.id)">
-                    <a>{{v.text}}</a>
-                </li>
+              <v-bnavbar :itemList="pushType" class="mui-navbar" @selectItem="selectItem" :isLink="false"></v-bnavbar>
             </ul>
             <scroller :on-refresh="refresh" :on-infinite="infinite" 
               height="90%" ref="my_scroller" style="padding-top:80px;" >
-               <!-- custom refresh spinner, use default `spinner` & viewBox 0,0,64,64 class -->
                 <svg class="spinner" style="stroke: #4b8bf4;" slot="refresh-spinner" viewBox="0 0 64 64">
                   <g stroke-width="7" stroke-linecap="round"><line x1="10" x2="10" y1="27.3836" y2="36.4931"><animate attributeName="y1" dur="750ms" values="16;18;28;18;16;16" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="48;46;36;44;48;48" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values="1;.4;.5;.8;1;1" repeatCount="indefinite"></animate></line><line x1="24" x2="24" y1="18.6164" y2="45.3836"><animate attributeName="y1" dur="750ms" values="16;16;18;28;18;16" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="48;48;46;36;44;48" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values="1;1;.4;.5;.8;1" repeatCount="indefinite"></animate></line><line x1="38" x2="38" y1="16.1233" y2="47.8767"><animate attributeName="y1" dur="750ms" values="18;16;16;18;28;18" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="44;48;48;46;36;44" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values=".8;1;1;.4;.5;.8" repeatCount="indefinite"></animate></line><line x1="52" x2="52" y1="16" y2="48"><animate attributeName="y1" dur="750ms" values="28;18;16;16;18;28" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="36;44;48;48;46;36" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values=".5;.8;1;1;.4;.5" repeatCount="indefinite"></animate></line></g></svg>
                 <ul class="content mui-table-view mui-table-view-chevron">
@@ -62,7 +59,6 @@
                       </router-link>
                   </li>
               </ul>
-              <!-- custom infinite spinner -->
               <svg class="spinner" style="fill: #ec4949;" slot="infinite-spinner" viewBox="0 0 64 64">
                 <g><circle cx="16" cy="32" stroke-width="0" r="3"><animate attributeName="fill-opacity" dur="750ms" values=".5;.6;.8;1;.8;.6;.5;.5" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="3;3;4;5;6;5;4;3" repeatCount="indefinite"></animate></circle><circle cx="32" cy="32" stroke-width="0" r="3.09351"><animate attributeName="fill-opacity" dur="750ms" values=".5;.5;.6;.8;1;.8;.6;.5" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="4;3;3;4;5;6;5;4" repeatCount="indefinite"></animate></circle><circle cx="48" cy="32" stroke-width="0" r="4.09351"><animate attributeName="fill-opacity" dur="750ms" values=".6;.5;.5;.6;.8;1;.8;.6" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="5;4;3;3;4;5;6;5" repeatCount="indefinite"></animate></circle></g></svg>
             </scroller>
@@ -72,32 +68,42 @@
 
 <script>
 import vHead from "@/components/header"
+import vMediaList from "@/components/mediaList";
+import vBnavbar from "@/components/bnavbar";
 export default {
   data() {
     return {
       title: "请假记录",
       isSlotRight: true,
-      current: 1,
+      current: 0,
       pushType: [
         {
+          id: 0,
+          title: "全部"
+        },
+        {
           id: 1,
-          text: "事假"
+          title: "事假"
         },
         {
           id: 2,
-          text: "病假"
+          title: "病假"
         },
         {
           id: 3,
-          text: "婚假"
+          title: "婚假"
         },
         {
           id: 4,
-          text: "产假"
+          title: "产假"
         },
         {
           id: 5,
-          text: "其他"
+          title: "丧事"
+        },
+        {
+          id: 6,
+          title: "其他"
         }
       ],
       messages: [
@@ -110,36 +116,17 @@ export default {
           form: "06/03/2018",
           to: "08/03/2018",
           dur: "2天"
-        },
-        {
-          id: 1,
-          date: "2018-03-04",
-          title: "事假",
-          content: "事假申请",
-          status: 1,
-          form: "06/03/2018",
-          to: "07/03/2018",
-          dur: "1天"
-        },
-        {
-          id: 1,
-          date: "2018-03-04",
-          title: "事假",
-          content: "事假申请",
-          status: 2,
-          form: "06/03/2018",
-          to: "07/03/2018",
-          dur: "1天"
         }
       ]
     };
   },
   components: {
-    vHead
+    vHead,
+    vBnavbar
   },
   methods: {
-    changeType(id) {
-      this.current = id;
+    selectItem(item) {
+      this.current = item.id;
     },
     refresh(done) {
       setTimeout(() => {
@@ -171,6 +158,7 @@ export default {
       position: fixed;
       height: 36px;
       width: 100%;
+      padding-top:10px;
       box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
       background-color: #fff;
       z-index: 1000;
