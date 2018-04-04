@@ -2,6 +2,7 @@
   <div id="app">
     <!-- <transition :name="'vux-pop-' + (direction === 'forward' ? 'in' : 'out')" keep-alive></transition> -->
      <router-view class="router" ref="router" keep-alive v-cloak/>
+     <!-- <button @click="_pushPunchMessage">推送通知</button> -->
     <v-footer :menu="menu" v-if="getFooterState" id="tabbar"></v-footer>
   </div>
 </template>
@@ -50,13 +51,23 @@ export default {
   computed: {
     ...mapGetters(["getFooterState"]),
     ...mapState({
-      isBack: state => state.mutations.navigaterBack
+      isBack: state => state.mutations.navigaterBack,
+      config: state => state.mutations.site
     })
   },
   components: {
     vFooter
   },
   methods: {
+    _initSite() {
+      if (this.site) {
+        return;
+      }
+      this.$fly.get("/config").then(res => {
+        this.$store.commit("UPDATE_SITE_CONFIG", res.data.data);
+      });
+      this._pushPunchMessage();
+    },
     _addTouchEvents() {
       document.querySelector(".spinner-holder").style.display = "none";
       document
@@ -94,7 +105,6 @@ export default {
       }
     },
     _onNetChange() {
-      //获取当前网络类型
       var nt = plus.networkinfo.getCurrentType();
       switch (nt) {
         case plus.networkinfo.CONNECTION_ETHERNET:
@@ -155,32 +165,46 @@ export default {
         return null;
       }
       return null;
+    },
+    _pushPunchMessage() {
+      //推送签到消息
+      if (!window.plus) {
+        return;
+      }
+      let date = new Date();
+      let hours = date.getHours();
+      if (7 < hours < 9) {
+        //上班
+        plus.push.createMessage("别忘记上班打卡");
+      }
+      if (17 < hours < 18) {
+        //下班
+        plus.push.createMessage("别忘记下班打卡");
+      }
     }
   },
-  mounted() {
+  created() {
     let _this = this;
+    _this._initSite();
     mui.plusReady(function() {
       plus.navigator.setStatusBarBackground("#eb7d46");
       document.querySelector("#tabbar").style.top =
         plus.display.resolutionHeight - 50 + "px";
-      _this._networkinfo();
-      document.addEventListener("netchange", _this._onNetChange, false);
+      _this._networkinfo(); //网络信息
+      document.addEventListener("netchange", _this._onNetChange, false); //监听网络
+      //_this._pushPunchMessage() //推送消息
     });
   },
   watch: {
     $route(to, from) {
       let back = localStorage.getItem("isBack");
-      mui.plusReady(() => {
-        plus.key.addEventListener(
-          "backbutton",
-          function() {
-            if (!back) {
-              return;
-            }
-          },
-          false
-        );
-      });
+      if (window.plus) {
+        plus.key.addEventListener("backbutton", () => {
+          if (back) {
+            //this.$router.back(0);
+          }
+        });
+      }
     }
   }
 };
@@ -238,13 +262,41 @@ html {
 </style>
 
 <style lang="scss">
+@import "./assets/style/base";
 body {
   margin: 0;
   padding: 0;
-  background-color: #fff;
+  background-color: nth($baseColor, 1);
 }
-.v-cloak{
-  display:none;
+.mui-backdrop {
+  z-index: 10;
+}
+.mui-popover {
+  z-index: 999;
+}
+.mui-popover.mui-popover-action .mui-table-view {
+  color: nth($baseColor, 3);
+}
+.mui-popup-button:after {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.mui-switch.mui-active {
+  background-color: nth($baseColor, 3);
+  border-color: nth($baseColor, 3);
+}
+.mui-btn-blue {
+  background-color: nth($baseColor, 3);
+  border-color: nth($baseColor, 3);
+}
+.mui-checkbox input[type="checkbox"]:checked:before,
+.mui-radio input[type="radio"]:checked:before {
+  color: nth($baseColor, 3);
+}
+.mui-popup-button {
+  color: nth($baseColor, 3);
+}
+.v-cloak {
+  display: none;
 }
 :focus {
   outline: 0;
@@ -310,28 +362,6 @@ span.mint-cell-text {
     padding-bottom: 50px;
   }
 }
-// .my-scroller {
-//   .pull-to-refresh-layer {
-//     margin-top: -20px !important;
-//     //background-image: url('../assets/meeting.png');
-//     background-repeat: no-repeat;
-//     background-position: center;
-//     background-size: 140px 40px;
-//     opacity: 0;
-//     -webkit-transform: scale(1);
-//     transform: scale(1);
-//     transition: all 0.15s linear;
-//     -webkit-transition: all 0.15s linear;
-//     .spinner-holder {
-//       display: none;
-//     }
-//     &.active {
-//       -webkit-transform: scale(1.35);
-//       transform: scale(1.35);
-//       opacity: 1;
-//     }
-//   }
-// }
 @media screen and (min-width: 768px) and (max-width: 1024px) {
   html {
     font-size: 120%;

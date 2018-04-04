@@ -28,8 +28,8 @@
         </div>
         <div class="punch-button">
             <button class="btn btn-punch" :class="{'disabled':!isPunchDisabled}" @click="punch">打卡</button>
-            <!-- <button @click="captureWebview">截屏</button>
-            <button @click="chooceImage">打开截图</button> -->
+            <!-- <button @click="captureWebview">截屏</button> -->
+            <!-- <button @click="chooceImage">打开截图</button> -->
         </div>
     </div>
 </template>
@@ -50,7 +50,7 @@ export default {
       formattedAddress: "", //打卡地址
       isPunchDisabled: false, //不在范围禁止使用打卡按钮
       position: [0, 0], //打卡坐标
-      circle: null,
+      circle: null, //打卡圆心
       radius: 50, //打卡圆心半斤(单位:米)
       coordsType: "gps",
       is_on_punch: false,
@@ -89,7 +89,7 @@ export default {
                           mui.toast("当前非WIFI网络,请打开定位服务");
                           setTimeout(() => {
                             self.$router.push("/home");
-                          }, 1.5e3);
+                          }, 1e3);
                         }
                       },
                       { geocode: true }
@@ -123,6 +123,7 @@ export default {
     this.isPunch();
   },
   methods: {
+    //初始化配置
     _initConfig() {
       let config = localStorage.getItem("cofing"),
         _this = this;
@@ -146,6 +147,7 @@ export default {
         _this.radius = config.radius || 80;
       }
     },
+    //打卡
     punch() {
       let _this = this;
       if (!_this.isPunchDisabled) {
@@ -155,44 +157,60 @@ export default {
         mui.toast("不在打卡范围内");
         return;
       }
-      if (!_this.is_on_punch && !_this.is_go_punch) {
-        mui.toast("你的签到次数已用完,如有疑问请去申诉");
-        return;
-      }
-      if (_this.is_on_punch && _this.is_on_punch) {
-        _this.$fly
-          .post("/punch", {
-            position: _this.position,
-            address: _this.formattedAddress,
-            uid: _this.user.user_id
-          })
-          .then(res => {
-            res = res.data;
-            mui.toast(res.msg);
-            setTimeout(() => {
-              _this.$router.push("/push");
-            }, 2e3);
-          });
-      }
-      if (!_this.is_on_punch && _this.is_go_punch) {
-        _this.$fly
-          .post("/punch", {
-            position: _this.position,
-            address: _this.formattedAddress,
-            uid: _this.user.user_id,
-            type: 1
-          })
-          .then(res => {
-            res = res.data;
-            mui.toast(res.msg);
-            setTimeout(() => {
-              _this.$router.push("/push");
-            }, 2e3);
-          });
-      }
+      mui.confirm("您确认要打卡吗?", "提示", ["确定", "取消"], e => {
+        if (e.index==0) {
+          if (!_this.is_on_punch && !_this.is_go_punch) {
+            mui.toast("你的签到次数已用完,如有疑问请去申诉");
+            return;
+          }
+          if (_this.is_on_punch && _this.is_on_punch) {
+            _this.$fly
+              .post("/punch", {
+                position: _this.position,
+                address: _this.formattedAddress,
+                uid: _this.user.user_id
+              })
+              .then(res => {
+                res = res.data;
+                if (!res.status) {
+                  mui.toast(res.msg);
+                  return;
+                }
+                let _msg = res.msg + ",签到时间为:" + res.punch_time;
+                mui.toast(_msg);
+                setTimeout(() => {
+                  _this.pushPunchMessages(_msg);
+                  _this.$router.push("/push");
+                }, 1.5e3);
+              });
+          }
+          if (!_this.is_on_punch && _this.is_go_punch) {
+            _this.$fly
+              .post("/punch", {
+                position: _this.position,
+                address: _this.formattedAddress,
+                uid: _this.user.user_id,
+                type: 1
+              })
+              .then(res => {
+                res = res.data;
+                let _msg = res.msg + ",签到时间为:" + res.punch_time;
+                if (!res.status) {
+                  mui.toast(res.msg);
+                  return;
+                }
+                mui.toast(_msg);
+                setTimeout(() => {
+                  _this.pushPunchMessages(_msg);
+                  _this.$router.push("/push");
+                }, 1.5e3);
+              });
+          }
+        }
+      },'div');
     },
-    geoLocation(map, self, gps = "") {
-      //定位
+    //定位
+    geoLocation(map, self, gps) {
       if (gps) {
         let lnglat = new AMap.LngLat(gps.lng, gps.lat);
         AMap.convertFrom(lnglat, self.coordsType, (status, data) => {
@@ -250,8 +268,8 @@ export default {
         });
       }
     },
+    //地理解析
     geocoderCallBack(data, map, self) {
-      //地理编码结果数组
       var geocode = data.geocodes,
         _result = null;
       for (var i = 0; i < geocode.length; i++) {
@@ -272,7 +290,8 @@ export default {
         return _result;
       }
     },
-    addSimpleMarker( //自定义marker
+    //自定义marker
+    addSimpleMarker(
       d = { lng: 0, lat: 0, address: "" },
       text = { title: "公司全称", sub: "简称" },
       map
@@ -308,8 +327,8 @@ export default {
         position: position //基点位置
       });
     },
+    //添加圆心
     addCircle(lnglat, map, self) {
-      //添加圆心
       let circle = new AMap.Circle({
         center: lnglat, // 圆心位置
         radius: self.radius, //半径
@@ -353,10 +372,15 @@ export default {
           _this.is_go_punch = !res.data;
         });
     },
+    pushPunchMessages(msg = "") {
+      if (msg && window.plus) {
+        plus.push.creatMessage(msg);
+      }
+    },
     chooceImage() {
       plus.gallery.pick(
         s => {
-          console.log(JSON.stringify(s));
+          //plus.nativeUI.previewImage(s);
         },
         e => {
           console.log(JSON.stringify(e));
@@ -374,7 +398,6 @@ export default {
       if (window.plus) {
         let ws = plus.webview.currentWebview();
         bitmap = new plus.nativeObj.Bitmap("clip");
-        // 将webview内容绘制到Bitmap对象中
         ws.draw(
           bitmap,
           e => {
@@ -397,8 +420,8 @@ export default {
             console.log("截屏绘制图片失败：" + JSON.stringify(e));
           },
           {
-            check: false, // 设置为检测白屏
-            clip: { top: "0px", left: "0px", height: "100%", width: "100%" } // 设置截屏区域
+            check: false,
+            clip: { top: "0px", left: "0px", height: "100%", width: "100%" }
           }
         );
       }

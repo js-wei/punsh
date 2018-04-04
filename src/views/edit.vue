@@ -13,17 +13,17 @@
                     </div>
                 </router-link>
             </div>
-            <!-- <div class="function border-top">
+            <div class="function border-top">
                <router-link to="/information">
                     <div class="toolbar-left">
-                        用户昵称
+                        昵称
                     </div>
                     <div class="toolbar-right">
                         {{user.nickname|is_default(user.phone)}}
                         <span class="mui-icon mui-icon-arrowright"></span>
                     </div>
                 </router-link>
-            </div> -->
+            </div>
             <div class="function border-top">
                 <router-link to="/information">
                     <div class="toolbar-left" style="width:15%">

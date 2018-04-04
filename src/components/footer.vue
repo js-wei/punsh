@@ -1,14 +1,30 @@
 <template>
-    <footer class="footer" v-if="show">
-        <nav>
-            <router-link :class="{'active':currentPage==m.href,'report':m.href.indexOf('report')>-1}"  
-                :to="m.href.indexOf('report')?m.href:''" 
-                v-for="(m,i) in menu" :key="i">
-                <span class="mui-icon" :class="m.icon" @click="report(m.href)"></span>
-                <span class="mui-tab-label">{{m.title}}</span>
-            </router-link>
-        </nav>
-    </footer>
+    <div>
+      <footer class="footer" v-if="show">
+          <nav>
+              <router-link :class="{'active':currentPage==m.href,'report':m.href.indexOf('report')>-1}"  
+                  :to="m.href.indexOf('report')?m.href:''" 
+                  v-for="(m,i) in menu" :key="i">
+                  <span class="mui-icon" :class="m.icon" @click="report(m.href)"></span>
+                  <span class="mui-tab-label">{{m.title}}</span>
+              </router-link>
+          </nav>
+      </footer>
+      <div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action" v-if="show">
+        <!-- 可选择菜单 -->
+        <ul class="mui-table-view">
+          <li class="mui-table-view-cell" v-for="(item,index) in sheet" :key="index" @click="selectItem(item.url)">
+            {{item.title}}
+          </li>
+        </ul>
+        <!-- 取消菜单 -->
+        <ul class="mui-table-view">
+          <li class="mui-table-view-cell" @click="closeSheet">
+            <b>取消</b>
+          </li>
+        </ul>
+      </div>
+    </div>
 </template>
 <script>
 import "../../static/javascript/mui.picker";
@@ -16,7 +32,21 @@ import "../../static/javascript/mui.poppicker.js";
 export default {
   data() {
     return {
-      currentPage: ""
+      currentPage: "",
+      sheet: [
+        {
+          title: "加班/调休",
+          url: "/overtime"
+        },
+        {
+          title: "请假申请",
+          url: "/applyfor"
+        },
+        {
+          title: "迟到申诉",
+          url: "/later"
+        }
+      ]
     };
   },
   props: {
@@ -31,39 +61,18 @@ export default {
     }
   },
   methods: {
-    reportText() {},
-    reportPicture() {},
-    reportVedio() {},
+    closeSheet() {
+      mui("#sheet1").popover("toggle");
+    },
+    selectItem(url) {
+      mui("#sheet1").popover("toggle");
+      this.$router.push(url);
+    },
     report($event) {
       if ($event != "report") {
         return;
       }
-      let self = this;
-      mui.plusReady(() => {
-        plus.nativeUI.actionSheet(
-          {
-            cancel: "取消",
-            buttons: [
-              { title: "加班申请" },
-              { title: "假条申请" },
-              { title: "迟到申诉" }
-            ]
-          },
-          e => {
-            switch (e.index) {
-              case 1:
-                self.$router.push('/applyfor')
-                break;
-              case 2:
-                this.reportPicture();
-                break;
-              case 3:
-                this.reportVedio();
-                break;
-            }
-          }
-        );
-      });
+      mui("#sheet1").popover("toggle");
     }
   },
 

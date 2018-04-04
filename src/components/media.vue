@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-29 11:42:37
+ * Modified By: 2018-04-04 4:37:57
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -17,7 +17,7 @@
         <ul class="mui-table-view">
             <li class="mui-table-view-cell mui-media" v-for="(item,index) in mediaList" :key="index">
                 <a @click.stop="forwad('/news_defailt/'+item.id,item.id)">
-                    <img class="mui-media-object mui-pull-right" :src="item.image" v-if="item.image">
+                    <img class="mui-media-object mui-pull-right"  v-lazy="item.image" v-if="item.image">
                     <div class="mui-media-body">
                         {{item.title}}
                         <p class='mui-ellipsis'>

@@ -4,20 +4,20 @@
             <!--支持循环，需要重复图片节点-->
             <div class="mui-slider-item mui-slider-item-duplicate">
                 <a :href="images[images.length-1].url?images[images.length-1].url:'javascript:void(0);'">
-                    <img :src="images[images.length-1].image" />
+                    <img v-lazy="images[images.length-1].image" />
                     <p class="mui-slider-title" v-if="slider.title">{{images[images.length-1].title}}</p>
                 </a>
             </div>
             <div class="mui-slider-item" v-for="(v,i) in images" :key="i">
                 <a :href="v.url!=''?v.url:'javascript:void(0);'">
-                    <img :src="v.image" />
+                    <img  v-lazy="v.image" />
                     <p class="mui-slider-title" v-if="slider.title">{{v.title}}</p>
                 </a>
             </div>
             <!--支持循环，需要重复图片节点-->
             <div class="mui-slider-item mui-slider-item-duplicate">
                 <a :href="images[0].url?images[0].url:'javascript:void(0);'">
-                    <img :src="images[0].image" />
+                    <img v-lazy="images[0].image"/>
                     <p class="mui-slider-title" v-if="slider.title">{{images[0].title}}</p>
                 </a>
             </div>

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-29 11:44:14
+ * Modified By: 2018-04-04 4:50:15
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -23,9 +23,9 @@
             <div class="mui-card">
                 <!--页眉，放置标题-->
                 <div class="mui-card-header mui-card-media">
-                    <img src="../assets/logo.png" />
-                    <div class="mui-media-body">
-                        {{article.title}}
+                    <img v-lazy="config.logo" />
+                    <div class="mui-media-body" v-lazy-container="{ selector: 'img' }">
+                        <h4>{{article.title}}</h4>
                         <p>{{article.author}}</p>
                         <p>{{article.date|time_ago}}</p>
                     </div>
@@ -55,10 +55,12 @@ export default {
   },
   computed: {
     ...mapState({
-      _article: state => state.mutations.article
+      _article: state => state.mutations.article,
+      config: state => state.mutations.site
     })
   },
   created() {
+    this.$store.commit("HIDE_FOOTER");
     if (this._article && this._article.id == this.id) {
       this.article = this._article;
     } else {
@@ -88,8 +90,8 @@ export default {
     margin-top: 20px;
     .mui-card-header {
       img {
-        border: 1px solid lighten(nth($baseColor, 2), 90%);
-        padding: 5px 2px;
+        width:30px;
+        height:30px;
         border-radius: 50%;
       }
     }

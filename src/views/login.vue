@@ -77,7 +77,7 @@ export default {
           localStorage.removeItem("logined");
           localStorage.setItem("logined", JSON.stringify(res.data));
           _this.$router.push(_this.redirect);
-        }, 2.5e3);
+        }, 2e3);
       });
     },
     _md5(str = "") {

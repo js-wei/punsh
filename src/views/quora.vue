@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-02 1:19:31
+ * Modified By: 2018-04-04 3:14:39
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -15,7 +15,9 @@
 <template>
    <div>
        <!-- <v-bnavbar :itemList="itemList" @selectItem="selectItem" :isLink="false"></v-bnavbar> -->
-      <v-bmedia :list="list"></v-bmedia>
+      <!-- <v-bmedia :list="list"></v-bmedia> -->
+     
+      
    </div>
 </template>
 
@@ -30,7 +32,7 @@ export default {
       refreshText: "下拉刷新",
       pullDownText: "查看更多",
       scroll: null,
-      list:[],
+      list: [],
       lastPage: 10,
       currentPage: 11,
       itemList: [
@@ -123,11 +125,13 @@ export default {
   },
   mounted() {
     //this._initScroll();
-    this.$fly.get('/query',{
-      limit:8
-    }).then(res=>{
-      this.list=res.data.data;
-    });
+    this.$fly
+      .get("/query", {
+        limit: 8
+      })
+      .then(res => {
+        this.list = res.data.data;
+      });
   },
   methods: {
     selectItem(item) {
@@ -172,5 +176,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  
+
 </style>

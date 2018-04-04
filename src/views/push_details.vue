@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-30 1:42:50
+ * Modified By: 2018-04-04 2:04:32
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -37,12 +37,12 @@
             <div class="mui-card">
                 <!--页眉，放置标题-->
                 <div class="mui-card-header mui-card-media">
-                    <img src="../assets/logo.png" />
+                    <img :src="user.head|is_default('../assets/logo.png')" />
                     <div class="mui-media-body">
                         {{article.title}}
                         <p v-if="article.ec==0">类型:上班签到</p>
                         <p v-if="article.ec==1">类型:下班签到</p>
-                        <p>签到时间:{{article.date_format1}}</p>
+                        <p>签到时间:{{article.date|formart_date('yyyy-MM-dd hh:mm:ss')}}</p>
                         <p>
                             签到状态
                             <span v-if="article.type==1" class="mui-btn-success">正点</span>
@@ -78,6 +78,9 @@ export default {
     vHead
   },
   computed: {
+    user() {
+      return JSON.parse(localStorage.getItem("logined"));
+    },
     ...mapState({
       _article: state => state.mutations.article
     }),
@@ -138,6 +141,7 @@ export default {
           }
         });
     }
+    //console.log(this.article);
   }
 };
 </script>
@@ -151,8 +155,8 @@ export default {
     margin-top: 20px;
     .mui-card-header {
       img {
-        border: 1px solid lighten(nth($baseColor, 2), 70%);
-        padding: 5px 2px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
       }
     }

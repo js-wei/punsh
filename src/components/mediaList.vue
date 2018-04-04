@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-03-29 5:42:11
+ * Modified By: 2018-04-04 4:37:39
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,8 +16,8 @@
     <div>
         <ul class="mui-table-view mui-table-view-chevron message-list-view">
             <li class="mui-table-view-cell mui-media" v-for="(item,index) in list" :key="index">
-                <a  @click.stop="forwad(baseUrl+item.id,item.id)" class='mui-navigate-right'>
-                    <img class="mui-media-object mui-pull-left" :src="item.head">
+                <a @click.stop="forwad(baseUrl+item.id,item.id)" class='mui-navigate-right'>
+                    <img class="mui-media-object mui-pull-left" v-lazy="item.image" v-if="item.image">
                     <div class="mui-media-body">
                         <p class="mui-media-title">{{item.title}}</p>
                         <p class="mui-ellipsis">{{item.content}}</p>

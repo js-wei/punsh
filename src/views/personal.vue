@@ -83,7 +83,7 @@ export default {
       res = res.data;
       if (res.status) {
         this.user = res.data;
-        localStorage.clear("logined");
+        localStorage.removeItem("logined");
         localStorage.setItem("logined", JSON.stringify(this.user));
       }
     });
@@ -105,10 +105,16 @@ export default {
     width: 100%;
     background-color: lighten(nth($baseColor, 3), 12%);
     text-align: center;
-    img {
-      margin-top: 1.3rem;
-      border-radius: 50%;
-      width: 4rem;
+    a {
+      display: inline-block;
+      width: 100%;
+      height: 50px;
+      img {
+        margin-top: 1.3rem;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+      }
     }
     .information {
       color: nth($baseColor, 1);
@@ -126,6 +132,7 @@ export default {
           span {
             &.fa {
               font-size: 1.8rem;
+              padding-top: 5px;
             }
           }
         }

@@ -25,12 +25,12 @@ import Edit from '@/views/edit'
 import Avatar from '@/views/avatar'
 import Information from '@/views/information'
 import Map from '@/views/map'
-
+import ApplayDetails from '@/views/applay_details'
 
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  //mode: 'history',
   hashbang:true,
   saveScrollPosition:true,
   scrollBehavior(to, from, savedPosition) {
@@ -83,6 +83,15 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: Register,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
+    },
+    {
+      path: '/applay_details/:id',
+      name: 'applay_details',
+      component: ApplayDetails,
       meta: {
         requiresAuth: false,
         isBack: true

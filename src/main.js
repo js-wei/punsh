@@ -10,11 +10,19 @@ Vue.config.productionTip = false
 import VueScroller from 'vue-scroller'
 Vue.use(VueScroller)
 
-//font-icon
-// import 'vue-awesome-for-toolbar/icons'
-// import Icon from 'vue-awesome-for-toolbar/components/Icon.vue'
-// Vue.component('icon', Icon)
-
+//
+import VueLazyload from 'vue-lazyload'
+ 
+Vue.use(VueLazyload)
+ 
+// or with options
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: 'dist/error.png',
+  loading: 'dist/loading.gif',
+  attempt: 1
+})
+ 
 //过滤器
 import Filters from './filters'
 Object.keys(Filters).forEach(key => Vue.filter(key, Filters[key]))
@@ -81,9 +89,9 @@ axios.interceptors.response.use(function (response) { //配置请求回来的信
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.isBack)) {
-    store.commit('UPDATE_NAVIGATER_BACK',true)
-  }else{
-    store.commit('UPDATE_NAVIGATER_BACK',false)
+    store.commit('UPDATE_NAVIGATER_BACK', true)
+  } else {
+    store.commit('UPDATE_NAVIGATER_BACK', false)
   }
   if (to.name == 'punch') {
     store.commit('HIDE_FOOTER')
@@ -105,7 +113,7 @@ router.beforeEach((to, from, next) => {
   //   to.path !== '/' && history.setItem(to.path, historyCount);
   //   store.commit('UPDATE_DIRECTION', {direction: 'forward'})
   // }
- 
+
   if (to.matched.some(res => res.meta.requiresAuth)) { // 判断是否需要登录权限
     let logined = localStorage.getItem('logined');
     if (!logined) {

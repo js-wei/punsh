@@ -59,6 +59,7 @@ export default {
     })
   },
   created() {
+    this.$store.commit("HIDE_FOOTER");
     if (this._article && this._article.id == this.id) {
       this.article = this._article;
     } else {
