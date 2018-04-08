@@ -1,13 +1,13 @@
 <template>
     <div>
-      <footer class="footer" v-if="show">
+      <footer class="footer" v-if="show"> 
           <nav>
-              <router-link :class="{'active':currentPage==m.href,'report':m.href.indexOf('report')>-1}"  
-                  :to="m.href.indexOf('report')?m.href:''" 
-                  v-for="(m,i) in menu" :key="i">
+              <a :class="{'active':currentPage==m.href,'report':m.href.indexOf('report')>-1}" 
+                  v-for="(m,i) in menu" :key="i" @click.stop="forward(m.href)">
                   <span class="mui-icon" :class="m.icon" @click="report(m.href)"></span>
                   <span class="mui-tab-label">{{m.title}}</span>
-              </router-link>
+              </a>
+              <!-- :to="m.href.indexOf('report')?m.href:''"  -->
           </nav>
       </footer>
       <div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action" v-if="show">
@@ -73,18 +73,10 @@ export default {
         return;
       }
       mui("#sheet1").popover("toggle");
-    }
-  },
-
-  watch: {
-    $route(to, from) {
-      // const toDepth = to.path.split('/').length;
-      // const fromDepth = from.path.split('/').length;
-      // if(to.name){
-      //     this.currentPage = this.current || to.name;
-      // }else{
-      //      this.currentPage = '';
-      // }
+    },
+    forward(url) {
+      this.$router.replace(url);
+      return false;
     }
   }
 };

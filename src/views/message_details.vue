@@ -82,7 +82,7 @@ export default {
 <style lang="scss" scoped>
 @import "../assets/style/base";
 .mui-content {
-  padding-bottom: 80px;
+  padding-bottom: 30px;
   background-color: nth($baseColor, 1);
   .mui-card {
     margin-top: 20px;
@@ -96,8 +96,6 @@ export default {
     .mui-card-content {
       padding: 5px 10px;
       min-height: 120px;
-      img {
-      }
     }
   }
 }

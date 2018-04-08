@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:24:18
  * Author: 魏巍
  * -----
- * Last Modified: '2018-03-29 11:35:37
+ * Last Modified: '2018-04-08 1:55:58
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -21,7 +21,6 @@ import {
   HIDE_FOOTER,
   UPDATE_DIRECTION,
   UPDATE_SITE_CONFIG,
-  UPDATE_NAVIGATER_BACK,
   CATCH_ARTICLE
 } from './mutation-type'
 
@@ -65,10 +64,6 @@ const mutations = {
   [UPDATE_SITE_CONFIG](state, config) {
     state.site = config;
   },
-  [UPDATE_NAVIGATER_BACK](state, status) {
-    state.navigaterBack = status
-    localStorage.setItem('isBack', status);
-  },
   [CATCH_ARTICLE](state, article) {
     state.article = article;
   }
@@ -89,9 +84,6 @@ const getters = {
   },
   getSiteState(state) {
     return state.site;
-  },
-  getNavigaterBackState(state) {
-    return state.navigaterBack;
   },
   getArticleState(state) {
     return state.article;

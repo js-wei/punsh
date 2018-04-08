@@ -197,14 +197,15 @@ export default {
   },
   watch: {
     $route(to, from) {
-      let back = localStorage.getItem("isBack");
-      if (window.plus) {
-        plus.key.addEventListener("backbutton", () => {
-          if (back) {
-            //this.$router.back(0);
-          }
-        });
-      }
+      // let back = sessionStorage.getItem("isBack");
+      // if (window.plus) {
+      //   plus.key.addEventListener("backbutton", e => {
+      //     if (!back) {
+      //       this.$router.replace('')
+      //       return false;
+      //     }
+      //   });
+      // }
     }
   }
 };

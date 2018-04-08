@@ -74,7 +74,10 @@ export default {
     this._initNews();
   },
   mounted() {
-    document.querySelector("._v-content").style.paddingBottom = 270 + "px";
+    let doc = document.querySelector("._v-content");
+    doc.style.paddingBottom = 270 + "px";
+    let _transform = sessionStorage.getItem("transform");
+    doc.style.transform = _transform;
   },
   methods: {
     refresh(done) {
@@ -170,6 +173,9 @@ export default {
         });
     },
     _initNews() {
+      if (this.mediaList.length > 0) {
+        return;
+      }
       this.$fly
         .get("/query", {
           action: "page",
