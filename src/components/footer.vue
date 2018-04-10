@@ -1,6 +1,6 @@
 <template>
     <div>
-      <footer class="footer" v-if="show"> 
+      <footer class="footer" v-if="show" id="footer"> 
           <nav>
               <a :class="{'active':currentPage==m.href,'report':m.href.indexOf('report')>-1}" 
                   v-for="(m,i) in menu" :key="i" @click.stop="forward(m.href)">
@@ -58,6 +58,14 @@ export default {
     show: {
       type: Boolean,
       default: true
+    }
+  },
+  mounted() {
+    if (window.plus) {
+      if (this.show) {
+        document.querySelector("#footer").style.top =
+          plus.display.resolutionHeight - 50 + "px";
+      }
     }
   },
   methods: {

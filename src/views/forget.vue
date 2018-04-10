@@ -1,12 +1,12 @@
 <template>
     <div class="forget" v-if="show">
-        <img src="static/images/logo.png" alt="">
+        <img :src="config.logo" alt="">
         <!--获取验证码开始-->
         <div class="mui-page" v-if="step==1">
             <div class="mui-navbar-inner mui-bar mui-bar-nav" >
-                <button type="button" class="mui-left mui-action-back mui-btn mui-btn-link mui-btn-nav mui-pull-left">
+                <!-- <button type="button" class="mui-left mui-action-back mui-btn mui-btn-link mui-btn-nav mui-pull-left">
                     <span class="mui-icon mui-icon-left-nav"></span>
-                </button>
+                </button> -->
                 <h1 class="mui-title">找回密码</h1>
                 <a class="mui-btn mui-btn-blue mui-btn-link mui-pull-right next" @click="next_step">下一步</a>
             </div>
@@ -21,6 +21,8 @@
                 </form>
                 <div class="mui-content-padded">
                     <button id='sendVerify' class="mui-btn mui-btn-block mui-btn-primary" @click="get_code">{{showText}}</button>
+                    <!-- <button class="mui-btn mui-btn-block mui-btn-primary padding-top-10" @click="goBack">返回登录</button>                   -->
+                    <router-link to="login" class="mui-block padding-top-10">返回登录</router-link>
                 </div>
             </div>
         </div>
@@ -50,6 +52,8 @@
 </template>
 <script>
 import crypto from "crypto";
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -64,7 +68,18 @@ export default {
       start_flag: true
     };
   },
+  computed: {
+    ...mapState({
+      config: state => state.mutations.site
+    })
+  },
+  created() {
+    this.$store.commit("HIDE_FOOTER");
+  },
   methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
     back() {
       this.step = 1;
     },
@@ -204,6 +219,12 @@ export default {
     }
     .mui-content-padded {
       margin-top: 3rem;
+      a {
+        color: nth($baseColor, 5);
+      }
+      &:after {
+        background-color: #fff;
+      }
     }
     input {
       &::-webkit-input-placeholder {

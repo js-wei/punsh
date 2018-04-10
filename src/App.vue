@@ -186,14 +186,19 @@ export default {
   created() {
     let _this = this;
     _this._initSite();
-    mui.plusReady(function() {
-      plus.navigator.setStatusBarBackground("#eb7d46");
-      document.querySelector("#tabbar").style.top =
-        plus.display.resolutionHeight - 50 + "px";
-      _this._networkinfo(); //网络信息
-      document.addEventListener("netchange", _this._onNetChange, false); //监听网络
-      //_this._pushPunchMessage() //推送消息
-    });
+  },
+  mounted() {
+    let _this = this;
+    setTimeout(() => {
+      mui.plusReady(function() {
+        plus.navigator.setStatusBarBackground("#eb7d46");
+        document.querySelector(".footer").style.top =
+          plus.display.resolutionHeight - 55 + "px";
+        _this._networkinfo(); //网络信息
+        document.addEventListener("netchange", _this._onNetChange, false); //监听网络
+        //_this._pushPunchMessage() //推送消息
+      });
+    }, 0.5e3);
   },
   watch: {
     $route(to, from) {

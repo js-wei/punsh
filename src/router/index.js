@@ -26,13 +26,15 @@ import Avatar from '@/views/avatar'
 import Information from '@/views/information'
 import Map from '@/views/map'
 import ApplayDetails from '@/views/applay_details'
+import OverTime from '@/views/overtime'
+import Later from '@/views/later'
 
 Vue.use(Router)
 
 export default new Router({
   //mode: 'history',
-  hashbang:true,
-  saveScrollPosition:true,
+  hashbang: true,
+  saveScrollPosition: true,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
@@ -40,7 +42,10 @@ export default new Router({
       if (from.meta.keepAlive) {
         from.meta.savedPosition = document.body.scrollTop
       }
-      return { x: 0, y: to.meta.savedPosition || 0 }
+      return {
+        x: 0,
+        y: to.meta.savedPosition || 0
+      }
     }
   },
   routes: [{
@@ -71,7 +76,7 @@ export default new Router({
       }
     },
     {
-      path:'/base',
+      path: '/base',
       name: 'base',
       component: Edit,
       meta: {
@@ -85,6 +90,24 @@ export default new Router({
       component: Register,
       meta: {
         requiresAuth: false,
+        isBack: true
+      }
+    },
+    {
+      path: '/overtime',
+      name: 'overtime',
+      component: OverTime,
+      meta: {
+        requiresAuth: true,
+        isBack: true
+      }
+    },
+    {
+      path: '/later',
+      name: 'later',
+      component: Later,
+      meta: {
+        requiresAuth: true,
         isBack: true
       }
     },
@@ -124,7 +147,7 @@ export default new Router({
         isBack: true
       }
     },
-    
+
     {
       path: '/forget',
       name: 'forget',
@@ -140,7 +163,7 @@ export default new Router({
       component: Personal,
       meta: {
         requiresAuth: true,
-        isBack:false
+        isBack: false
       }
     },
     {
@@ -149,7 +172,7 @@ export default new Router({
       component: Setting,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -158,7 +181,7 @@ export default new Router({
       component: Safe,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -167,7 +190,7 @@ export default new Router({
       component: Password,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -176,7 +199,7 @@ export default new Router({
       component: Phone,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -185,7 +208,7 @@ export default new Router({
       component: Feedback,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -194,7 +217,7 @@ export default new Router({
       component: Punch,
       meta: {
         requiresAuth: true,
-        isBack:false
+        isBack: false
       }
     },
     {
@@ -203,7 +226,7 @@ export default new Router({
       component: Message,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -212,7 +235,7 @@ export default new Router({
       component: MessageDetails,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -221,7 +244,7 @@ export default new Router({
       component: Push,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -230,7 +253,7 @@ export default new Router({
       component: Leave,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -239,7 +262,7 @@ export default new Router({
       component: ApplyFor,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -248,7 +271,7 @@ export default new Router({
       component: GetLeave,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {
@@ -257,7 +280,7 @@ export default new Router({
       component: PushDetails,
       meta: {
         requiresAuth: true,
-        isBack:true
+        isBack: true
       }
     },
     {

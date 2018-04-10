@@ -1,6 +1,6 @@
 <template>
     <div class="register">
-        <img src="/static/images/logo.png" alt="">
+        <img :src="config.logo" alt="">
         <form class="mui-input-group" autocomplete="off">
             <div class="mui-input-row">
                 <label>手机号</label>
@@ -50,29 +50,26 @@ export default {
       start_flag: true
     };
   },
+  created() {
+    this.$store.commit("HIDE_FOOTER");
+  },
   computed: {
     ...mapState({
-      config: state => state.mutations.config
+      config: state => state.mutations.site
     })
   },
   methods: {
     register() {
       if (!this.phone) {
-        mui.toast("请输入手机号", {
-          duration: "long"
-        });
+        mui.toast("请输入手机号");
         return;
       }
       if (!/^1[3|4|5|7|8][0-9]{9}$/.test(this.phone)) {
-        mui.toast("请输入正确的手机号", {
-          duration: "long"
-        });
+        mui.toast("请输入正确的手机号");
         return;
       }
       if (!this.password) {
-        mui.toast("请输入密码", {
-          duration: "long"
-        });
+        mui.toast("请输入密码");
         return;
       }
       let data = {
@@ -99,9 +96,7 @@ export default {
         return;
       } else {
         if (!/^1[3|4|5|7|8][0-9]{9}$/.test(self.phone)) {
-          mui.toast("请输入正确的手机号", {
-            duration: "long"
-          });
+          mui.toast("请输入正确的手机号");
           return;
         }
         if (self.start_flag) {
@@ -109,14 +104,10 @@ export default {
           self.$fly.post("/send_message", { tel: self.phone }).then(res => {
             let data = res.data;
             if (!data.status) {
-              mui.toast(data.msg, {
-                duration: "long"
-              });
+              mui.toast(data.msg);
               return;
             }
-            mui.toast(data.msg, {
-              duration: "long"
-            });
+            mui.toast(data.msg);
           });
         }
       }
@@ -152,7 +143,6 @@ export default {
       return push.clientid || "";
     }
   },
-  mounted() {},
   watch: {
     phone(newValue, oldValue) {
       if (newValue.length > 0) {

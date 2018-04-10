@@ -28,8 +28,6 @@
         </div>
         <div class="punch-button">
             <button class="btn btn-punch" :class="{'disabled':!isPunchDisabled}" @click="punch">打卡</button>
-            <!-- <button @click="captureWebview">截屏</button> -->
-            <!-- <button @click="chooceImage">打开截图</button> -->
         </div>
     </div>
 </template>
@@ -55,6 +53,7 @@ export default {
       coordsType: "gps",
       is_on_punch: false,
       is_go_punch: false,
+      clip: "", //截图
       events: {
         init(map) {
           setTimeout(() => {
@@ -150,64 +149,74 @@ export default {
     //打卡
     punch() {
       let _this = this;
-      if (!_this.isPunchDisabled) {
-        return;
-      }
-      if (!_this.circle.contains(_this.position)) {
-        mui.toast("不在打卡范围内");
-        return;
-      }
-      mui.confirm("您确认要打卡吗?", "提示", ["确定", "取消"], e => {
-        if (e.index==0) {
-          if (!_this.is_on_punch && !_this.is_go_punch) {
-            mui.toast("你的签到次数已用完,如有疑问请去申诉");
+      // if (!_this.isPunchDisabled) {
+      //   return;
+      // }
+      // if (!_this.circle.contains(_this.position)) {
+      //   mui.toast("不在打卡范围内");
+      //   return;
+      // }
+      mui.confirm(
+        "您确认要打卡吗?",
+        "提示",
+        ["确定", "取消"],
+        e => {
+          if (e.index == 0) {
+            if (!_this.is_on_punch && !_this.is_go_punch) {
+              mui.toast("你的签到次数已用完,如有疑问请去申诉");
+              return;
+            }
+
+            _this.captureWebview(_this);
+            console.log(_this.clip);
             return;
+            if (_this.is_on_punch && _this.is_on_punch) {
+              _this.$fly
+                .post("/punch", {
+                  position: _this.position,
+                  address: _this.formattedAddress,
+                  uid: _this.user.user_id
+                })
+                .then(res => {
+                  res = res.data;
+                  if (!res.status) {
+                    mui.toast(res.msg);
+                    return;
+                  }
+                  let _msg = res.msg + ",签到时间为:" + res.punch_time;
+                  mui.toast(_msg);
+                  setTimeout(() => {
+                    _this.pushPunchMessages(_msg);
+                    _this.$router.push("/push");
+                  }, 1.5e3);
+                });
+            }
+            if (!_this.is_on_punch && _this.is_go_punch) {
+              _this.$fly
+                .post("/punch", {
+                  position: _this.position,
+                  address: _this.formattedAddress,
+                  uid: _this.user.user_id,
+                  type: 1
+                })
+                .then(res => {
+                  res = res.data;
+                  let _msg = res.msg + ",签到时间为:" + res.punch_time;
+                  if (!res.status) {
+                    mui.toast(res.msg);
+                    return;
+                  }
+                  mui.toast(_msg);
+                  setTimeout(() => {
+                    _this.pushPunchMessages(_msg);
+                    _this.$router.push("/push");
+                  }, 1.5e3);
+                });
+            }
           }
-          if (_this.is_on_punch && _this.is_on_punch) {
-            _this.$fly
-              .post("/punch", {
-                position: _this.position,
-                address: _this.formattedAddress,
-                uid: _this.user.user_id
-              })
-              .then(res => {
-                res = res.data;
-                if (!res.status) {
-                  mui.toast(res.msg);
-                  return;
-                }
-                let _msg = res.msg + ",签到时间为:" + res.punch_time;
-                mui.toast(_msg);
-                setTimeout(() => {
-                  _this.pushPunchMessages(_msg);
-                  _this.$router.push("/push");
-                }, 1.5e3);
-              });
-          }
-          if (!_this.is_on_punch && _this.is_go_punch) {
-            _this.$fly
-              .post("/punch", {
-                position: _this.position,
-                address: _this.formattedAddress,
-                uid: _this.user.user_id,
-                type: 1
-              })
-              .then(res => {
-                res = res.data;
-                let _msg = res.msg + ",签到时间为:" + res.punch_time;
-                if (!res.status) {
-                  mui.toast(res.msg);
-                  return;
-                }
-                mui.toast(_msg);
-                setTimeout(() => {
-                  _this.pushPunchMessages(_msg);
-                  _this.$router.push("/push");
-                }, 1.5e3);
-              });
-          }
-        }
-      },'div');
+        },
+        "div"
+      );
     },
     //定位
     geoLocation(map, self, gps) {
@@ -377,23 +386,14 @@ export default {
         plus.push.creatMessage(msg);
       }
     },
-    chooceImage() {
-      plus.gallery.pick(
-        s => {
-          //plus.nativeUI.previewImage(s);
-        },
-        e => {
-          console.log(JSON.stringify(e));
-        },
-        {
-          animation: true,
-          filename: "_doc/images/",
-          filter: "image"
-        }
-      );
-    },
-    captureWebview() {
-      let path = "_doc/images/" + new Date().getTime() + ".jpg";
+    captureWebview(vm) {
+      let _vm = vm;
+      let path =
+        "_doc/images/" +
+        new Date().getFullYear().toString() +
+        (new Date().getMonth() + 1).toString() +
+        new Date().getDate().toString() +
+        ".jpg";
       let bitmap = null;
       if (window.plus) {
         let ws = plus.webview.currentWebview();
@@ -404,12 +404,12 @@ export default {
             bitmap.save(
               path,
               {
-                overwrite: true,
                 format: "jpg",
                 quality: 40
               },
               i => {
-                console.log("保存图片成功：" + JSON.stringify(i));
+                _vm.clip = i.target;
+                console.log(_vm.clip);
               },
               e => {
                 console.log("保存图片失败：" + JSON.stringify(e));

@@ -1,6 +1,6 @@
 <template>
     <div class="register">
-        <img src="static/images/logo.png" alt="">
+        <img :src="config.logo" alt="">
         <form class="mui-input-group" autocomplete="off">
             <div class="mui-input-row">
                 <label>手机号</label>
@@ -32,6 +32,8 @@
 </template>
 <script>
 import crypto from "crypto";
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -39,6 +41,14 @@ export default {
       password: "",
       redirect: this.$route.query.redirect || "/"
     };
+  },
+  computed: {
+    ...mapState({
+      config: state => state.mutations.site
+    })
+  },
+  created() {
+    this.$store.commit("HIDE_FOOTER");
   },
   methods: {
     login() {

@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:24:18
  * Author: 魏巍
  * -----
- * Last Modified: '2018-04-08 1:55:58
+ * Last Modified: '2018-04-08 2:11:07
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -21,7 +21,8 @@ import {
   HIDE_FOOTER,
   UPDATE_DIRECTION,
   UPDATE_SITE_CONFIG,
-  CATCH_ARTICLE
+  CATCH_ARTICLE,
+  CATCH_ARTICLE_LIST
 } from './mutation-type'
 
 const state = {
@@ -32,7 +33,8 @@ const state = {
   navigater: null,
   site: null,
   navigaterBack: null,
-  article: {}
+  article: {},
+  articleList:[]
 };
 
 const mutations = {
@@ -66,6 +68,9 @@ const mutations = {
   },
   [CATCH_ARTICLE](state, article) {
     state.article = article;
+  },
+  [CATCH_ARTICLE_LIST](state, list){
+    state.articleList = list;
   }
 };
 
@@ -87,6 +92,9 @@ const getters = {
   },
   getArticleState(state) {
     return state.article;
+  },
+  getArticleListState(state) {
+    return state.articleList;
   }
 };
 
