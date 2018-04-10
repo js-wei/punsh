@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-08 8:39:15
+ * Modified By: 2018-04-10 4:06:55
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -55,7 +55,8 @@
                 </div>
                 <!--内容区-->
                 <div class="mui-card-content">
-                    <span v-html="article.content?article.content:text"></span>
+                  <img :src="article.image">
+                  <span v-html="article.content?article.content:text"></span>
                 </div>
             </div>
         </div>
@@ -105,6 +106,7 @@ export default {
     }
   },
   created() {
+    this.$store.commit("HIDE_FOOTER");
     this.$fly
       .get("/query", {
         action: "details",

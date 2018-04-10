@@ -196,22 +196,20 @@ export default {
           plus.display.resolutionHeight - 55 + "px";
         _this._networkinfo(); //网络信息
         document.addEventListener("netchange", _this._onNetChange, false); //监听网络
+        plus.key.addEventListener(
+          "backbutton",
+          e => {
+            _this.$router.back();
+            return false;
+          },
+          false
+        );
         //_this._pushPunchMessage() //推送消息
       });
     }, 0.5e3);
   },
   watch: {
-    $route(to, from) {
-      // let back = sessionStorage.getItem("isBack");
-      // if (window.plus) {
-      //   plus.key.addEventListener("backbutton", e => {
-      //     if (!back) {
-      //       this.$router.replace('')
-      //       return false;
-      //     }
-      //   });
-      // }
-    }
+    $route(to, from) {}
   }
 };
 </script>

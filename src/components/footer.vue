@@ -28,7 +28,7 @@
 </template>
 <script>
 import "../../static/javascript/mui.picker";
-import "../../static/javascript/mui.poppicker.js";
+import "../../static/javascript/mui.poppicker";
 export default {
   data() {
     return {
@@ -58,14 +58,6 @@ export default {
     show: {
       type: Boolean,
       default: true
-    }
-  },
-  mounted() {
-    if (window.plus) {
-      if (this.show) {
-        document.querySelector("#footer").style.top =
-          plus.display.resolutionHeight - 50 + "px";
-      }
     }
   },
   methods: {

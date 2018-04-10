@@ -15,7 +15,6 @@
 <template>
     <div class="push">
         <v-head :title="title"></v-head>
-       
         <div>
             <ul class="mui-navbar">
                 <v-bnavbar :itemList="pushType" class="mui-navbar" @selectItem="selectItem" :isLink="false"></v-bnavbar>

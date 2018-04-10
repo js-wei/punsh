@@ -16,6 +16,11 @@
     <div class="punch">
         <v-head :title="title" :isBack="show" :backHandler="back"></v-head>
         <div class="amap">
+            <ul class="punch-tips">
+              <li>日期：{{new Date()|formart_date('yyyy-MM-dd')}}</li>
+              <li>时间：{{new Date()|formart_date('hh:mm:ss')}}</li>
+              <li v-if="formattedAddress">地址：{{formattedAddress}}</li>
+            </ul>
             <el-amap class="amap-demo" vid="amap" :zoom="zoom" ref="map" :events="events">
             </el-amap>
             <div class="toolbar">
@@ -149,13 +154,13 @@ export default {
     //打卡
     punch() {
       let _this = this;
-      // if (!_this.isPunchDisabled) {
-      //   return;
-      // }
-      // if (!_this.circle.contains(_this.position)) {
-      //   mui.toast("不在打卡范围内");
-      //   return;
-      // }
+      if (!_this.isPunchDisabled) {
+        return;
+      }
+      if (!_this.circle.contains(_this.position)) {
+        mui.toast("不在打卡范围内");
+        return;
+      }
       mui.confirm(
         "您确认要打卡吗?",
         "提示",
@@ -166,10 +171,6 @@ export default {
               mui.toast("你的签到次数已用完,如有疑问请去申诉");
               return;
             }
-
-            _this.captureWebview(_this);
-            console.log(_this.clip);
-            return;
             if (_this.is_on_punch && _this.is_on_punch) {
               _this.$fly
                 .post("/punch", {
@@ -183,12 +184,17 @@ export default {
                     mui.toast(res.msg);
                     return;
                   }
-                  let _msg = res.msg + ",签到时间为:" + res.punch_time;
-                  mui.toast(_msg);
+                  let _msg = res.msg;
+                  if (res.punch_time) {
+                    _msg += ",签到时间为:" + res.punch_time;
+                  }
+                  //mui.toast(_msg);
+                  if (res.id) {
+                    _this.captureWebview(_this, res.id, "_01", _msg);
+                  }
                   setTimeout(() => {
-                    _this.pushPunchMessages(_msg);
                     _this.$router.push("/push");
-                  }, 1.5e3);
+                  }, 2.5e3);
                 });
             }
             if (!_this.is_on_punch && _this.is_go_punch) {
@@ -201,16 +207,22 @@ export default {
                 })
                 .then(res => {
                   res = res.data;
-                  let _msg = res.msg + ",签到时间为:" + res.punch_time;
                   if (!res.status) {
                     mui.toast(res.msg);
                     return;
                   }
-                  mui.toast(_msg);
+                  let _msg = res.msg;
+                  if (res.punch_time) {
+                    _msg += ",签到时间为:" + res.punch_time;
+                  }
+                  if (res.id) {
+                    _this.captureWebview(_this, res.id, "_02", _msg);
+                  }
+                  //mui.toast(_msg);
                   setTimeout(() => {
-                    _this.pushPunchMessages(_msg);
+                    //_this.pushPunchMessages(_msg);
                     _this.$router.push("/push");
-                  }, 1.5e3);
+                  }, 2.5e3);
                 });
             }
           }
@@ -386,14 +398,11 @@ export default {
         plus.push.creatMessage(msg);
       }
     },
-    captureWebview(vm) {
+    captureWebview(vm, id, ty = "_01", msg) {
       let _vm = vm;
+      let config = JSON.parse(localStorage.getItem("cofing"));
       let path =
-        "_doc/images/" +
-        new Date().getFullYear().toString() +
-        (new Date().getMonth() + 1).toString() +
-        new Date().getDate().toString() +
-        ".jpg";
+        "_doc/images/" + _vm.formart_date(new Date(), "yyyyMMdd") + ty + ".jpg";
       let bitmap = null;
       if (window.plus) {
         let ws = plus.webview.currentWebview();
@@ -404,12 +413,31 @@ export default {
             bitmap.save(
               path,
               {
-                format: "jpg",
-                quality: 40
+                format: "png",
+                quality: 20
               },
               i => {
-                _vm.clip = i.target;
-                console.log(_vm.clip);
+                let server = config.url + "api/upload_punch";
+                var task = plus.uploader.createUpload(
+                  server,
+                  { method: "POST" },
+                  function(t, status) {
+                    //上传完成
+                    if (status == 200) {
+                      mui.toast(msg);
+                      //alert("上传成功：" + t.responseText);
+                    } else {
+                      //alert("上传失败：" + status);
+                    }
+                  }
+                );
+                //添加其他参数
+                task.addData("id", id);
+                task.addFile(i.target, { key: "image" });
+                task.start();
+                //task.addEventListener( "statechanged", onStateChanged, false );
+                task.start();
+                return false;
               },
               e => {
                 console.log("保存图片失败：" + JSON.stringify(e));
@@ -421,7 +449,7 @@ export default {
           },
           {
             check: false,
-            clip: { top: "0px", left: "0px", height: "100%", width: "100%" }
+            clip: { top: "0px", left: "0px", height: "100%", width: "100%" }  //bit:'ARGB',
           }
         );
       }
@@ -436,12 +464,22 @@ export default {
   height: auto;
   overflow: hidden;
   .amap {
-    height: 93.5vh;
+    height: 93vh;
+    .punch-tips {
+      position: fixed;
+      top: 34px;
+      right: 5px;
+      z-index: 5000;
+      color: nth($baseColor, 3);
+      list-style-type: none;
+      font-size: 1.2rem;
+      text-align: right;
+    }
     .amap-demo {
       height: 70%;
     }
     .toolbar {
-      height: 28%;
+      height: 23%;
       padding-top: 5px;
       .toolbar-address {
         list-style-type: none;
