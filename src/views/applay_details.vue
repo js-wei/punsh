@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-04 1:54:16
+ * Modified By: 2018-04-12 10:11:53
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -87,6 +87,7 @@ export default {
           }
         });
     }
+    this.$store.commit('SET_TYPE',this.article.type)
   }
 };
 </script>

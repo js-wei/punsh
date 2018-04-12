@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-11 10:38:19
+ * Modified By: 2018-04-12 9:43:16
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -81,22 +81,16 @@ export default {
           return `<p>恭喜您今日正点上班,请保持哦,全勤奖在向你招手.<i class="fa fa-xiaoliansmiley40"></i></p>`;
           break;
         case 2:
-          return `<p>今日因为什么事情耽搁了,上班迟到了哦.迟到了:{this.article.later}分钟<i class="fa fa-kulian-line"></i></p>`;
+          return `<p>今日因为什么事情耽搁了,上班迟到了哦.迟到了:${this.article.later}分钟<i class="fa fa-kulian-line"></i></p>`;
           break;
         case 3:
-          return `<p>啊呀怎么搞得,今日无故旷工啦.努力上班高兴赚小钱钱,养好他(她)才是正道<i class="fa fa-kulian-line"></i></p>`;
+          return `<p>啊呀怎么搞得,今日怎么提前${this.article.later}分钟下班啦<i class="fa fa-kulian-line"></i></p>`;
           break;
         case 4:
           return `<p>啊呀怎么搞得,今日无故旷工啦.努力上班高兴赚小钱钱,养好他(她)才是正道<i class="fa fa-kulian-line"></i></p>`;
           break;
         case 5:
-          return `<p>今日有什么急事居然早退了,再急也可以请个假呀.<i class="fa fa-kulian-line"></i></p>`;
-          break;
-        case 6:
-          return `<p>恭喜您今日正点下班?请保持哦,全勤奖在向你招手.<i class="fa fa-xiaoliansmiley40"></i></p>`;
-          break;
-        case 7:
-          return `<p>时间不早了还在加班呢?您今日加班:{this.article.later}分钟.<i class="fa fa-xiaoliansmiley40"></i></p>`;
+          return `<p>今日走的很晚呀，无论有多忙也要注意休息，良好的身体是革命的本钱。当然也要恭喜您今日多上班了:${this.article.later}分钟，实际加班时${Math.round(this.article.later/60)}小时.<i class="fa fa-xiaoliansmiley40"></i></p>`;
           break;
       }
     }
@@ -152,7 +146,7 @@ export default {
           width: 80px;
           position: absolute;
           right: 10px;
-          top: 0px;
+          top: 5px;
         }
       }
       .mui-media-body {

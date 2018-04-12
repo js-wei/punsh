@@ -51,7 +51,7 @@
                     </line>
                   </g>
                 </svg>
-               <v-media-list :list="leave" :baseUrl="'/applay_details/'" :mod="'applay'"></v-media-list>
+               <v-media-list :list="leave" :baseUrl="'/applay_details/'" :mod="'applay'" :current="current"></v-media-list>
                 <svg class="spinner" style="fill: #ec4949;" slot="infinite-spinner" viewBox="0 0 64 64">
                   <g>
                     <circle cx="16" cy="32" stroke-width="0" r="3">
@@ -83,7 +83,7 @@ export default {
     return {
       title: "请假记录",
       isSlotRight: true,
-      current: 0,
+      current:0,
       pushType: [
         {
           id: 0,
@@ -127,7 +127,8 @@ export default {
   },
   computed: {
     ...mapState({
-      leave:state=>state.mutations.leaveList
+      leave:state=>state.mutations.leaveList,
+      _current:state=>state.mutations.type
     })
   },
   methods: {
@@ -228,6 +229,8 @@ export default {
     }
   },
   created() {
+    this.$store.commit('HIDE_FOOTER');
+    this.current = this._current;
     this._initMessage();
     this.$nextTick(() => {
       this.$refs.my_scroller.triggerPullToRefresh();

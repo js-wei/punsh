@@ -173,12 +173,10 @@ export default {
       }
       let date = new Date();
       let hours = date.getHours();
-      if (7 < hours < 9) {
-        //上班
+      if (hours > 7 && hours < 9) {
         plus.push.createMessage("别忘记上班打卡");
       }
-      if (17 < hours < 18) {
-        //下班
+      if (hours > 17 && hours < 18) {
         plus.push.createMessage("别忘记下班打卡");
       }
     }
@@ -204,7 +202,7 @@ export default {
           },
           false
         );
-        _this._pushPunchMessage() //推送消息
+        _this._pushPunchMessage(); //推送消息
       });
     }, 0.5e3);
   },
@@ -228,6 +226,13 @@ html {
 }
 .mui-bar-nav ~ .mui-content {
   padding-top: 0;
+}
+.mui-popup-button{
+  background-color: unset;
+  border-right:.5px solid rgba(0,0,0,.2);
+}
+.mui-popup-button:after {
+  background-color: unset;
 }
 </style>
 <style scoped>
@@ -281,9 +286,7 @@ body {
 .mui-popover.mui-popover-action .mui-table-view {
   color: nth($baseColor, 3);
 }
-.mui-popup-button:after {
-  background-color: rgba(0, 0, 0, 0.5);
-}
+
 .mui-switch.mui-active {
   background-color: nth($baseColor, 3);
   border-color: nth($baseColor, 3);

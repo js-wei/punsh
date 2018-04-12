@@ -118,12 +118,10 @@ export default {
             this.last_id = res.data[0].id;
           }
         });
-    },
-    onItemClick(index, item) {
-      console.log(index);
     }
   },
   created() {
+    this.$store.commit('HIDE_FOOTER');
     this._initMessage();
     this.$nextTick(() => {
       this.$refs.my_scroller.triggerPullToRefresh();

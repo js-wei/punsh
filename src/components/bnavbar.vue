@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-02 2:24:54
+ * Modified By: 2018-04-12 1:47:42
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -14,7 +14,7 @@
 
 <template>
     <div class="tab" ref="tab">
-        <ul class="tab_content" ref="tabWrapper">
+        <div class="tab_content" ref="tabWrapper">
             <slot v-if="!itemList" ref="tabitem"></slot>
             <li class="tab_item" v-for="(item,index) in itemList" :class="{'active':index==active}"
               :key="index" ref="tabitem" v-if="itemList && !isLink" @click.stop="click(item,index)">
@@ -26,7 +26,7 @@
                   {{item.title}}
                 </router-link>
             </li>
-        </ul>
+        </div>
     </div>
 </template>
 
@@ -48,11 +48,12 @@ export default {
   methods: {
     InitTabScroll() {
       let width = 0;
+     
       if (this.itemList) {
         for (let i = 0; i < this.itemList.length; i++) {
           width += this.$refs.tabitem[i].getBoundingClientRect().width;
         }
-      } else {
+      } else { 
         let uls = document.querySelector(".tab_content").children;
         for (let i = 0; i < uls.length; i++) {
           width += uls[i].offsetWidth;
@@ -91,7 +92,7 @@ export default {
   width: 95vw;
   overflow: hidden;
   margin: 0 auto;
-  ul {
+  .tab_content {
     line-height: 2rem;
     display: flex;
     padding-left: 0;
@@ -107,6 +108,9 @@ export default {
         color: #000;
       }
     }
+  }
+  .tab_content{
+    width:100%;
   }
 }
 </style>

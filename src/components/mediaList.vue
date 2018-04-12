@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-04 4:37:39
+ * Modified By: 2018-04-12 10:48:22
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -15,11 +15,12 @@
 <template>
     <div>
         <ul class="mui-table-view mui-table-view-chevron message-list-view">
-            <li class="mui-table-view-cell mui-media" v-for="(item,index) in list" :key="index">
+            <li class="mui-table-view-cell mui-media"  
+              v-for="(item,index) in list" :key="index">
                 <a @click.stop="forwad(baseUrl+item.id,item.id)" class='mui-navigate-right'>
                     <img class="mui-media-object mui-pull-left" v-lazy="item.image" v-if="item.image">
                     <div class="mui-media-body">
-                        <p class="mui-media-title">{{item.title}}</p>
+                        <p class="mui-media-title">{{item.id}}{{item.title}}</p>
                         <p class="mui-ellipsis">{{item.content}}</p>
                         <p>{{item.date|time_ago}}</p>
                     </div>
@@ -43,6 +44,10 @@ export default {
     mod: {
       type: String,
       default: "article"
+    },
+    current: {
+      type: Number,
+      default: 0
     }
   },
   methods: {
@@ -56,7 +61,7 @@ export default {
           {
             field: "status",
             op: "eq",
-            val: _this.mod=='punch'?1:0
+            val: _this.mod == "punch" ? 1 : 0
           }
         ]
       };
@@ -68,6 +73,9 @@ export default {
         }
       });
     }
+  },
+  mounted() {
+    console.log(this.current);
   }
 };
 </script>

@@ -11,9 +11,9 @@
                     </div>
                 </li>
                 <li class="mui-table-view-cell1">
-                    迟到通知
+                    打卡通知
                     <div class="mui-switch mui-switch-mini" :class="{'mui-active':notify.later}"  id="laterSwitch">
-                        <div class="mui-switch-handle"></div>
+                      <div class="mui-switch-handle"></div>
                     </div>
                 </li>
                 <li class="mui-table-view-cell1">
@@ -24,7 +24,7 @@
                     </div>
                 </li>
                 <li class="mui-table-view-cell1">
-                    公司新闻通知
+                    消息通知
                     <div class="mui-switch mui-switch-mini" :class="{'mui-active':notify.news}"  id="newsSwitch">
                         <div class="mui-switch-handle"></div>
                     </div>

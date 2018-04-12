@@ -59,7 +59,7 @@ export default {
           title: "迟到"
         },
         {
-          id: 5,
+          id: 3,
           title: "早退"
         },
         {
@@ -67,7 +67,7 @@ export default {
           title: "旷工"
         },
         {
-          id: 7,
+          id: 5,
           title: "加班"
         }
       ],
@@ -83,6 +83,7 @@ export default {
     vBnavbar
   },
   created() {
+    this.$store.commit('HIDE_FOOTER');
     this._initPunch();
     this.$nextTick(() => {
       this.$refs.my_scroller.triggerPullToRefresh();

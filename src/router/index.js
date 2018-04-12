@@ -28,6 +28,7 @@ import Map from '@/views/map'
 import ApplayDetails from '@/views/applay_details'
 import OverTime from '@/views/overtime'
 import Later from '@/views/later'
+import Event from '@/views/event'
 
 Vue.use(Router)
 
@@ -61,6 +62,15 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login,
+      meta: {
+        requiresAuth: false,
+        isBack: true
+      }
+    },
+    {
+      path: '/event',
+      name: 'event',
+      component: Event,
       meta: {
         requiresAuth: false,
         isBack: true

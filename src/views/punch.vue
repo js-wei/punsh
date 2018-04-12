@@ -58,7 +58,8 @@ export default {
       coordsType: "gps",
       is_on_punch: false,
       is_go_punch: false,
-      clip: "", //截图
+      clip: "", //截图,
+      punch_tip_title: "您确定要上班打卡？",
       events: {
         init(map) {
           setTimeout(() => {
@@ -161,8 +162,11 @@ export default {
         mui.toast("不在打卡范围内");
         return;
       }
+      if (!this.is_on_punch && this.is_go_punch) {
+        this.punch_tip_title = "您确定要下班打卡？";
+      }
       mui.confirm(
-        "您确认要打卡吗?",
+        _this.punch_tip_title,
         "提示",
         ["确定", "取消"],
         e => {
@@ -185,9 +189,9 @@ export default {
                     return;
                   }
                   let _msg = res.msg;
-                  if (res.punch_time) {
-                    _msg += ",签到时间为:" + res.punch_time;
-                  }
+                  // if (res.punch_time) {
+                  //   _msg += ",签到时间为:" + res.punch_time;
+                  // }
                   //mui.toast(_msg);
                   if (res.id) {
                     _this.captureWebview(_this, res.id, "_01", _msg);
@@ -212,9 +216,9 @@ export default {
                     return;
                   }
                   let _msg = res.msg;
-                  if (res.punch_time) {
-                    _msg += ",签到时间为:" + res.punch_time;
-                  }
+                  // if (res.punch_time) {
+                  //   _msg += ",签到时间为:" + res.punch_time;
+                  // }
                   if (res.id) {
                     _this.captureWebview(_this, res.id, "_02", _msg);
                   }
@@ -278,6 +282,7 @@ export default {
             self.addSimpleMarker(postion, text, map);
             self.position = [onComplete.position.lng, onComplete.position.lat];
             self.isPunchDisabled = true;
+            self.formattedAddress = onComplete.formattedAddress;
             if (!window.plus) {
               //关闭loading
               mui.hideLoading();
@@ -393,11 +398,6 @@ export default {
           _this.is_go_punch = !res.data;
         });
     },
-    pushPunchMessages(msg = "") {
-      if (msg && window.plus) {
-        plus.push.creatMessage(msg);
-      }
-    },
     captureWebview(vm, id, ty = "_01", msg) {
       let _vm = vm;
       let config = JSON.parse(localStorage.getItem("cofing"));
@@ -425,6 +425,7 @@ export default {
                     //上传完成
                     if (status == 200) {
                       mui.toast(msg);
+                      plus.push.createMessage("您本次签到成功");
                       //alert("上传成功：" + t.responseText);
                     } else {
                       //alert("上传失败：" + status);
@@ -449,7 +450,7 @@ export default {
           },
           {
             check: false,
-            clip: { top: "0px", left: "0px", height: "100%", width: "100%" }  //bit:'ARGB',
+            clip: { top: "0px", left: "0px", height: "100%", width: "100%" } //bit:'ARGB',
           }
         );
       }
@@ -466,14 +467,19 @@ export default {
   .amap {
     height: 93vh;
     .punch-tips {
+      padding: 0 10px 0 0;
+      margin: 10px 0 0 0;
       position: fixed;
       top: 34px;
-      right: 5px;
+      left: 5px;
       z-index: 5000;
       color: nth($baseColor, 3);
-      list-style-type: none;
       font-size: 1.2rem;
       text-align: right;
+      width: 100vw;
+      li {
+        list-style-type: none;
+      }
     }
     .amap-demo {
       height: 70%;

@@ -45,6 +45,10 @@ export default {
         {
           title: "迟到申诉",
           url: "/later"
+        },
+        {
+          title: "添加事件",
+          url: "/event"
         }
       ]
     };
