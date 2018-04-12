@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-12 2:39:34
+ * Modified By: 2018-04-12 2:50:34
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -43,7 +43,8 @@ export default {
         },
         {
           date: "2018/4/10",
-          title: "this is a title"
+          title: "请客吃饭",
+          desc:'同事小张请你去时尚水岸吃饭'
         }
       ],
       tabbar: [
@@ -83,7 +84,7 @@ export default {
   },
   mounted() {
     let _this = this;
-    let calendar = document.querySelector(".calendar");
+    let calendar = document.querySelector(".cal-body");
     this.currentMouth = this.$refs.calendar.calendarOptions.params.curMonth;
     calendar.addEventListener("touchstart", e => {
       _this.startX = e.changedTouches[0].pageX;
