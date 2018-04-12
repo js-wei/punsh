@@ -51,7 +51,7 @@
                     </line>
                   </g>
                 </svg>
-               <v-media-list :list="messages" :baseUrl="'/applay_details/'" :mod="'applay'"></v-media-list>
+               <v-media-list :list="leave" :baseUrl="'/applay_details/'" :mod="'applay'"></v-media-list>
                 <svg class="spinner" style="fill: #ec4949;" slot="infinite-spinner" viewBox="0 0 64 64">
                   <g>
                     <circle cx="16" cy="32" stroke-width="0" r="3">
@@ -77,6 +77,7 @@
 import vHead from "@/components/header";
 import vMediaList from "@/components/mediaList";
 import vBnavbar from "@/components/bnavbar";
+import {mapState} from 'vuex'
 export default {
   data() {
     return {
@@ -124,10 +125,15 @@ export default {
     vBnavbar,
     vMediaList
   },
+  computed: {
+    ...mapState({
+      leave:state=>state.mutations.leaveList
+    })
+  },
   methods: {
     selectItem(item) {
       this.current = item.id;
-      this._initMessage();
+      this._initMessage(false);
     },
     refresh(done) {
       let _this = this;
@@ -155,6 +161,7 @@ export default {
           _this.messages.unshift(...res);
           _this.last_id = res[0].id;
           _this.current_page = 1;
+          this.$store.commit("CATCH_LEAVE_LIST", _this.messages);
         });
       setTimeout(() => {
         done();
@@ -182,13 +189,16 @@ export default {
             res = res.data.data;
             let _data = res.data;
             self.messages.push(..._data);
+            this.$store.commit("CATCH_LEAVE_LIST", self.messages);
             done();
           });
         done();
       }, 0.5e3);
     },
-    _initMessage() {
-      this.messages = [];
+    _initMessage(flag=true) {
+      if (flag && this.leave.length > 0) {
+        return;
+      }
       this.$fly
         .get("/query", {
           action: "page",
@@ -210,6 +220,7 @@ export default {
             this.current_page = res.current_page;
             this.last_id = res.data[0].id;
           }
+          this.$store.commit("CATCH_LEAVE_LIST", res.data);
         });
     },
     back() {
@@ -218,6 +229,9 @@ export default {
   },
   created() {
     this._initMessage();
+    this.$nextTick(() => {
+      this.$refs.my_scroller.triggerPullToRefresh();
+    });
   }
 };
 </script>

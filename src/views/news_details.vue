@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-08 8:38:57
+ * Modified By: 2018-04-11 9:28:33
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -41,6 +41,8 @@
 
 <script>
 import vHead from "@/components/header";
+import "../../static/javascript/mui.zoom";
+import "../../static/javascript/mui.previewimage";
 import { mapState } from "vuex";
 export default {
   data() {
@@ -77,10 +79,13 @@ export default {
           }
         });
     }
+    this.$nextTick(() => {
+      mui.previewImage();
+    });
   }
 };
 </script>
-
+<style src="../../static/style/mui.previewimage.css"></style>
 <style lang="scss" scoped>
 @import "../assets/style/base";
 .mui-content {

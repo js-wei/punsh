@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:28:03
  * Author: 魏巍
  * -----
- * Last Modified: '2018-04-08 2:00:46
+ * Last Modified: '2018-04-11 10:19:48
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -22,3 +22,6 @@ export const UPDATE_DIRECTION='UPDATE_DIRECTION';
 export const UPDATE_SITE_CONFIG = 'UPDATE_SITE_CONFIG';
 export const CATCH_ARTICLE='CATCH_ARTICLE';
 export const CATCH_ARTICLE_LIST='CATCH_ARTICLE_LIST';
+export const CATCH_PUNCH_LIST='CATCH_PUNCH_LIST';
+export const CATCH_LEAVE_LIST='CATCH_LEAVE_LIST';
+export const SET_TYPE='SET_TYPE';

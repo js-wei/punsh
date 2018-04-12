@@ -23,7 +23,7 @@
               height="90%" ref="my_scroller" style="padding-top:81px;" class="my-scroller">
               <svg class="spinner" style="stroke: #4b8bf4;" slot="refresh-spinner" viewBox="0 0 64 64">
                 <g stroke-width="7" stroke-linecap="round"><line x1="10" x2="10" y1="27.3836" y2="36.4931"><animate attributeName="y1" dur="750ms" values="16;18;28;18;16;16" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="48;46;36;44;48;48" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values="1;.4;.5;.8;1;1" repeatCount="indefinite"></animate></line><line x1="24" x2="24" y1="18.6164" y2="45.3836"><animate attributeName="y1" dur="750ms" values="16;16;18;28;18;16" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="48;48;46;36;44;48" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values="1;1;.4;.5;.8;1" repeatCount="indefinite"></animate></line><line x1="38" x2="38" y1="16.1233" y2="47.8767"><animate attributeName="y1" dur="750ms" values="18;16;16;18;28;18" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="44;48;48;46;36;44" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values=".8;1;1;.4;.5;.8" repeatCount="indefinite"></animate></line><line x1="52" x2="52" y1="16" y2="48"><animate attributeName="y1" dur="750ms" values="28;18;16;16;18;28" repeatCount="indefinite"></animate><animate attributeName="y2" dur="750ms" values="36;44;48;48;46;36" repeatCount="indefinite"></animate><animate attributeName="stroke-opacity" dur="750ms" values=".5;.8;1;1;.4;.5" repeatCount="indefinite"></animate></line></g></svg>
-                <v-media-list :list="messages" :baseUrl="'/push_details/'" :mod="'punch'"></v-media-list>
+                <v-media-list :list="punch" :baseUrl="'/push_details/'" :mod="'punch'"></v-media-list>
               <svg class="spinner" style="fill: #ec4949;" slot="infinite-spinner" viewBox="0 0 64 64">
                 <g>
                   <circle cx="16" cy="32" stroke-width="0" r="3"><animate attributeName="fill-opacity" dur="750ms" values=".5;.6;.8;1;.8;.6;.5;.5" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="3;3;4;5;6;5;4;3" repeatCount="indefinite"></animate></circle><circle cx="32" cy="32" stroke-width="0" r="3.09351"><animate attributeName="fill-opacity" dur="750ms" values=".5;.5;.6;.8;1;.8;.6;.5" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="4;3;3;4;5;6;5;4" repeatCount="indefinite"></animate></circle><circle cx="48" cy="32" stroke-width="0" r="4.09351"><animate attributeName="fill-opacity" dur="750ms" values=".6;.5;.5;.6;.8;1;.8;.6" repeatCount="indefinite"></animate><animate attributeName="r" dur="750ms" values="5;4;3;3;4;5;6;5" repeatCount="indefinite"></animate></circle>
@@ -59,7 +59,7 @@ export default {
           title: "迟到"
         },
         {
-          id: 3,
+          id: 5,
           title: "早退"
         },
         {
@@ -67,7 +67,7 @@ export default {
           title: "旷工"
         },
         {
-          id: 5,
+          id: 7,
           title: "加班"
         }
       ],
@@ -84,11 +84,19 @@ export default {
   },
   created() {
     this._initPunch();
+    this.$nextTick(() => {
+      this.$refs.my_scroller.triggerPullToRefresh();
+    });
+  },
+  computed: {
+    ...mapState({
+      punch: state => state.mutations.punchList
+    })
   },
   methods: {
     selectItem(item) {
       this.current = item.id;
-      this._initPunch();
+      this._initPunch(false);
     },
     refresh(done) {
       let _this = this;
@@ -121,6 +129,7 @@ export default {
           _this.messages.unshift(...res);
           _this.last_id = res[0].id;
           _this.current_page = 1;
+          this.$store.commit("CATCH_PUNCH_LIST", this.messages);
         });
       setTimeout(() => {
         done();
@@ -128,7 +137,7 @@ export default {
     },
     infinite(done) {
       var self = this;
-      if (this.current_page >= this.last_page) {
+      if (this.current_page > this.last_page) {
         done(true);
         return;
       }
@@ -160,16 +169,16 @@ export default {
             res = res.data.data;
             let _data = res.data;
             self.messages.push(..._data);
-            // _data.forEach(item => {
-            //   self.messages.push(item);
-            // });
+            this.$store.commit("CATCH_PUNCH_LIST", self.messages);
             done();
           });
         done();
       }, 0.5e3);
     },
-    _initPunch() {
-      this.messages = [];
+    _initPunch(flag = true) {
+      if (flag && this.punch.length > 0) {
+        return;
+      }
       this.$fly
         .get("/query", {
           action: "page",
@@ -196,6 +205,7 @@ export default {
             this.current_page = res.current_page;
             this.last_id = res.data[0].id;
           }
+          this.$store.commit("CATCH_PUNCH_LIST", res.data);
         });
     }
   }

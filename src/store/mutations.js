@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:24:18
  * Author: 魏巍
  * -----
- * Last Modified: '2018-04-08 2:11:07
+ * Last Modified: '2018-04-11 10:20:56
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -22,7 +22,10 @@ import {
   UPDATE_DIRECTION,
   UPDATE_SITE_CONFIG,
   CATCH_ARTICLE,
-  CATCH_ARTICLE_LIST
+  CATCH_ARTICLE_LIST,
+  CATCH_PUNCH_LIST,
+  CATCH_LEAVE_LIST,
+  SET_TYPE
 } from './mutation-type'
 
 const state = {
@@ -34,7 +37,10 @@ const state = {
   site: null,
   navigaterBack: null,
   article: {},
-  articleList:[]
+  articleList: [],
+  punchList: [],
+  leaveList: [],
+  type: 0
 };
 
 const mutations = {
@@ -69,8 +75,17 @@ const mutations = {
   [CATCH_ARTICLE](state, article) {
     state.article = article;
   },
-  [CATCH_ARTICLE_LIST](state, list){
+  [CATCH_ARTICLE_LIST](state, list) {
     state.articleList = list;
+  },
+  [CATCH_PUNCH_LIST](state, list) {
+    state.punchList = list;
+  },
+  [CATCH_LEAVE_LIST](state, list) {
+    state.leaveList = list;
+  },
+  [SET_TYPE](state, type) {
+    state.type = type;
   }
 };
 
@@ -95,6 +110,15 @@ const getters = {
   },
   getArticleListState(state) {
     return state.articleList;
+  },
+  getPunchListState(state) {
+    return state.punchList;
+  },
+  getLeaveListState(state) {
+    return state.leaveList;
+  },
+  getTypeState(state) {
+    return state.type;
   }
 };
 

@@ -204,7 +204,7 @@ export default {
           },
           false
         );
-        //_this._pushPunchMessage() //推送消息
+        _this._pushPunchMessage() //推送消息
       });
     }, 0.5e3);
   },

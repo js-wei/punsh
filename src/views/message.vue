@@ -125,6 +125,9 @@ export default {
   },
   created() {
     this._initMessage();
+    this.$nextTick(() => {
+      this.$refs.my_scroller.triggerPullToRefresh();
+    });
   }
 };
 </script>
