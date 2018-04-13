@@ -21,7 +21,8 @@
               <li>时间：{{new Date()|formart_date('hh:mm:ss')}}</li>
               <li v-if="formattedAddress">地址：{{formattedAddress}}</li>
             </ul>
-            <el-amap class="amap-demo" vid="amap" :zoom="zoom" ref="map" :events="events">
+            <el-amap class="amap-demo" vid="amap" :zoom="zoom" ref="map" :events="events"
+              :doubleClickZoom="false" :zoomEnable="false" :dragEnable="false">
             </el-amap>
             <div class="toolbar">
                 <ul class="toolbar-address">
@@ -39,7 +40,7 @@
 
 <script>
 import vHead from "@/components/header.vue";
-
+import { mapState } from "vuex";
 export default {
   data() {
     let self = this;
@@ -49,7 +50,7 @@ export default {
       company: "", //打卡公司
       company_address: "", //公司地址
       sub_title: "",
-      zoom: 18,
+      zoom: 12,
       formattedAddress: "", //打卡地址
       isPunchDisabled: false, //不在范围禁止使用打卡按钮
       position: [0, 0], //打卡坐标
@@ -65,7 +66,7 @@ export default {
           setTimeout(() => {
             let geocoder = new AMap.Geocoder({
               city: "全国",
-              radius: 80
+              radius: 70
             });
             geocoder.getLocation(self.company_address, function(
               status,
@@ -73,11 +74,12 @@ export default {
             ) {
               if (status === "complete" && result.info === "OK") {
                 self.circle = self.geocoderCallBack(result, map, self);
-                if (window.plus) {
+                if (self.network.no == 3) {
                   //plus ok use gps or network,gps level is high
                   setTimeout(() => {
                     plus.geolocation.getCurrentPosition(
                       function(p) {
+                        plus.nativeUI.showWaiting("正在定位...");
                         let location = {
                           lat: p.coords.latitude,
                           lng: p.coords.longitude
@@ -87,23 +89,40 @@ export default {
                         self.geoLocation(map, self, location);
                       },
                       function(e) {
-                        if (self.network == 3) {
-                          self.geoLocation(map, self);
-                        } else {
-                          plus.nativeUI.closeWaiting();
-                          mui.toast("当前非WIFI网络,请打开定位服务");
-                          setTimeout(() => {
-                            self.$router.push("/home");
-                          }, 1e3);
-                        }
+                        //plus not ok use network
+                        mui.showLoading("正在定位...");
+                        self.geoLocation(map, self);
                       },
                       { geocode: true }
                     );
                   }, 800);
                 } else {
-                  //plus not ok use  network
-                  mui.showLoading("位置信息定位中..", "div");
-                  self.geoLocation(map, self);
+                  if (window.plus) {
+                    setTimeout(() => {
+                      plus.geolocation.getCurrentPosition(
+                        function(p) {
+                          plus.nativeUI.showWaiting("正在定位...");
+                          let location = {
+                            lat: p.coords.latitude,
+                            lng: p.coords.longitude
+                          };
+                          self.coordsType = p.coordsType;
+                          self.formattedAddress = p.addresses;
+                          self.geoLocation(map, self, location);
+                        },
+                        function(e) {
+                          mui.toast("当前非WIFI网络,请打开定位服务");
+                          setTimeout(() => {
+                            self.$router.push("/home");
+                          }, 1.5e3);
+                        },
+                        { geocode: true }
+                      );
+                    }, 800);
+                  } else {
+                    mui.showLoading("正在定位...");
+                    self.geoLocation(map, self);
+                  }
                 }
               }
             });
@@ -116,9 +135,9 @@ export default {
     vHead
   },
   computed: {
-    network() {
-      return localStorage.getItem("network_type");
-    },
+    ...mapState({
+      network: state => state.mutations.networkType
+    }),
     user() {
       return JSON.parse(localStorage.getItem("logined"));
     }
@@ -126,6 +145,15 @@ export default {
   created() {
     this._initConfig();
     this.isPunch();
+  },
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        document.querySelector(".amap-geo").addEventListener("tap", e => {
+          mui.showLoading("正在定位...");
+        });
+      }, 2.5e3);
+    });
   },
   methods: {
     //初始化配置
@@ -251,10 +279,7 @@ export default {
             self.position = [data.locations[0].lng, data.locations[0].lat];
             self.addSimpleMarker(position, text, map);
             self.isPunchDisabled = true;
-            if (!window.plus) {
-              //关闭loading
-              mui.hideLoading();
-            } else {
+            if (window.plus) {
               plus.nativeUI.closeWaiting();
             }
           }
@@ -283,12 +308,7 @@ export default {
             self.position = [onComplete.position.lng, onComplete.position.lat];
             self.isPunchDisabled = true;
             self.formattedAddress = onComplete.formattedAddress;
-            if (!window.plus) {
-              //关闭loading
-              mui.hideLoading();
-            } else {
-              plus.nativeUI.closeWaiting();
-            }
+            mui.hideLoading();
           }); //返回定位信息
           AMap.event.addListener(geolocation, "error", onError => {}); //返回定位出错信息
         });
@@ -525,5 +545,11 @@ export default {
       }
     }
   }
+}
+</style>
+<style lang="css">
+.mui-popup-backdrop {
+  background: rgba(0, 0, 0, 0);
+  z-index: 9999;
 }
 </style>

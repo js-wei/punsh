@@ -95,13 +95,13 @@ export default {
       types[plus.networkinfo.CONNECTION_CELL3G] = "Cellular 3G connection";
       types[plus.networkinfo.CONNECTION_CELL4G] = "Cellular 4G connection";
       if (plus.networkinfo.getCurrentType() == 3) {
-        localStorage.setItem("network_type", 2);
+        this.$store.commit("SET_NETWORK_TYPE", { no: 3, name: "WIFI网络" });
       }
       if (plus.networkinfo.getCurrentType() > 3) {
-        localStorage.setItem("network_type", 1);
+        this.$store.commit("SET_NETWORK_TYPE", { no: 2, name: "移动流量" });
       }
       if (plus.networkinfo.getCurrentType() == 1) {
-        localStorage.setItem("network_type", 0);
+        this.$store.commit("SET_NETWORK_TYPE", { no: 1, name: "无网络" });
       }
     },
     _onNetChange() {
@@ -109,62 +109,20 @@ export default {
       switch (nt) {
         case plus.networkinfo.CONNECTION_ETHERNET:
         case plus.networkinfo.CONNECTION_WIFI:
-          mui.toast("当前网络为WiFi", {
-            duration: "long"
-          });
-          localStorage.setItem("network_type", 2);
+          mui.toast("当前网络为WiFi");
+          this.$store.commit("SET_NETWORK_TYPE", { no: 3, name: "WIFI网络" });
           break;
         case plus.networkinfo.CONNECTION_CELL2G:
         case plus.networkinfo.CONNECTION_CELL3G:
         case plus.networkinfo.CONNECTION_CELL4G:
-          mui.toast("非WiFi网络,请注意流量", {
-            duration: "long"
-          });
-          localStorage.setItem("network_type", 1);
+          mui.toast("非WiFi网络,请注意流量");
+          this.$store.commit("SET_NETWORK_TYPE", { no: 2, name: "移动流量" });
           break;
         default:
-          mui.toast("当前没有网络", {
-            duration: "long"
-          });
-          localStorage.setItem("network_type", 0);
+          mui.toast("当前没有网络");
+          this.$store.commit("SET_NETWORK_TYPE", { no: 1, name: "无网络" });
           break;
       }
-    },
-    _getWifiName() {
-      if (mui.os.android) {
-        var wifiManager, wifiInfo;
-        var Context = plus.android.importClass("android.content.Context");
-        var WifiManager = plus.android.importClass(
-          "android.net.wifi.WifiManager"
-        );
-        var WifiInfo = plus.android.importClass("android.net.wifi.WifiInfo");
-        wifiManager = plus.android
-          .runtimeMainActivity()
-          .getSystemService(Context.WIFI_SERVICE);
-        wifiInfo = wifiManager.getConnectionInfo();
-        var ssid = wifiInfo.getSSID() || "";
-        if (ssid.length == 0) {
-          return null;
-        }
-        //一些手机上获取SSID是有值的，但是实际IP为空，真实为未连接
-        var i = parseInt(wifiInfo.getIpAddress());
-        var ipStr =
-          (i & 0xff) +
-          "." +
-          ((i >> 8) & 0xff) +
-          "." +
-          ((i >> 16) & 0xff) +
-          "." +
-          ((i >> 24) & 0xff);
-        if (ipStr == "0.0.0.0") {
-          return null;
-        }
-        if (ssid != "<unknown ssid>" && ssid.toUpperCase() != "0X") {
-          return ssid.replace(/\"/g, "");
-        }
-        return null;
-      }
-      return null;
     },
     _pushPunchMessage() {
       //推送签到消息
@@ -227,12 +185,11 @@ html {
 .mui-bar-nav ~ .mui-content {
   padding-top: 0;
 }
-.mui-popup-button{
-  background-color: unset;
-  border-right:.5px solid rgba(0,0,0,.2);
+.mui-popup-button {
+  border-right: 0.1px solid rgba(0, 0, 0, 0.1);
 }
 .mui-popup-button:after {
-  background-color: unset;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 </style>
 <style scoped>

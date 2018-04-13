@@ -2,11 +2,12 @@
     <div>
       <footer class="footer" v-if="show" id="footer"> 
           <nav>
-              <a :class="{'active':currentPage==m.href,'report':m.href.indexOf('report')>-1}" 
+              <li :class="{'active':currentPage==m.href,'report':m.href.indexOf('report')>-1}" 
                   v-for="(m,i) in menu" :key="i" @click.stop="forward(m.href)">
-                  <span class="mui-icon" :class="m.icon" @click="report(m.href)"></span>
+                    <span class="mui-icon" :class="m.icon" @click.stop="report" v-if="m.href=='report'"></span>
+                  <span class="mui-icon" :class="m.icon" v-if="m.href!='report'"></span>
                   <span class="mui-tab-label">{{m.title}}</span>
-              </a>
+              </li>
               <!-- :to="m.href.indexOf('report')?m.href:''"  -->
           </nav>
       </footer>
@@ -72,15 +73,11 @@ export default {
       mui("#sheet1").popover("toggle");
       this.$router.push(url);
     },
-    report($event) {
-      if ($event != "report") {
-        return;
-      }
+    report() {
       mui("#sheet1").popover("toggle");
     },
     forward(url) {
       this.$router.replace(url);
-      return false;
     }
   }
 };
@@ -99,14 +96,13 @@ export default {
     height: 50px;
     padding-top: 5px;
     position: relative;
-    a {
+    li {
       position: relative;
       display: block;
       float: left;
       text-align: center;
       width: 20vw;
       color: nth($baseColor, 1);
-
       span {
         display: block;
         height: 100%;

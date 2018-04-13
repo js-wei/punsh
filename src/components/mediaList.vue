@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-12 10:48:22
+ * Modified By: 2018-04-13 2:24:46
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -20,7 +20,7 @@
                 <a @click.stop="forwad(baseUrl+item.id,item.id)" class='mui-navigate-right'>
                     <img class="mui-media-object mui-pull-left" v-lazy="item.image" v-if="item.image">
                     <div class="mui-media-body">
-                        <p class="mui-media-title">{{item.id}}{{item.title}}</p>
+                        <p class="mui-media-title">{{item.title}}</p>
                         <p class="mui-ellipsis">{{item.content}}</p>
                         <p>{{item.date|time_ago}}</p>
                     </div>
@@ -73,9 +73,6 @@ export default {
         }
       });
     }
-  },
-  mounted() {
-    console.log(this.current);
   }
 };
 </script>

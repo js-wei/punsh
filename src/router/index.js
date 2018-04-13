@@ -33,7 +33,7 @@ import Event from '@/views/event'
 Vue.use(Router)
 
 export default new Router({
-  //mode: 'history',
+  mode: 'history',
   hashbang: true,
   saveScrollPosition: true,
   scrollBehavior(to, from, savedPosition) {

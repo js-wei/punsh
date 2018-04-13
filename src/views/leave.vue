@@ -197,9 +197,10 @@ export default {
       }, 0.5e3);
     },
     _initMessage(flag=true) {
-      if (flag && this.leave.length > 0) {
-        return;
-      }
+      // if (flag && this.leave.length > 0) {
+      //   this.last_id = this.articleList[0].id;
+      //   return;
+      // }
       this.$fly
         .get("/query", {
           action: "page",
@@ -233,7 +234,7 @@ export default {
     this.current = this._current;
     this._initMessage();
     this.$nextTick(() => {
-      this.$refs.my_scroller.triggerPullToRefresh();
+      //this.$refs.my_scroller.triggerPullToRefresh();
     });
   }
 };

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-11 9:28:33
+ * Modified By: 2018-04-13 10:07:01
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -95,8 +95,8 @@ export default {
     margin-top: 20px;
     .mui-card-header {
       img {
-        width:30px;
-        height:30px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
       }
     }

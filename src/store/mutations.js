@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:24:18
  * Author: 魏巍
  * -----
- * Last Modified: '2018-04-11 10:20:56
+ * Last Modified: '2018-04-13 10:25:34
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -25,7 +25,9 @@ import {
   CATCH_ARTICLE_LIST,
   CATCH_PUNCH_LIST,
   CATCH_LEAVE_LIST,
-  SET_TYPE
+  SET_TYPE,
+  SET_NETWORK_TYPE,
+  CATCH_SCOLLER_POSITION
 } from './mutation-type'
 
 const state = {
@@ -40,7 +42,15 @@ const state = {
   articleList: [],
   punchList: [],
   leaveList: [],
-  type: 0
+  type: 0,
+  networkType: {
+    no: 1,
+    name: '无网络'
+  },
+  scollerPosition: {
+    x: 0,
+    y: 0
+  }
 };
 
 const mutations = {
@@ -86,6 +96,12 @@ const mutations = {
   },
   [SET_TYPE](state, type) {
     state.type = type;
+  },
+  [SET_NETWORK_TYPE](state, network) {
+    state.networkType = network;
+  },
+  [CATCH_SCOLLER_POSITION](state, position) {
+    state.scollerPosition = position;
   }
 };
 
@@ -119,6 +135,12 @@ const getters = {
   },
   getTypeState(state) {
     return state.type;
+  },
+  getNetworkTypeState(state) {
+    return state.networkType;
+  },
+  getScollerPositionState(state) {
+    return state.scollerPosition;
   }
 };
 

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-12 2:50:34
+ * Modified By: 2018-04-13 3:19:47
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -14,9 +14,10 @@
 
 <template>
     <div class="event">
-        <vue-event-calendar :events="demoEvents" ref="calendar" class="calendar" 
+        <!-- <vue-event-calendar :events="demoEvents" ref="calendar" class="calendar" 
             @month-changed="handleMonthChanged">
-        </vue-event-calendar>
+        </vue-event-calendar> -->
+        <v-week></v-week>
         <ul class="tabbar">
             <li v-for="(item,index) in tabbar" :key="index">
                 <span :class="item.icon"></span>
@@ -28,6 +29,7 @@
 
 <script>
 import vBslider from "@/components/bslider";
+import vWeek from "@/components/week";
 export default {
   data() {
     return {
@@ -42,9 +44,9 @@ export default {
           desc: "longlonglong description"
         },
         {
-          date: "2018/4/10",
+          date: "2018/4/14",
           title: "请客吃饭",
-          desc:'同事小张请你去时尚水岸吃饭'
+          desc: "室友小张请你去东渚阿来烧烤吃小龙虾"
         }
       ],
       tabbar: [
@@ -77,31 +79,32 @@ export default {
     };
   },
   components: {
-    vBslider
+    vBslider,
+    vWeek
   },
   created() {
     this.$store.commit("HIDE_FOOTER");
   },
   mounted() {
-    let _this = this;
-    let calendar = document.querySelector(".cal-body");
-    this.currentMouth = this.$refs.calendar.calendarOptions.params.curMonth;
-    calendar.addEventListener("touchstart", e => {
-      _this.startX = e.changedTouches[0].pageX;
-      _this.startY = e.changedTouches[0].pageY;
-    });
-    calendar.addEventListener("touchmove", e => {
-      let endX = e.changedTouches[0].pageX;
-      let endY = e.changedTouches[0].pageY;
-      let distanceX = endX - _this.startX;
-      let distanceY = endY - _this.startY;
-      if (Math.abs(distanceX) > Math.abs(distanceY) && distanceX > 0) {
-        document.querySelector(".l").click();
-      }
-      if (Math.abs(distanceX) > Math.abs(distanceY) && distanceX < 0) {
-        document.querySelector(".r").click();
-      }
-    });
+    // let _this = this;
+    // let calendar = document.querySelector(".cal-body");
+    // this.currentMouth = this.$refs.calendar.calendarOptions.params.curMonth;
+    // calendar.addEventListener("touchstart", e => {
+    //   _this.startX = e.changedTouches[0].pageX;
+    //   _this.startY = e.changedTouches[0].pageY;
+    // });
+    // calendar.addEventListener("touchmove", e => {
+    //   let endX = e.changedTouches[0].pageX;
+    //   let endY = e.changedTouches[0].pageY;
+    //   let distanceX = endX - _this.startX;
+    //   let distanceY = endY - _this.startY;
+    //   if (Math.abs(distanceX) > Math.abs(distanceY) && distanceX > 0) {
+    //     document.querySelector(".l").click();
+    //   }
+    //   if (Math.abs(distanceX) > Math.abs(distanceY) && distanceX < 0) {
+    //     document.querySelector(".r").click();
+    //   }
+    // });
   },
   methods: {
     selectItem(id) {},

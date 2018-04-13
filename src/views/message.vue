@@ -42,9 +42,6 @@ export default {
     vHead,
     vMediaList
   },
-  mounted() {
-    //document.querySelector("._v-content").style.paddingBottom = 50 + "px";
-  },
   methods: {
     refresh(done) {
       let _this = this;
@@ -94,9 +91,6 @@ export default {
             res = res.data.data;
             let _data = res.data;
             self.messages.push(..._data);
-            // _data.forEach(item => {
-            //   self.messages.push(item);
-            // });
             done();
           });
         done();
@@ -121,10 +115,10 @@ export default {
     }
   },
   created() {
-    this.$store.commit('HIDE_FOOTER');
+    this.$store.commit("HIDE_FOOTER");
     this._initMessage();
     this.$nextTick(() => {
-      this.$refs.my_scroller.triggerPullToRefresh();
+      //this.$refs.my_scroller.triggerPullToRefresh();
     });
   }
 };
