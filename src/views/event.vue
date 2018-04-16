@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-13 3:19:47
+ * Modified By: 2018-04-16 1:46:35
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -14,22 +14,31 @@
 
 <template>
     <div class="event">
-        <!-- <vue-event-calendar :events="demoEvents" ref="calendar" class="calendar" 
-            @month-changed="handleMonthChanged">
-        </vue-event-calendar> -->
-        <v-week></v-week>
-        <ul class="tabbar">
+         <Calendar
+          ref="calendar1"
+          :events="calendar1.events" 
+          :lunar="calendar1.lunar" 
+          :value="calendar1.value" 
+          :begin="calendar1.begin" 
+          :end="calendar1.end" 
+          :weeks="calendar1.weeks" 
+          :months="calendar1.months" 
+          @select="calendar1.select"
+          @selectMonth="calendar1.selectMonth"
+          @selectYear="calendar1.selectYear">
+        </Calendar>
+        <!-- <ul class="tabbar">
             <li v-for="(item,index) in tabbar" :key="index">
                 <span :class="item.icon"></span>
                 <span>{{item.title}}</span>
             </li>
-        </ul>
+        </ul> -->
     </div>
 </template>
 
 <script>
 import vBslider from "@/components/bslider";
-import vWeek from "@/components/week";
+import Calendar from "@/components/calendar/calendar.vue";
 export default {
   data() {
     return {
@@ -37,18 +46,20 @@ export default {
       currentMouth: 0,
       startX: 0,
       startY: 0,
-      demoEvents: [
-        {
-          date: "2018/4/15",
-          title: "eat",
-          desc: "longlonglong description"
+      calendar1: {
+        lunar:true, //显示农历
+        events: {},
+        select(value) {
+          //console.log(value.toString());
         },
-        {
-          date: "2018/4/14",
-          title: "请客吃饭",
-          desc: "室友小张请你去东渚阿来烧烤吃小龙虾"
-        }
-      ],
+        selectMonth(month, year) {
+          //console.log(year, month);
+        },
+        selectYear(year) {
+          //console.log(year);
+        },
+        timestamp: Date.now()
+      },
       tabbar: [
         {
           id: 1,
@@ -80,37 +91,16 @@ export default {
   },
   components: {
     vBslider,
-    vWeek
+    Calendar
   },
   created() {
     this.$store.commit("HIDE_FOOTER");
   },
   mounted() {
-    // let _this = this;
-    // let calendar = document.querySelector(".cal-body");
-    // this.currentMouth = this.$refs.calendar.calendarOptions.params.curMonth;
-    // calendar.addEventListener("touchstart", e => {
-    //   _this.startX = e.changedTouches[0].pageX;
-    //   _this.startY = e.changedTouches[0].pageY;
-    // });
-    // calendar.addEventListener("touchmove", e => {
-    //   let endX = e.changedTouches[0].pageX;
-    //   let endY = e.changedTouches[0].pageY;
-    //   let distanceX = endX - _this.startX;
-    //   let distanceY = endY - _this.startY;
-    //   if (Math.abs(distanceX) > Math.abs(distanceY) && distanceX > 0) {
-    //     document.querySelector(".l").click();
-    //   }
-    //   if (Math.abs(distanceX) > Math.abs(distanceY) && distanceX < 0) {
-    //     document.querySelector(".r").click();
-    //   }
-    // });
+  
   },
   methods: {
     selectItem(id) {},
-    handleMonthChanged(e) {
-      console.log(e);
-    }
   }
 };
 </script>

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-13 5:08:11
+ * Modified By: 2018-04-16 8:44:56
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -81,17 +81,19 @@ export default {
     },
     touchend($event) {
       let end = $event.changedTouches[0].clientX;
+      if (this.touchXStart == end) {
+        return;
+      } else if (this.touchXStart - end > 140) {
+        this.weekNext();
+      } else {
+        this.weekPre();
+      }
       document
         .querySelector(".days")
         .classList.add(
           "silde",
           this.touchXStart - end > 0 ? "slideInRight" : "slideInLeft"
         );
-      if (this.touchXStart - end > 0) {
-        this.weekNext();
-      } else {
-        this.weekPre();
-      }
       this.weekNomber = this.getWeekNumber(
         this.currentYear,
         this.currentMonth,
@@ -198,6 +200,8 @@ export default {
 .date {
   color: #333;
   height: auto;
+  width: 100%;
+  overflow: hidden;
   margin: 0;
   padding: 0;
   .month {
