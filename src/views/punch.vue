@@ -148,11 +148,13 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      setTimeout(() => {
-        document.querySelector(".amap-geo").addEventListener("tap", e => {
-          mui.showLoading("正在定位...");
-        });
-      }, 2.5e3);
+      if (document.querySelector(".amap-geo")) {
+        setTimeout(() => {
+          document.querySelector(".amap-geo").addEventListener("tap", e => {
+            mui.showLoading("正在定位...");
+          });
+        }, 2.5e3);
+      }
     });
   },
   methods: {
@@ -217,10 +219,6 @@ export default {
                     return;
                   }
                   let _msg = res.msg;
-                  // if (res.punch_time) {
-                  //   _msg += ",签到时间为:" + res.punch_time;
-                  // }
-                  //mui.toast(_msg);
                   if (res.id) {
                     _this.captureWebview(_this, res.id, "_01", _msg);
                   }
@@ -244,15 +242,10 @@ export default {
                     return;
                   }
                   let _msg = res.msg;
-                  // if (res.punch_time) {
-                  //   _msg += ",签到时间为:" + res.punch_time;
-                  // }
                   if (res.id) {
                     _this.captureWebview(_this, res.id, "_02", _msg);
                   }
-                  //mui.toast(_msg);
                   setTimeout(() => {
-                    //_this.pushPunchMessages(_msg);
                     _this.$router.push("/push");
                   }, 2.5e3);
                 });
@@ -379,10 +372,10 @@ export default {
         center: lnglat, // 圆心位置
         radius: self.radius, //半径
         strokeColor: "#eb7d46", //线颜色
-        strokeOpacity: 1, //线透明度
-        strokeWeight: 3, //线粗细度
+        //strokeOpacity: 1, //线透明度
+        //strokeWeight: 3, //线粗细度
         fillColor: "#eb7d46", //填充颜色
-        fillOpacity: 0.35 //填充透明度
+        fillOpacity: 0.7 //填充透明度
       });
       circle.setMap(map);
       return circle;
@@ -419,61 +412,61 @@ export default {
         });
     },
     captureWebview(vm, id, ty = "_01", msg) {
+      if (!window.plus) {
+        return;
+      }
       let _vm = vm;
       let config = JSON.parse(localStorage.getItem("cofing"));
       let path =
-        "_doc/images/" + _vm.formart_date(new Date(), "yyyyMMdd") + ty + ".jpg";
+        "_doc/bitmap/" + _vm.formart_date(new Date(), "yyyyMMdd") + ty + ".png";
       let bitmap = null;
-      if (window.plus) {
-        let ws = plus.webview.currentWebview();
-        bitmap = new plus.nativeObj.Bitmap("clip");
-        ws.draw(
-          bitmap,
-          e => {
-            bitmap.save(
-              path,
-              {
-                format: "png",
-                quality: 20
-              },
-              i => {
-                let server = config.url + "api/upload_punch";
-                var task = plus.uploader.createUpload(
-                  server,
-                  { method: "POST" },
-                  function(t, status) {
-                    //上传完成
-                    if (status == 200) {
-                      mui.toast(msg);
-                      plus.push.createMessage("您本次签到成功");
-                      //alert("上传成功：" + t.responseText);
-                    } else {
-                      //alert("上传失败：" + status);
-                    }
+      let ws = plus.webview.currentWebview();
+      bitmap = new plus.nativeObj.Bitmap("clip");
+      ws.draw(
+        bitmap,
+        e => {
+          bitmap.save(
+            path,
+            {},
+            i => {
+              let server = config.url + "api/upload_punch";
+              var task = plus.uploader.createUpload(
+                server,
+                { method: "POST" },
+                (t, status) => {
+                  //上传完成
+                  if (status == 200) {
+                    mui.toast(msg);
+                    plus.push.createMessage("您本次签到成功");
+                    bitmap.recycle();
+                    //console.log(t.responseText);
+                  } else {
+                    //alert("上传失败：" + status);
                   }
-                );
-                //添加其他参数
-                task.addData("id", id);
-                task.addFile(i.target, { key: "image" });
-                task.start();
-                //task.addEventListener( "statechanged", onStateChanged, false );
-                task.start();
-                return false;
-              },
-              e => {
-                console.log("保存图片失败：" + JSON.stringify(e));
-              }
-            );
-          },
-          e => {
-            console.log("截屏绘制图片失败：" + JSON.stringify(e));
-          },
-          {
-            check: false,
-            clip: { top: "0px", left: "0px", height: "100%", width: "100%" } //bit:'ARGB',
-          }
-        );
-      }
+                }
+              );
+              //添加其他参数
+              task.addData("id", id);
+              task.addFile(i.target, { key: "image" });
+              task.start();
+              //task.addEventListener( "statechanged", onStateChanged, false );
+              task.start();
+              return false;
+            },
+            e => {
+              console.log("保存图片失败：" + JSON.stringify(e));
+            }
+          );
+        },
+        e => {
+          console.log("截屏绘制图片失败：" + JSON.stringify(e));
+        },
+        {
+          check: true,
+          clip: { top: "0px", left: "0px", height: "100%", width: "100%" },
+          bit: "ARGB"
+        }
+      );
     }
   }
 };

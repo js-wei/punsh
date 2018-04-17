@@ -2,7 +2,7 @@
 <template>
     <div class="calendar">
         <div class="calendar-tools">
-            <span class="calendar-prev" @click="prev">
+            <!-- <span class="calendar-prev" @click="prev">
                 <svg width="20" height="20" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g class="transform-group">
                     <g transform="scale(0.015625, 0.015625)">
@@ -19,41 +19,65 @@
                     </g>
                 </g>
                 </svg>
-            </span>
-            <div class="calendar-info" @click.stop="changeYear">
+            </span> -->
+            <div class="calendar-info">
                 <!-- {{monthString}} -->
                 <div class="month">
                     <div class="month-inner" :style="{'top':-(this.month*20)+'px'}">
                         <span v-for="(m,index) in months" :key="index">{{m}}</span>
                     </div>
                 </div>
-                <div class="year">{{year}}</div>
+               <div class="year">{{year}}</div>  <!--  @click.stop="changeYear" -->
+                <div class="tools">
+                  <i class="fa fa-date"><i class="date">{{day}}</i></i>
+                  <i class="fa fa-tianjia"></i>
+                </div>
             </div>
         </div>
-        <table cellpadding="5" @touchstart="touchstart" @touchmove="touchmove">
-        <thead>
-            <tr>
-                <td v-for="(week,index) in weeks" class="week" :key="index">{{week}}</td>
-            </tr>
-        </thead>
-        <tbody class="days" 
-            @touchstart="touchstart" 
-            @touchend="touchend">
-            <tr v-for="(day,k1) in days" :key="k1">
-                <td v-for="(child,k2) in day" :class="{'selected':child.selected,'disabled':child.disabled}" 
-                    @click="select(k1,k2,$event)" :key="k2">
-                    <span :class="{'red':k2==0||k2==6||((child.isLunarFestival||child.isGregorianFestival) && lunar)}">
-                        {{child.day}}
-                    </span>
-                    <div class="text" v-if="child.eventName!=undefined">{{child.eventName}}</div>
-                    <div class="text" 
-                        :class="{'isLunarFestival':child.isLunarFestival,'isGregorianFestival':child.isGregorianFestival}" v-if="lunar">
-                        {{child.lunar}}
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-        </table>
+        <div class="datepiker">
+          <ul class="week">
+            <li v-for="(week,index) in weeks" :key="index">{{week}}</li>
+          </ul>
+          <table cellpadding="5" @touchstart="touchstart" @touchmove="touchmove">
+            <tbody class="days" 
+                @touchstart="touchstart" 
+                @touchend="touchend">
+                <tr v-for="(day,k1) in days" :key="k1">
+                    <td v-for="(child,k2) in day" :class="{'selected':child.selected,'disabled':child.disabled}" 
+                        @click="select(k1,k2,$event)" :key="k2">
+                        <span :class="{'red':k2==0||k2==6||((child.isLunarFestival||child.isGregorianFestival) && lunar)}">
+                            {{child.day}}
+                        </span>
+                        <div class="text" v-if="child.eventName!=undefined">{{child.eventName}}</div>
+                        <div class="text" 
+                            :class="{'isLunarFestival':child.isLunarFestival,'isGregorianFestival':child.isGregorianFestival}" v-if="lunar">
+                            {{child.lunar}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+          <div class="events">
+            <h4>农历 {{today_lunar.LunarMonth}}</h4>
+            <div :class="{'no':!mouthEnvets,'envet-list':mouthEnvets}">
+              <span v-if="!mouthEnvets">没有日程安排</span>
+              <ul id='timeline'>
+                <li v-for="(item,index) in mouthEnvets" :key="index" class="work">
+                  <input class='radio' :id="'work'+index" name='works' type='radio' 
+                    :checked="{'checked':index==0}">
+                  <div class="relative">
+                    <label :for="'work'+index">{{item.title}}</label>
+                    <span class='date'>{{item.date}}</span>
+                    <span class='circle'></span>
+                  </div>
+                  <div class="content">
+                    <p>{{item.desc|is_default('没有备注')}}</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
         <div class="calendar-years" :class="{'show':yearsShow}">
             <span v-for="(y,i) in years" :key="i" @click.stop="selectYear(y)" :class="{'active':y==year}">{{y}}</span>
         </div>
@@ -64,6 +88,12 @@
 import calendar from "./calendar.js";
 export default {
   props: {
+    mouthEnvets: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     // 多选模式
     multi: {
       type: Boolean,
@@ -168,7 +198,7 @@ export default {
   },
   data() {
     return {
-      position: "",
+      today_lunar: "",
       years: [],
       yearsShow: false,
       year: 0,
@@ -219,6 +249,7 @@ export default {
     },
     value() {
       this.init();
+      console.log(this.day);
     }
   },
   mounted() {
@@ -298,7 +329,6 @@ export default {
             k++;
           }
         }
-
         if (this.range) {
           // 范围
           // console.log("日期范围",this.getLunarInfo(this.year,this.month+1,i))
@@ -321,6 +351,16 @@ export default {
             let stepTime = Number(new Date(this.year, this.month, i));
             if (beginTime <= stepTime && endTime >= stepTime) {
               options.selected = true;
+              this.today_lunar = this.getLunarInfo(
+                this.year,
+                this.month + 1,
+                i
+              );
+              this.today_lunar.day = this.getCurrentDate(
+                this.year,
+                this.month + 1,
+                i
+              );
             }
           }
           if (this.begin.length > 0) {
@@ -373,6 +413,12 @@ export default {
               this.getLunarInfo(this.year, this.month + 1, i),
               this.getEvents(this.year, this.month + 1, i)
             );
+            this.today_lunar = this.getLunarInfo(this.year, this.month + 1, i);
+            this.today_lunar.day = this.getCurrentDate(
+              this.year,
+              this.month + 1,
+              i
+            );
           } else {
             options = Object.assign(
               { day: i, selected: false },
@@ -413,12 +459,10 @@ export default {
               }
             }
           }
-
           temp[line].push(options);
         } else {
           // 单选
           // console.log(this.lunar(this.year,this.month,i));
-
           let chk = new Date();
           let chkY = chk.getFullYear();
           let chkM = chk.getMonth();
@@ -436,6 +480,12 @@ export default {
                 this.getEvents(this.year, this.month + 1, i)
               )
             );
+            this.today_lunar = this.getLunarInfo(this.year, this.month + 1, i);
+            this.today_lunar.day = this.getCurrentDate(
+              this.year,
+              this.month + 1,
+              i
+            );
             this.today = [line, temp[line].length - 1];
           } else if (
             chkY == this.year &&
@@ -444,13 +494,19 @@ export default {
             this.value == ""
           ) {
             // 没有默认值的时候显示选中今天日期
-            // console.log("今天",lunarYear,lunarMonth,lunarValue,lunarInfo)
+            //console.log("今天",lunarYear,lunarMonth,lunarValue,lunarInfo)
             temp[line].push(
               Object.assign(
                 { day: i, selected: true },
                 this.getLunarInfo(this.year, this.month + 1, i),
                 this.getEvents(this.year, this.month + 1, i)
               )
+            );
+            this.today_lunar = this.getLunarInfo(this.year, this.month + 1, i);
+            this.today_lunar.day = this.getCurrentDate(
+              this.year,
+              this.month + 1,
+              i
             );
             this.today = [line, temp[line].length - 1];
           } else {
@@ -555,6 +611,9 @@ export default {
       }
       this.days = temp;
     },
+    getCurrentDate(year, mouth, day) {
+      return year.toString() + "-" + mouth.toString() + "-" + day.toString();
+    },
     computedPrevYear() {
       let value = this.year;
       if (this.month - 1 < 0) {
@@ -599,7 +658,7 @@ export default {
     getLunarInfo(y, m, d) {
       let lunarInfo = calendar.solar2lunar(y, m, d);
       let lunarValue = lunarInfo.IDayCn;
-      // console.log(lunarInfo)
+
       let isLunarFestival = false;
       let isGregorianFestival = false;
       if (
@@ -616,6 +675,7 @@ export default {
       }
       return {
         lunar: lunarValue,
+        LunarMonth: lunarInfo.IMonthCn,
         isLunarFestival: isLunarFestival,
         isGregorianFestival: isGregorianFestival
       };
@@ -821,16 +881,16 @@ export default {
     touchmove($event) {
       let height = document.querySelector("table").offsetHeight;
       if (this.distance($event) == 4) {
-        if (height < window.innerHeight - 130) {
+        if (height < window.innerHeight - 180) {
           document.querySelector("table").style.height = height + 10 + "px";
+          document.querySelector(".events").style.display = "none";
         }
       }
       if (this.distance($event) == 3) {
         if (height > 354) {
           document.querySelector("table").style.height = height - 10 + "px";
         } else {
-          // position
-          let _document = document.querySelector(".selected");
+          document.querySelector(".events").style.display = "block";
         }
       }
     },
@@ -878,14 +938,17 @@ $animationDuration: 0.5s;
       font-size: 16px;
       line-height: 1.3;
       text-align: center;
+      display: flex;
+      position: relative;
       div.month {
-        margin: auto;
+        margin: 0;
         height: 20px;
-        width: 100px;
+        width: 21vw;
         text-align: center;
         color: #5e7a88;
         overflow: hidden;
         position: relative;
+        flex-direction: flex-start;
         .month-inner {
           position: absolute;
           left: 0;
@@ -903,9 +966,28 @@ $animationDuration: 0.5s;
         }
       }
       div.year {
-        font-size: 10px;
-        line-height: 1;
+        width: 10vw;
+        font-size: 1.5rem;
+        line-height: 1.5rem;
         color: #999;
+      }
+      .tools {
+        width: 69vw;
+        text-align: right;
+        position: relative;
+        i {
+          font-style: normal;
+          padding-right: 15px;
+          &.fa {
+            font-size: 2.3rem;
+          }
+          &.date {
+            font-size: 1rem;
+            position: absolute;
+            bottom: 4px;
+            right: 48px;
+          }
+        }
       }
     }
   }
@@ -919,112 +1001,230 @@ $animationDuration: 0.5s;
     float: right;
     text-align: center;
   }
-  table {
-    clear: both;
-    width: 100%;
-    border-collapse: collapse;
-    color: #444444;
-    thead {
-    //   position: fixed;
-      height: 50px;
-      width: 100%;
-      background-color: pink;
-      z-index: 200;
-      line-height: 50px;
-      td {
-        text-transform: uppercase;
+  .datepiker {
+    height: 100%;
+    overflow: hidden;
+    .week {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      li {
+        list-style-type: none;
+        pointer-events: none !important;
+        width: 150px;
         height: 30px;
-        vertical-align: middle;
-        width: 120px;
         text-align: center;
+        text-transform: uppercase;
       }
     }
-    tbody {
-      td {
-        margin: 2px !important;
-        padding: 0 0;
-        width: 14.28571429%;
-        height: 54px;
-        text-align: center;
-        vertical-align: middle;
-        font-size: 14px;
-        line-height: 125%;
-        cursor: pointer;
-        position: relative;
-        vertical-align: top;
-        width: 120px;
-        .isGregorianFestival,
-        .isLunarFestival {
-          color: #ea6151;
-        }
-        &.week {
-          font-size: 10px;
-          pointer-events: none !important;
-          cursor: default !important;
-        }
-        &.disabled {
-          color: #ccc;
-          pointer-events: none !important;
-          cursor: default !important;
-          div {
-            color: #ccc;
-          }
-        }
-        span {
-          display: block;
-          max-width: 40px;
-          height: 26px;
-          font-size: 16px;
-          line-height: 26px;
-          margin: 0px auto;
-          border-radius: 20px;
-        }
-        &.selected span {
-          background-color: #5e7a88;
-          color: #fff;
-        }
-        &.text {
-          position: absolute;
-          top: 28px;
-          left: 0;
-          right: 0;
+    .events {
+      h4 {
+        padding-left: 12px;
+        font-size: 1.5rem;
+        height: 30px;
+        line-height: 30px;
+        background-color: #f0ecec;
+      }
+      div {
+        width: 100%;
+        &.no {
+          height: 150px;
+          line-height: 150px;
           text-align: center;
-          padding: 2px 0 20px 0;
-          font-size: 8px;
-          line-height: 1.2;
-          color: #444;
         }
-        &.selected {
-          span {
-            &.red {
-              background-color: #ea6151;
-              color: #fff;
-              &:hover {
-                background-color: #ea6151;
-                color: #fff;
+        &.envet-list {
+          ul {
+            list-style: none;
+            margin: 50px 0 30px 120px;
+            padding-left: 30px;
+            border-left: 8px solid #5e7a88;
+            li {
+              margin: 40px 0;
+              position: relative;
+              .relative {
+                .date {
+                  margin-top: -10px;
+                  top: 50%;
+                  left: -154px;
+                  font-size: 1.5rem;
+                  line-height: 20px;
+                  position: absolute;
+                }
+                .circle {
+                  margin-top: -10px;
+                  top: 54%;
+                  left: -39px;
+                  width: 10px;
+                  height: 10px;
+                  //background: #48b379;
+                  border: 5px solid #ea6151;
+                  border-radius: 50%;
+                  display: block;
+                  position: absolute;
+                }
+              }
+            }
+            .content {
+              // max-height: 20px;
+              padding: 25px 20px 0;
+              border-color: transparent;
+              border-width: 2px;
+              border-style: solid;
+              border-radius: 0.5em;
+              position: relative;
+              width: 180px;
+              word-wrap: break-word;
+              padding-left: 14px;
+              p {
+                margin: 0 0 0 -10px;
+              }
+              &:before,
+              &:after {
+                content: "";
+                width: 0;
+                height: 0;
+                border: solid transparent;
+                position: absolute;
+                pointer-events: none;
+                right: 100%;
+              }
+              &:before {
+                border-right-color: inherit;
+                border-width: 20px;
+                top: 50%;
+                margin-top: -20px;
+              }
+              &:after {
+                border-right-color: "";
+                border-width: 17px;
+                top: 50%;
+                margin-top: -17px;
+              }
+            }
+            label {
+              font-size: 0.8em;
+              position: absolute;
+              z-index: 100;
+              cursor: pointer;
+              top: 5px;
+              transition: transform 0.2s linear;
+            }
+            .radio {
+              display: none;
+              &:checked + .relative label {
+                cursor: auto;
+                transform: translateX(30px);
+              }
+              &:checked + .relative .circle {
+                background: #f98262;
+              }
+              &:checked ~ .content {
+                max-height: 180px;
+                border-color: #8f8f94;
+                margin-right: 20px;
+                transform: translateX(20px);
+                transition: max-height 0.4s linear, border-color 0.5s linear,
+                  transform 0.2s linear;
+              }
+              &:checked ~ .content p {
+                max-height: 200px;
+                color: #8f8f94;
+                transition: color 0.3s linear 0.3s;
               }
             }
           }
         }
-        &:not(.selected) {
-          span:not(.red):hover {
-            background: #f3f8fa;
+      }
+    }
+
+    table {
+      clear: both;
+      width: 100%;
+      border-collapse: collapse;
+      color: #444444;
+      tbody {
+        td {
+          margin: 2px !important;
+          padding: 0 0;
+          width: 14.28571429%;
+          height: 54px;
+          text-align: center;
+          vertical-align: middle;
+          font-size: 14px;
+          line-height: 125%;
+          cursor: pointer;
+          position: relative;
+          vertical-align: top;
+          width: 120px;
+          .isGregorianFestival,
+          .isLunarFestival {
+            color: #ea6151;
+          }
+          &.disabled {
+            color: #ccc;
+            pointer-events: none !important;
+            cursor: default !important;
+            div {
+              color: #ccc;
+            }
+          }
+          span {
+            display: block;
+            max-width: 40px;
+            height: 26px;
+            font-size: 16px;
+            line-height: 26px;
+            margin: 0px auto;
+            border-radius: 20px;
+          }
+          &.selected span {
+            background-color: #5e7a88;
+            color: #fff;
+          }
+          &.text {
+            position: absolute;
+            top: 28px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 2px 0 20px 0;
+            font-size: 8px;
+            line-height: 1.2;
             color: #444;
           }
-        }
-        &:not(.selected) {
-          span.red:hover {
-            background: #f9efef;
+          &.selected {
+            span {
+              &.red {
+                background-color: #ea6151;
+                color: #fff;
+                &:hover {
+                  background-color: #ea6151;
+                  color: #fff;
+                }
+              }
+            }
           }
-        }
-        &:not(.disabled) {
-          span.red {
-            color: #ea6151;
+          &:not(.selected) {
+            span:not(.red):hover {
+              background: #f3f8fa;
+              color: #444;
+            }
+          }
+          &:not(.selected) {
+            span.red:hover {
+              background: #f9efef;
+            }
+          }
+          &:not(.disabled) {
+            span.red {
+              color: #ea6151;
+            }
           }
         }
       }
     }
   }
+
   .calendar-button {
     text-align: center;
     span {
@@ -1050,7 +1250,7 @@ $animationDuration: 0.5s;
   .calendar-years {
     position: absolute;
     left: 0px;
-    top: 60px;
+    top: 0px;
     right: 0px;
     bottom: 0px;
     background: #fff;
@@ -1063,6 +1263,8 @@ $animationDuration: 0.5s;
     opacity: 0;
     pointer-events: none;
     transform: translateY(-10px);
+    height: 100vh;
+    z-index: 200;
     &.show {
       opacity: 1;
       pointer-events: auto;

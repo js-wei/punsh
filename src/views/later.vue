@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-08 3:21:36
+ * Modified By: 2018-04-17 3:20:53
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -69,8 +69,6 @@ export default {
           console.log(JSON.stringify(e));
         },
         {
-          animation: true,
-          filename: "_doc/images/",
           filter: "image"
         }
       );

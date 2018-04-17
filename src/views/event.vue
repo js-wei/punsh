@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-16 1:46:35
+ * Modified By: 2018-04-17 10:31:11
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -23,6 +23,7 @@
           :end="calendar1.end" 
           :weeks="calendar1.weeks" 
           :months="calendar1.months" 
+          :mouthEnvets="mouthEvents"
           @select="calendar1.select"
           @selectMonth="calendar1.selectMonth"
           @selectYear="calendar1.selectYear">
@@ -47,16 +48,16 @@ export default {
       startX: 0,
       startY: 0,
       calendar1: {
-        lunar:true, //显示农历
+        lunar: true, //显示农历
         events: {},
         select(value) {
-          //console.log(value.toString());
+          console.log(value.toString());
         },
         selectMonth(month, year) {
-          //console.log(year, month);
+          console.log(year, month);
         },
         selectYear(year) {
-          //console.log(year);
+          console.log(year);
         },
         timestamp: Date.now()
       },
@@ -86,6 +87,23 @@ export default {
           title: "日程",
           icon: "mui-icon mui-icon-info"
         }
+      ],
+      mouthEvents:[
+        {
+          title:'去新城花园酒店吃饭',
+          date:'2018/4/12 18:20',
+          desc:'应该早到，有重要的贵宾到场'
+        },
+        {
+          title:'到苏州站乘坐高铁去上海了',
+          date:'2018/5/1 8:20',
+          desc:''
+        },
+        {
+          title:'被忘记订酒店哦',
+          date:'2018/4/20 18:20',
+          desc:'在上海浦东陈毅广场附近订一个酒店'
+        },
       ]
     };
   },
@@ -96,11 +114,9 @@ export default {
   created() {
     this.$store.commit("HIDE_FOOTER");
   },
-  mounted() {
-  
-  },
+  mounted() {},
   methods: {
-    selectItem(id) {},
+    selectItem(id) {}
   }
 };
 </script>
