@@ -48,9 +48,7 @@ export default {
         ]
       },
       mediaList: [],
-      current_page: 1,
-      last_id: 0,
-      last_page: 1
+      last_id: 0
     };
   },
   components: {
@@ -60,10 +58,14 @@ export default {
   },
   computed: {
     ...mapState({
-      articleList: state => state.mutations.articleList
+      articleList: state => state.mutations.articleList,
+      page: state => state.mutations.page,
+      position: state => state.mutations.scollerPosition
     })
   },
   created() {
+    this.current_page = this.page.current_page;
+    this.last_page = this.page.last_page;
     this._initCarousel();
     this._initNews();
     this.$nextTick(() => {
@@ -135,6 +137,7 @@ export default {
             let _data = res.data;
             self.mediaList.push(..._data);
             self.$store.commit("CATCH_ARTICLE_LIST", self.mediaList);
+            self.$store.commit("CATCH_PAGE", res);
             done();
           }, 0.8e3);
       });
@@ -166,30 +169,34 @@ export default {
         });
     },
     _initNews() {
-        this.$fly
-          .get("/query", {
-            action: "page",
-            mod: "article",
-            field: "id,title,author,description,image,date",
-            limit: 3,
-            column_id: 1,
-            order: "sort asc,date desc"
-          })
-          .then(res => {
-            res = res.data;
-            if (!res.status) {
-              console.log(res.msg);
-              return;
-            }
-            let _data = res.data;
-            this.last_id = _data.data[0].id;
-            this.mediaList = _data.data;
-            this.last_page = _data.last_page;
-            this.current_page = 1;
-            this.$store.commit("CATCH_ARTICLE_LIST", this.mediaList);
-          })
-          .catch(res => console.log(res));
-      
+      // if (this.page.current_page >= this.page.last_page && this.articleList) {
+      //   this.last_id = this.articleList[0].id;
+      //   return false;
+      // }
+      this.$fly
+        .get("/query", {
+          action: "page",
+          mod: "article",
+          field: "id,title,author,description,image,date",
+          limit: 3,
+          column_id: 1,
+          order: "sort asc,date desc"
+        })
+        .then(res => {
+          res = res.data;
+          if (!res.status) {
+            console.log(res.msg);
+            return;
+          }
+          let _data = res.data;
+          this.last_id = _data.data[0].id;
+          this.mediaList = _data.data;
+          this.last_page = _data.last_page;
+          this.current_page = 1;
+          this.$store.commit("CATCH_ARTICLE_LIST", this.mediaList);
+          this.$store.commit("CATCH_PAGE", _data);
+        })
+        .catch(res => console.log(res));
     }
   }
 };

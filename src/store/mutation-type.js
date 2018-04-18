@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:28:03
  * Author: 魏巍
  * -----
- * Last Modified: '2018-04-13 10:19:50
+ * Last Modified: '2018-04-18 9:45:47
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -27,3 +27,4 @@ export const CATCH_LEAVE_LIST='CATCH_LEAVE_LIST';
 export const SET_TYPE='SET_TYPE';
 export const SET_NETWORK_TYPE='SET_NETWORK_TYPE';
 export const CATCH_SCOLLER_POSITION='CATCH_SCOLLER_POSITION';
+export const CATCH_PAGE='CATCH_PAGE';

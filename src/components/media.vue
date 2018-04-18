@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-13 10:34:55
+ * Modified By: 2018-04-18 1:24:00
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -61,18 +61,18 @@ export default {
     })
   },
   mounted() {
-    this.$nextTick(() => {
-      this.$refs.my_scroller.scrollBy(this.position.x, this.position.y, true);
-    });
+    setTimeout(() => {
+      this.$refs.my_scroller.scrollTo(this.position.x, this.position.y);
+    }, 150);
   },
   methods: {
     forwad($url, $id) {
       let self = this;
-      let position = self.$refs.my_scroller.getPosition();
-      self.$store.commit("CATCH_SCOLLER_POSITION", {
-        x: position.left,
-        y: position.top
-      });
+      // let position = self.$refs.my_scroller.getPosition();
+      // self.$store.commit("CATCH_SCOLLER_POSITION", {
+      //   x: position.left,
+      //   y: position.top
+      // });
       self.$fly
         .get("/query", {
           action: "details",
@@ -93,6 +93,9 @@ export default {
     },
     infinite(done) {
       this.$emit("infinite", done);
+    },
+    aotuRefresh() {
+      this.$emit("aotuRefresh", this.$refs.my_scroller);
     }
   }
 };

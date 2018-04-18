@@ -48,7 +48,7 @@ export default {
           url: "/later"
         },
         {
-          title: "添加事件",
+          title: "待办",
           url: "/event"
         }
       ]
@@ -77,6 +77,8 @@ export default {
       mui("#sheet1").popover("toggle");
     },
     forward(url) {
+      this.$store.commit("CATCH_SCOLLER_POSITION", {x: 0,y: 0 });
+      //this.$store.commit("CATCH_ARTICLE_LIST", null);
       this.$router.replace(url);
     }
   }

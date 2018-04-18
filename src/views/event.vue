@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-17 10:31:11
+ * Modified By: 2018-04-18 9:33:48
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -88,22 +88,22 @@ export default {
           icon: "mui-icon mui-icon-info"
         }
       ],
-      mouthEvents:[
+      mouthEvents: [
         {
-          title:'去新城花园酒店吃饭',
-          date:'2018/4/12 18:20',
-          desc:'应该早到，有重要的贵宾到场'
+          title: "去新城花园酒店吃饭",
+          date: "2018/4/12 18:20",
+          desc: "应该早到，有重要的贵宾到场"
         },
         {
-          title:'到苏州站乘坐高铁去上海了',
-          date:'2018/5/1 8:20',
-          desc:''
+          title: "到苏州站乘坐高铁去上海了",
+          date: "2018/5/1 8:20",
+          desc: ""
         },
         {
-          title:'被忘记订酒店哦',
-          date:'2018/4/20 18:20',
-          desc:'在上海浦东陈毅广场附近订一个酒店'
-        },
+          title: "被忘记订酒店哦",
+          date: "2018/4/20 18:20",
+          desc: "在上海浦东陈毅广场附近订一个酒店"
+        }
       ]
     };
   },
@@ -123,7 +123,7 @@ export default {
 
 <style lang="scss" scoped>
 .event {
-  padding-bottom: 50px;
+  padding: 0px;
   width: 100vw;
   .calendar {
     width: 100vw;

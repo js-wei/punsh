@@ -21,23 +21,23 @@
                 </svg>
             </span> -->
             <div class="calendar-info">
-                <!-- {{monthString}} -->
-                <div class="month">
-                    <div class="month-inner" :style="{'top':-(this.month*20)+'px'}">
-                        <span v-for="(m,index) in months" :key="index">{{m}}</span>
-                    </div>
-                </div>
-               <div class="year">{{year}}</div>  <!--  @click.stop="changeYear" -->
-                <div class="tools">
-                  <i class="fa fa-date"><i class="date">{{day}}</i></i>
-                  <i class="fa fa-tianjia"></i>
-                </div>
+              <!-- {{monthString}} -->
+              <div class="month">
+                  <div class="month-inner" :style="{'top':-(this.month*20)+'px'}">
+                      <span v-for="(m,index) in months" :key="index">{{m}}</span>
+                  </div>
+              </div>
+              <div class="year">{{year}}</div>  <!--  @click.stop="changeYear" -->
+              <div class="tools">
+                <i class="fa fa-date"><i class="date">{{day}}</i></i>
+                <i class="fa fa-tianjia"></i>
+              </div>
             </div>
+            <ul class="week">
+              <li v-for="(week,index) in weeks" :key="index">{{week}}</li>
+            </ul> 
         </div>
         <div class="datepiker">
-          <ul class="week">
-            <li v-for="(week,index) in weeks" :key="index">{{week}}</li>
-          </ul>
           <table cellpadding="5" @touchstart="touchstart" @touchmove="touchmove">
             <tbody class="days" 
                 @touchstart="touchstart" 
@@ -926,12 +926,25 @@ $animationDuration: 0.5s;
   user-select: none;
   height: auto;
   .calendar-tools {
-    height: 40px;
-    font-size: 20px;
-    line-height: 40px;
+    height: 70px;
+    line-height:40px;
+    font-size: 1.8rem;
     color: #5e7a88;
-    span {
-      cursor: pointer;
+    position: fixed;
+    z-index: 100;
+    background-color: #fff;
+    .week {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      li {
+        list-style-type: none;
+        pointer-events: none !important;
+        width: 54px;
+        height: 30px;
+        text-align: center;
+        text-transform: uppercase;
+      }
     }
     .calendar-info {
       padding-top: 3px;
@@ -1004,19 +1017,7 @@ $animationDuration: 0.5s;
   .datepiker {
     height: 100%;
     overflow: hidden;
-    .week {
-      display: flex;
-      margin: 0;
-      padding: 0;
-      li {
-        list-style-type: none;
-        pointer-events: none !important;
-        width: 150px;
-        height: 30px;
-        text-align: center;
-        text-transform: uppercase;
-      }
-    }
+    padding-top: 70px;
     .events {
       h4 {
         padding-left: 12px;
@@ -1035,9 +1036,10 @@ $animationDuration: 0.5s;
         &.envet-list {
           ul {
             list-style: none;
-            margin: 50px 0 30px 120px;
-            padding-left: 30px;
+            padding-left: 20px;
             border-left: 8px solid #5e7a88;
+            margin-left: 135px;
+            margin-top: 50px;
             li {
               margin: 40px 0;
               position: relative;
@@ -1049,11 +1051,15 @@ $animationDuration: 0.5s;
                   font-size: 1.5rem;
                   line-height: 20px;
                   position: absolute;
+                  width: 110px;
+                  display: inline-block;
+                  word-wrap: break-word;
+                  text-align: right;
                 }
                 .circle {
                   margin-top: -10px;
                   top: 54%;
-                  left: -39px;
+                  left: -29px;
                   width: 10px;
                   height: 10px;
                   //background: #48b379;
@@ -1065,18 +1071,19 @@ $animationDuration: 0.5s;
               }
             }
             .content {
-              // max-height: 20px;
               padding: 25px 20px 0;
               border-color: transparent;
               border-width: 2px;
               border-style: solid;
               border-radius: 0.5em;
               position: relative;
-              width: 180px;
+              width: 170px;
               word-wrap: break-word;
               padding-left: 14px;
               p {
-                margin: 0 0 0 -10px;
+                margin: 0 0 0 -16px;
+                font-size: 1rem;
+                width: 170px;
               }
               &:before,
               &:after {
@@ -1113,7 +1120,7 @@ $animationDuration: 0.5s;
               display: none;
               &:checked + .relative label {
                 cursor: auto;
-                transform: translateX(30px);
+                transform: translateX(25px);
               }
               &:checked + .relative .circle {
                 background: #f98262;
@@ -1122,14 +1129,15 @@ $animationDuration: 0.5s;
                 max-height: 180px;
                 border-color: #8f8f94;
                 margin-right: 20px;
-                transform: translateX(20px);
+                transform: translateX(18px);
                 transition: max-height 0.4s linear, border-color 0.5s linear,
                   transform 0.2s linear;
-              }
-              &:checked ~ .content p {
-                max-height: 200px;
-                color: #8f8f94;
-                transition: color 0.3s linear 0.3s;
+                p {
+                  max-height: 200px;
+                  color: #8f8f94;
+                  transition: color 0.3s linear 0.3s;
+                  padding-left: 8px;
+                }
               }
             }
           }

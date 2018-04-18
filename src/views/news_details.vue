@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-04-13 10:07:01
+ * Modified By: 2018-04-18 11:01:00
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -90,7 +90,6 @@ export default {
 @import "../assets/style/base";
 .mui-content {
   background-color: nth($baseColor, 1);
-  padding-bottom: 30px;
   .mui-card {
     margin-top: 20px;
     .mui-card-header {
@@ -98,6 +97,12 @@ export default {
         width: 30px;
         height: 30px;
         border-radius: 50%;
+      }
+      .mui-media-body{
+        h4{
+          font-size:1.4rem;
+          line-height:1.2rem;
+        }
       }
     }
     .mui-card-content {

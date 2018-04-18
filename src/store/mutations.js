@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:24:18
  * Author: 魏巍
  * -----
- * Last Modified: '2018-04-13 10:25:34
+ * Last Modified: '2018-04-18 10:01:45
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -27,7 +27,8 @@ import {
   CATCH_LEAVE_LIST,
   SET_TYPE,
   SET_NETWORK_TYPE,
-  CATCH_SCOLLER_POSITION
+  CATCH_SCOLLER_POSITION,
+  CATCH_PAGE
 } from './mutation-type'
 
 const state = {
@@ -50,7 +51,8 @@ const state = {
   scollerPosition: {
     x: 0,
     y: 0
-  }
+  },
+  page: {}
 };
 
 const mutations = {
@@ -102,6 +104,10 @@ const mutations = {
   },
   [CATCH_SCOLLER_POSITION](state, position) {
     state.scollerPosition = position;
+  },
+  [CATCH_PAGE](state, page) {
+    delete page.data;
+    state.page = page;
   }
 };
 
@@ -140,6 +146,9 @@ const getters = {
     return state.networkType;
   },
   getScollerPositionState(state) {
+    return state.scollerPosition;
+  },
+  getPageState(state) {
     return state.scollerPosition;
   }
 };
