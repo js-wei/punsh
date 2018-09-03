@@ -13,34 +13,36 @@
  */
 
 <template>
-    <div class="punch">
-        <v-head :title="title" :isBack="show" :backHandler="back"></v-head>
-        <div class="amap">
-            <ul class="punch-tips">
-              <li>日期：{{new Date()|formart_date('yyyy-MM-dd')}}</li>
-              <li>时间：{{new Date()|formart_date('hh:mm:ss')}}</li>
-              <li v-if="formattedAddress">地址：{{formattedAddress}}</li>
-            </ul>
-            <el-amap class="amap-demo" vid="amap" :zoom="zoom" ref="map" :events="events"
-              :doubleClickZoom="false" :zoomEnable="false" :dragEnable="false">
-            </el-amap>
-            <div class="toolbar">
-                <ul class="toolbar-address">
-                    <li>公司:{{company}}</li>
-                    <li>地址:{{company_address}}</li>
-                    <li><i>提示:圆圈内为打卡区域</i></li>
-                </ul>
-            </div>
-        </div>
-        <div class="punch-button">
-            <button class="btn btn-punch" :class="{'disabled':!isPunchDisabled}" @click="punch">打卡</button>
-        </div>
+<div class="punch">
+  <v-head :title="title" :isBack="show" :backHandler="back"></v-head>
+  <div class="amap">
+    <ul class="punch-tips">
+      <li>日期：{{new Date()|formart_date('yyyy-MM-dd')}}</li>
+      <li>时间：{{new Date()|formart_date('hh:mm:ss')}}</li>
+      <li v-if="formattedAddress">地址：{{formattedAddress}}</li>
+    </ul>
+    <el-amap class="amap-demo" vid="amap" :zoom="zoom" ref="map" :events="events" :doubleClickZoom="false" :zoomEnable="false" :dragEnable="false">
+    </el-amap>
+    <div class="toolbar">
+      <ul class="toolbar-address">
+        <li>公司:{{company}}</li>
+        <li>地址:{{company_address}}</li>
+        <li><i>提示:圆圈内为打卡区域</i></li>
+      </ul>
     </div>
+  </div>
+  <div class="punch-button">
+    <button class="btn btn-punch" :class="{'disabled':!isPunchDisabled}" @click="punch">打卡</button>
+    <button class="btn" @click="captureWebview">截图</button>
+  </div>
+</div>
 </template>
 
 <script>
 import vHead from "@/components/header.vue";
-import { mapState } from "vuex";
+import {
+  mapState
+} from "vuex";
 export default {
   data() {
     let self = this;
@@ -92,11 +94,14 @@ export default {
                         //plus not ok use network
                         mui.showLoading("正在定位...");
                         self.geoLocation(map, self);
-                      },
-                      { geocode: true }
+                      }, {
+                        geocode: true
+                      }
                     );
                   }, 800);
                 } else {
+                  mui.toast('请打开GPS服务，辅助定位')
+                  return
                   if (window.plus) {
                     setTimeout(() => {
                       plus.geolocation.getCurrentPosition(
@@ -115,8 +120,9 @@ export default {
                           setTimeout(() => {
                             self.$router.push("/home");
                           }, 1.5e3);
-                        },
-                        { geocode: true }
+                        }, {
+                          geocode: true
+                        }
                       );
                     }, 800);
                   } else {
@@ -147,20 +153,20 @@ export default {
     this.isPunch();
   },
   mounted() {
-    this.$nextTick(() => {
-      if (document.querySelector(".amap-geo")) {
-        setTimeout(() => {
-          document.querySelector(".amap-geo").addEventListener("tap", e => {
-            mui.showLoading("正在定位...");
-          });
-        }, 2.5e3);
-      }
-    });
+    // this.$nextTick(() => {
+    //   if (document.querySelector(".amap-geo")) {
+    //     setTimeout(() => {
+    //       document.querySelector(".amap-geo").addEventListener("tap", e => {
+    //         mui.showLoading("正在定位...");
+    //       });
+    //     }, 500);
+    //   }
+    // });
   },
   methods: {
     //初始化配置
     _initConfig() {
-      let config = localStorage.getItem("cofing"),
+      let config = '',
         _this = this;
       if (!config) {
         _this.$fly.get("config").then(res => {
@@ -197,8 +203,7 @@ export default {
       }
       mui.confirm(
         _this.punch_tip_title,
-        "提示",
-        ["确定", "取消"],
+        "提示", ["确定", "取消"],
         e => {
           if (e.index == 0) {
             if (!_this.is_on_punch && !_this.is_go_punch) {
@@ -281,7 +286,6 @@ export default {
         map.plugin("AMap.Geolocation", function() {
           let geolocation = new AMap.Geolocation({
             enableHighAccuracy: true, //是否使用高精度定位，默认:true
-            timeout: 10000, //超过10秒后停止定位，默认：无穷大
             buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
             zoomToAccuracy: true, //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
             buttonPosition: "RB"
@@ -331,8 +335,15 @@ export default {
     },
     //自定义marker
     addSimpleMarker(
-      d = { lng: 0, lat: 0, address: "" },
-      text = { title: "公司全称", sub: "简称" },
+      d = {
+        lng: 0,
+        lat: 0,
+        address: ""
+      },
+      text = {
+        title: "公司全称",
+        sub: "简称"
+      },
       map
     ) {
       AMapUI.loadUI(["overlay/SimpleMarker"], function(SimpleMarker) {
@@ -347,7 +358,10 @@ export default {
         if (d.address) {
           let infoWindow = new AMap.InfoWindow({
             content: d.address + " " + text.title,
-            offset: { x: 0, y: -30 }
+            offset: {
+              x: 0,
+              y: -30
+            }
           });
           marker.on("click", function(e) {
             infoWindow.open(map, marker.getPosition());
@@ -417,53 +431,70 @@ export default {
       }
       let _vm = vm;
       let config = JSON.parse(localStorage.getItem("cofing"));
-      let path =
-        "_doc/bitmap/" + _vm.formart_date(new Date(), "yyyyMMdd") + ty + ".png";
+      // let path =
+      //   "_doc/bitmap/" + _vm.formart_date(new Date(), "yyyyMMdd") + ty + ".png";
       let bitmap = null;
-      let ws = plus.webview.currentWebview();
       bitmap = new plus.nativeObj.Bitmap("clip");
+      let ws = plus.webview.currentWebview();
       ws.draw(
         bitmap,
         e => {
-          bitmap.save(
-            path,
-            {},
-            i => {
-              let server = config.url + "api/upload_punch";
-              var task = plus.uploader.createUpload(
-                server,
-                { method: "POST" },
-                (t, status) => {
-                  //上传完成
-                  if (status == 200) {
-                    mui.toast(msg);
-                    plus.push.createMessage("您本次签到成功");
-                    bitmap.recycle();
-                    //console.log(t.responseText);
-                  } else {
-                    //alert("上传失败：" + status);
-                  }
-                }
-              );
-              //添加其他参数
-              task.addData("id", id);
-              task.addFile(i.target, { key: "image" });
-              task.start();
-              //task.addEventListener( "statechanged", onStateChanged, false );
-              task.start();
-              return false;
-            },
-            e => {
-              console.log("保存图片失败：" + JSON.stringify(e));
-            }
-          );
+          let url = bitmap.toBase64Data();
+          bitmap.save(`_doc/bitmap/${new Date().getTime()}.png`,{
+            format:'png',
+            overwrite:true
+          },
+          success=>{
+            console.log(success)
+          },
+          error=>{
+            console.log(error)
+          })
+          // bitmap.save(
+          //   path, {},
+          //   i => {
+          //     let server = config.url + "api/upload_punch";
+          //     var task = plus.uploader.createUpload(
+          //       server, {
+          //         method: "POST"
+          //       },
+          //       (t, status) => {
+          //         //上传完成
+          //         if (status == 200) {
+          //           mui.toast(msg);
+          //           plus.push.createMessage("您本次签到成功");
+          //           bitmap.recycle();
+          //           //console.log(t.responseText);
+          //         } else {
+          //           //alert("上传失败：" + status);
+          //         }
+          //       }
+          //     );
+          //     //添加其他参数
+          //     task.addData("id", id);
+          //     task.addFile(i.target, {
+          //       key: "image"
+          //     });
+          //     task.start();
+          //     //task.addEventListener( "statechanged", onStateChanged, false );
+          //     task.start();
+          //     return false;
+          //   },
+          //   e => {
+          //     console.log("保存图片失败：" + JSON.stringify(e));
+          //   }
+          // );
         },
         e => {
           console.log("截屏绘制图片失败：" + JSON.stringify(e));
-        },
-        {
+        }, {
           check: true,
-          clip: { top: "0px", left: "0px", height: "100%", width: "100%" },
+          clip: {
+            top: "0px",
+            left: "0px",
+            height: "100%",
+            width: "100%"
+          },
           bit: "ARGB"
         }
       );
@@ -475,69 +506,69 @@ export default {
 <style lang="scss" scoped>
 @import "../assets/style/base";
 .punch {
-  height: auto;
-  overflow: hidden;
-  .amap {
-    height: 93vh;
-    .punch-tips {
-      padding: 0 10px 0 0;
-      margin: 10px 0 0 0;
-      position: fixed;
-      top: 34px;
-      left: 5px;
-      z-index: 5000;
-      color: nth($baseColor, 3);
-      font-size: 1.2rem;
-      text-align: right;
-      width: 100vw;
-      li {
-        list-style-type: none;
-      }
-    }
-    .amap-demo {
-      height: 70%;
-    }
-    .toolbar {
-      height: 23%;
-      padding-top: 5px;
-      .toolbar-address {
-        list-style-type: none;
-        margin: 10px 0 0 0;
-        padding: 0px 4px;
-        height: 50px;
-        li {
-          margin-left: 10px;
-          line-height: 1.8rem;
-          font-size: 1.5rem;
-          i {
-            font-size: 0.8rem;
+    height: auto;
+    overflow: hidden;
+    .amap {
+        height: 93vh;
+        .punch-tips {
+            padding: 0 10px 0 0;
+            margin: 10px 0 0;
+            position: fixed;
+            top: 34px;
+            left: 5px;
+            z-index: 5000;
             color: nth($baseColor, 3);
-          }
+            font-size: 1.2rem;
+            text-align: right;
+            width: 100vw;
+            li {
+                list-style-type: none;
+            }
         }
-      }
+        .amap-demo {
+            height: 70%;
+        }
+        .toolbar {
+            height: 23%;
+            padding-top: 5px;
+            .toolbar-address {
+                list-style-type: none;
+                margin: 10px 0 0;
+                padding: 0 4px;
+                height: 50px;
+                li {
+                    margin-left: 10px;
+                    line-height: 1.8rem;
+                    font-size: 1.5rem;
+                    i {
+                        font-size: 0.8rem;
+                        color: nth($baseColor, 3);
+                    }
+                }
+            }
+        }
     }
-  }
-  .punch-button {
-    height: 100px;
-    width: 100vw;
-    line-height: 100px;
-    background-color: nth($baseColor, 5);
-    position: fixed;
-    bottom: 0;
-    text-align: center;
-    .btn {
-      border: none;
-      height: 80px;
-      width: 80px;
-      margin-top: 10px;
-      background-color: nth($baseColor, 3);
-      color: nth($baseColor, 1);
-      border-radius: 50%;
-      &.disabled {
-        opacity: 0.8;
-      }
+    .punch-button {
+        height: 100px;
+        width: 100vw;
+        line-height: 100px;
+        background-color: nth($baseColor, 5);
+        position: fixed;
+        bottom: 0;
+        text-align: center;
+        .btn {
+            border: none;
+            height: 80px;
+            width: 80px;
+            margin-top: 10px;
+            background-color: nth($baseColor, 3);
+            color: nth($baseColor, 1);
+            border-radius: 50%;
+            &.disabled {
+                opacity: 0.8;
+            }
+        }
     }
-  }
 }
 </style>
 <style lang="css">
